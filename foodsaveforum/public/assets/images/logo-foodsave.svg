@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="80" viewBox="0 0 240 80" role="img" aria-label="Logo FoodSave">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4CAF50"/>
+      <stop offset="100%" stop-color="#FFA726"/>
+    </linearGradient>
+  </defs>
+  <circle cx="40" cy="40" r="36" fill="#FFFFFF" stroke="#4CAF50" stroke-width="4"/>
+  <path d="M34 20 C26 24, 22 36, 30 44 C38 52, 48 50, 54 44 C60 38, 60 28, 52 22 C46 16, 38 16, 34 20 Z" fill="url(#g1)"/>
+  <path d="M44 10 L42 40 L48 40 L46 10 Z" fill="#4CAF50"/>
+  <path d="M30 44 L24 58 L22 60 Q18 64, 22 68 L28 72 Q32 76, 36 72 L42 66" fill="#4CAF50" opacity="0.8"/>
+  <text x="80" y="38" font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif" font-size="24" font-weight="800" fill="#2E3C2E">Food</text>
+  <text x="80" y="62" font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif" font-size="28" font-weight="800" fill="#FFA726">Save</text>
+</svg>
