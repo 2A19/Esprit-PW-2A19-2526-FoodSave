@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Utilisateurs - FoodSave Admin</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">Food<span class="logo-orange">Save</span></div>
+            <nav>
+                <ul>
+                    <li><a href="admin.php?action=dashboard">Tableau de bord</a></li>
+                    <li><a href="admin.php?action=users" style="color: var(--color-primary-green); font-weight: bold;">Gérer les utilisateurs</a></li>
+                    <li><a href="index.php?action=logout" style="color: var(--color-error);">Déconnexion</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="alert alert-success mt-2">
+                <?php echo htmlspecialchars($_SESSION['success']); ?>
+                <?php unset($_SESSION['success']); ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="alert alert-error mt-2">
+                <?php echo htmlspecialchars($_SESSION['error']); ?>
+                <?php unset($_SESSION['error']); ?>
+            </div>
+        <?php endif; ?>
+
+        <div style="background-color: white; padding: 2rem; border-radius: 8px; margin-top: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <h1 style="color: var(--color-primary-green); margin-bottom: 1.5rem;">👥 Liste des Utilisateurs</h1>
+
+            <?php if (count($users) > 0): ?>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Prénom</th>
+                                <th>Nom</th>
+                                <th>Email</th>
+                                <th>Téléphone</th>
+                                <th>Statut</th>
+                                <th>Rôle</th>
+                                <th>Membre depuis</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($users as $u): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($u['id']); ?></td>
+                                    <td><?php echo htmlspecialchars($u['prenom']); ?></td>
+                                    <td><?php echo htmlspecialchars($u['nom']); ?></td>
+                                    <td><?php echo htmlspecialchars($u['email']); ?></td>
+                                    <td><?php echo htmlspecialchars($u['telephone'] ?? '-'); ?></td>
+                                    <td><?php echo htmlspecialchars($u['statut']); ?></td>
+                                    <td>
+                                        <strong style="color: <?php echo $u['role'] === 'admin' ? 'var(--color-error)' : 'var(--color-primary-green)'; ?>;">
+                                            <?php echo strtoupper($u['role']); ?>
+                                        </strong>
+                                    </td>
+                                    <td><?php echo !empty($u['date_inscription']) ? date('d/m/Y', strtotime($u['date_inscription'])) : '-'; ?></td>
+                                    <td>
+                                        <div class="actions">
+                                            <a href="admin.php?action=user_details&id=<?php echo $u['id']; ?>" class="action-btn action-btn-edit">Détails</a>
+                                            <a href="admin.php?action=edit_user&id=<?php echo $u['id']; ?>" class="action-btn action-btn-edit">Éditer</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 2rem; padding: 1rem; background-color: var(--color-light-gray); border-radius: 4px;">
+                    <p><strong>Total d'utilisateurs :</strong> <?php echo count($users); ?></p>
+                    <p><strong>Actifs :</strong> <?php echo count(array_filter($users, fn($u) => $u['statut'] === 'actif')); ?></p>
+                    <p><strong>Inactifs :</strong> <?php echo count(array_filter($users, fn($u) => $u['statut'] === 'inactif')); ?></p>
+                    <p><strong>Bannis :</strong> <?php echo count(array_filter($users, fn($u) => $u['statut'] === 'banni')); ?></p>
+                    <p><strong>Administrateurs :</strong> <?php echo count(array_filter($users, fn($u) => $u['role'] === 'admin')); ?></p>
+                </div>
+            <?php else: ?>
+                <div class="alert alert-info">
+                    Aucun utilisateur enregistré pour le moment.
+                </div>
+            <?php endif; ?>
+
+            <div style="margin-top: 2rem;">
+                <a href="admin.php?action=dashboard" class="btn btn-secondary">Retour au tableau de bord</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 FoodSave - Admin. Tous droits réservés.</p>
+    </footer>
+
+    <script src="assets/js/validation.js"></script>
+</body>
+</html>
