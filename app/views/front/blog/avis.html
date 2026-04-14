@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodSave - Avis des lecteurs</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../../../../public/assets/css/style.css">
+    
+    <style>
+        .avis-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .avis-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e8e0c8;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+        
+        .avis-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+        
+        .avis-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .avis-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4caf50, #ff6b35);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .author-info h4 {
+            margin: 0;
+            font-size: 1rem;
+        }
+        
+        .author-info .date {
+            font-size: 0.7rem;
+            color: #888;
+        }
+        
+        .avis-note {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .star {
+            color: #ffc107;
+            font-size: 1rem;
+        }
+        
+        .star-empty {
+            color: #ddd;
+        }
+        
+        .avis-content {
+            color: #555;
+            line-height: 1.6;
+            margin: 1rem 0;
+        }
+        
+        .btn-avis {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-avis:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .avis-stats {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(255, 107, 53, 0.05));
+            padding: 1rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .avis-stats .note-moyenne {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #4caf50;
+        }
+        
+        .avis-vide {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 20px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="nav-logo">
+                <img src="../../../../public/assets/images/logo_foodsave.png" alt="Logo" style="height: 50px; width: auto;">
+                <span style="font-weight: 700; font-size: 1.4rem;">
+                    <span style="color: #ff6b35;">Food</span><span style="color: #4caf50;">Save</span>
+                </span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Accueil</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+                <a href="conseils.html" class="nav-link">Conseils</a>
+                <a href="recettes.html" class="nav-link">Recettes</a>
+            </div>
+            <div class="user-actions">
+                <button class="login-btn login-outline">Connexion</button>
+                <button class="login-btn login-primary">Inscription</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="avis-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1 style="color: #333;">Avis des lecteurs</h1>
+            <a href="ajouter-avis.html" class="btn-avis"><i class="fas fa-pen"></i> Donner mon avis</a>
+        </div>
+        
+        <!-- Stats des avis -->
+        <div class="avis-stats">
+            <div class="note-moyenne">4.5 / 5</div>
+            <div class="avis-note" style="justify-content: center;">
+                <i class="fas fa-star star"></i>
+                <i class="fas fa-star star"></i>
+                <i class="fas fa-star star"></i>
+                <i class="fas fa-star star"></i>
+                <i class="fas fa-star-half-alt star"></i>
+            </div>
+            <div style="font-size: 0.8rem; color: #666;">Basé sur 12 avis</div>
+        </div>
+        
+        <!-- Liste des avis -->
+        <div class="avis-list">
+            
+            <!-- Avis 1 -->
+            <div class="avis-card">
+                <div class="avis-header">
+                    <div class="avis-author">
+                        <div class="avatar">M</div>
+                        <div class="author-info">
+                            <h4>Marie Dupont</h4>
+                            <div class="date">Publié le 05/04/2025</div>
+                        </div>
+                    </div>
+                    <div class="avis-note">
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                    </div>
+                </div>
+                <div class="avis-content">
+                    "Très utile cet article ! J'ai appris beaucoup de choses sur la conservation des légumes. Merci FoodSave !"
+                </div>
+                <div style="font-size: 0.7rem; color: #4caf50;">
+                    <i class="fas fa-thumbs-up"></i> Utile (8)
+                </div>
+            </div>
+            
+            <!-- Avis 2 -->
+            <div class="avis-card">
+                <div class="avis-header">
+                    <div class="avis-author">
+                        <div class="avatar">T</div>
+                        <div class="author-info">
+                            <h4>Thomas Martin</h4>
+                            <div class="date">Publié le 03/04/2025</div>
+                        </div>
+                    </div>
+                    <div class="avis-note">
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="far fa-star star-empty"></i>
+                    </div>
+                </div>
+                <div class="avis-content">
+                    "Super recette ! J'ai testé la soupe aux épluchures, toute ma famille a adoré."
+                </div>
+                <div style="font-size: 0.7rem; color: #4caf50;">
+                    <i class="fas fa-thumbs-up"></i> Utile (5)
+                </div>
+            </div>
+            
+            <!-- Avis 3 -->
+            <div class="avis-card">
+                <div class="avis-header">
+                    <div class="avis-author">
+                        <div class="avatar">S</div>
+                        <div class="author-info">
+                            <h4>Sophie Bernard</h4>
+                            <div class="date">Publié le 01/04/2025</div>
+                        </div>
+                    </div>
+                    <div class="avis-note">
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                    </div>
+                </div>
+                <div class="avis-content">
+                    "Excellent contenu ! Les conseils sont très pratiques et faciles à appliquer au quotidien."
+                </div>
+                <div style="font-size: 0.7rem; color: #4caf50;">
+                    <i class="fas fa-thumbs-up"></i> Utile (12)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <span>🍽️ FoodSave</span>
+                <p>Stop au gaspillage alimentaire</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 FoodSave - Tous droits réservés</p>
+        </div>
+    </footer>
+
+</body>
+</html>
