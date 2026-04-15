@@ -91,7 +91,7 @@ Ce projet est sous licence **MIT**. Voir le fichier [LICENSE](./LICENSE) pour pl
 
 | Membre | Module | To Do | In Progress | Done |
 |--------|--------|------|------------|------|
-| Cyrine Mahouachi | Forum |  |  |  |
+| Cyrine Mahouachi | Forum | metier simple et avancé | integration base de donnée | interface et crud des deux entites |
 | Faten Karoui | Gestion Utilisateur |  |  |  |
 | Nermine Achour | Conseils |  |  |  |
 | Wadhah Laaribi | Événements |  |  |  |
