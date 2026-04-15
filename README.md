@@ -87,38 +87,15 @@ Ce projet est sous licence **MIT**. Voir le fichier [LICENSE](./LICENSE) pour pl
 <p align="center">
   Fait avec 💚 par l'équipe <strong>NextWave</strong> — Esprit 2025/2026
   <section class="dashboard">
-  <h2>📊 Tableau de Bord - Avancement des Tâches</h2>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Membre</th>
-        <th>Module</th>
-        <th>To Do</th>
-        <th>In Progress</th>
-        <th>Done</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Faten Karoui</td>
-        <td>Gestion Utilisateur</td>
-        <td><input type="checkbox"></td>
-        <td><input type="checkbox"></td>
-        <td><input type="checkbox"></td>
-      </tr>
-
-     ---
-
 ## 📊 Tableau de Bord — Avancement des Tâches
 
 | Membre | Module | To Do | In Progress | Done |
 |--------|--------|------|------------|------|
-| Cyrine Mahouachi | Forum | ![ToDo](https://img.shields.io/badge/ToDo-grey?style=flat) | ![Progress](https://img.shields.io/badge/In--Progress-orange?style=flat) | ![Done](https://img.shields.io/badge/Done-lightgrey?style=flat) |
-| Faten Karoui | Gestion Utilisateur | ![ToDo](https://img.shields.io/badge/ToDo-grey?style=flat) | ![Progress](https://img.shields.io/badge/In--Progress-orange?style=flat) | ![Done](https://img.shields.io/badge/Done-lightgrey?style=flat) |
-| Nermine Achour | Conseils | ![ToDo](https://img.shields.io/badge/ToDo-grey?style=flat) | ![Progress](https://img.shields.io/badge/In--Progress-orange?style=flat) | ![Done](https://img.shields.io/badge/Done-lightgrey?style=flat) |
-| Wadhah Laaribi | Événements | ![ToDo](https://img.shields.io/badge/ToDo-grey?style=flat) | ![Progress](https://img.shields.io/badge/In--Progress-orange?style=flat) | ![Done](https://img.shields.io/badge/Done-lightgrey?style=flat) |
-| Fares Chihaoui | Déchets | ![ToDo](https://img.shields.io/badge/ToDo-grey?style=flat) | ![Progress](https://img.shields.io/badge/In--Progress-orange?style=flat) | ![Done](https://img.shields.io/badge/Done-lightgrey?style=flat) |
+| Cyrine Mahouachi | Forum |  |  |  |
+| Faten Karoui | Gestion Utilisateur |  |  |  |
+| Nermine Achour | Conseils |  |  |  |
+| Wadhah Laaribi | Événements |  |  |  |
+| Fares Chihaoui | Déchets |  |  |  |
 
 ---
 </p>
