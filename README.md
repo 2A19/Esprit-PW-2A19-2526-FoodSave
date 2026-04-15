@@ -86,4 +86,60 @@ Ce projet est sous licence **MIT**. Voir le fichier [LICENSE](./LICENSE) pour pl
 
 <p align="center">
   Fait avec 💚 par l'équipe <strong>NextWave</strong> — Esprit 2025/2026
+  <section class="dashboard">
+  <h2>📊 Tableau de Bord - Avancement des Tâches</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Membre</th>
+        <th>Module</th>
+        <th>To Do</th>
+        <th>In Progress</th>
+        <th>Done</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Faten Karoui</td>
+        <td>Gestion Utilisateur</td>
+        <td><input type="checkbox"></td>
+        <td><input type="checkbox"></td>
+        <td><input type="checkbox"></td>
+      </tr>
+
+      <tr>
+        <td>Cyrine Mahouachi</td>
+        <td>Forum</td>
+        <td><input type="checkbox"></td>
+        <td><input type="checkbox"></td>
+        <td><input type="checkbox"></td>
+      </tr>
+
+      <tr>
+        <td>Nermine Achour</td>
+        <td>Conseils</td>
+        <td><input type="checkbox"></td>
+        <td><input type="checkbox"></td>
+        <td><input type="checkbox"></td>
+      </tr>
+
+      <tr>
+        <td>Wadhah Laaribi</td>
+        <td>Événements</td>
+        <td><input type="checkbox"></td>
+        <td><input type="checkbox"></td>
+        <td><input type="checkbox"></td>
+      </tr>
+
+      <tr>
+        <td>Fares Chihaoui</td>
+        <td>Déchets</td>
+        <td><input type="checkbox"></td>
+        <td><input type="checkbox"></td>
+        <td><input type="checkbox"></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
 </p>
