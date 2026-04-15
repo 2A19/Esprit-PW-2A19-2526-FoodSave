@@ -108,38 +108,17 @@ Ce projet est sous licence **MIT**. Voir le fichier [LICENSE](./LICENSE) pour pl
         <td><input type="checkbox"></td>
       </tr>
 
-      <tr>
-        <td>Cyrine Mahouachi</td>
-        <td>Forum</td>
-        <td><input type="checkbox"></td>
-        <td><input type="checkbox"></td>
-        <td><input type="checkbox"></td>
-      </tr>
+     ---
 
-      <tr>
-        <td>Nermine Achour</td>
-        <td>Conseils</td>
-        <td><input type="checkbox"></td>
-        <td><input type="checkbox"></td>
-        <td><input type="checkbox"></td>
-      </tr>
+## 📊 Tableau de Bord — Avancement des Tâches
 
-      <tr>
-        <td>Wadhah Laaribi</td>
-        <td>Événements</td>
-        <td><input type="checkbox"></td>
-        <td><input type="checkbox"></td>
-        <td><input type="checkbox"></td>
-      </tr>
+| Membre | Module | To Do | In Progress | Done |
+|--------|--------|------|------------|------|
+| Cyrine Mahouachi | Forum | ![ToDo](https://img.shields.io/badge/ToDo-grey?style=flat) | ![Progress](https://img.shields.io/badge/In--Progress-orange?style=flat) | ![Done](https://img.shields.io/badge/Done-lightgrey?style=flat) |
+| Faten Karoui | Gestion Utilisateur | ![ToDo](https://img.shields.io/badge/ToDo-grey?style=flat) | ![Progress](https://img.shields.io/badge/In--Progress-orange?style=flat) | ![Done](https://img.shields.io/badge/Done-lightgrey?style=flat) |
+| Nermine Achour | Conseils | ![ToDo](https://img.shields.io/badge/ToDo-grey?style=flat) | ![Progress](https://img.shields.io/badge/In--Progress-orange?style=flat) | ![Done](https://img.shields.io/badge/Done-lightgrey?style=flat) |
+| Wadhah Laaribi | Événements | ![ToDo](https://img.shields.io/badge/ToDo-grey?style=flat) | ![Progress](https://img.shields.io/badge/In--Progress-orange?style=flat) | ![Done](https://img.shields.io/badge/Done-lightgrey?style=flat) |
+| Fares Chihaoui | Déchets | ![ToDo](https://img.shields.io/badge/ToDo-grey?style=flat) | ![Progress](https://img.shields.io/badge/In--Progress-orange?style=flat) | ![Done](https://img.shields.io/badge/Done-lightgrey?style=flat) |
 
-      <tr>
-        <td>Fares Chihaoui</td>
-        <td>Déchets</td>
-        <td><input type="checkbox"></td>
-        <td><input type="checkbox"></td>
-        <td><input type="checkbox"></td>
-      </tr>
-    </tbody>
-  </table>
-</section>
+---
 </p>
