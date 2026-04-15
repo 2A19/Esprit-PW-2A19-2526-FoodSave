@@ -83,7 +83,7 @@ Les contributions sont les bienvenues ! Pour contribuer :
 | Membre | Module | To Do | In Progress | Done |
 |--------|--------|------|------------|------|
 | Cyrine Mahouachi | Forum | metier simple et avancé | integration base de donnée | interface et crud des deux entites |
-| Faten Karoui | Gestion Utilisateur |  |  |  |
+| Faten Karoui | Gestion Utilisateur | metier simple et avancé | integration base de donnée | interface et crud des deux entités |
 | Nermine Achour | Conseils |  |  |  |
 | Wadhah Laaribi | Événements |  |  |  |
 | Fares Chihaoui | Déchets |  |  |  |
