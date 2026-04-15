@@ -1,23 +1,23 @@
 <?php
-// ============================================================
-//  app/views/front/ev_detail.php — Detail d'un evenement
-// ============================================================
-require_once __DIR__ . '/../../../config/database.php';
-require_once __DIR__ . '/../../models/EvenementModel.php';
-
-$model = new EvenementModel();
-$id    = (int)($_GET['id'] ?? 0);
-$ev    = $model->findById($id);
-if (!$ev) { header('Location: evenements.php'); exit; }
-
-$nb     = $model->countParticipants($id);
-$pct    = $ev['capacite'] > 0 ? min(100, round($nb/$ev['capacite']*100)) : 0;
-$isFull = ($pct >= 100);
-$slabels = ['upcoming'=>'A venir','ongoing'=>'En cours','past'=>'Termine'];
-$sbadge  = ['upcoming'=>'b-green','ongoing'=>'b-orange','past'=>'b-gray'];
-
-// Flash session
 session_start();
+require_once __DIR__ . '/../../controller/EvenementController.php';
+
+$controller = new EvenementController();
+$id = (int) ($_GET['id'] ?? 0);
+$ev = $controller->findById($id);
+
+if (!$ev) {
+    header('Location: evenements.php');
+    exit;
+}
+
+$nb = $controller->countParticipants($id);
+$pct = $ev['capacite'] > 0 ? min(100, round($nb / $ev['capacite'] * 100)) : 0;
+$isFull = $pct >= 100;
+
+$slabels = ['upcoming' => 'A venir', 'ongoing' => 'En cours', 'past' => 'Termine'];
+$sbadge = ['upcoming' => 'b-green', 'ongoing' => 'b-orange', 'past' => 'b-gray'];
+
 $flash = $_SESSION['flash'] ?? null;
 unset($_SESSION['flash']);
 ?>
@@ -30,7 +30,6 @@ unset($_SESSION['flash']);
 <link rel="stylesheet" href="../../../public/css/style.css">
 </head>
 <body style="background:var(--g100);display:flex;flex-direction:column;min-height:100vh">
-
 <nav class="front-nav">
   <div class="fn-inner">
     <a href="accueil.php" class="fn-brand"><div class="bi">🌿</div><span><strong>Food</strong><em>Save</em></span></a>
@@ -44,9 +43,8 @@ unset($_SESSION['flash']);
 
 <section class="f-section" style="flex:1">
   <div class="f-container">
-
     <?php if ($flash): ?>
-    <div class="alert alert-<?= $flash['type']==='success'?'success':'danger' ?>" style="margin-bottom:20px">
+    <div class="alert alert-<?= $flash['type'] === 'success' ? 'success' : 'danger' ?>" style="margin-bottom:20px">
       <?= htmlspecialchars($flash['msg']) ?>
       <button class="alert-close" onclick="this.parentElement.remove()">✕</button>
     </div>
@@ -57,22 +55,21 @@ unset($_SESSION['flash']);
     </div>
 
     <div class="show-grid">
-      <!-- Detail -->
       <div>
         <div class="card">
           <div class="show-banner"></div>
           <div class="card-body">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap">
               <h1 style="font-family:var(--fh);font-size:1.55rem;font-weight:900;line-height:1.2"><?= htmlspecialchars($ev['titre']) ?></h1>
-              <span class="badge <?= $sbadge[$ev['statut']]??'b-gray' ?>" style="padding:5px 12px;font-size:.75rem"><?= $slabels[$ev['statut']]??$ev['statut'] ?></span>
+              <span class="badge <?= $sbadge[$ev['statut']] ?? 'b-gray' ?>" style="padding:5px 12px;font-size:.75rem"><?= $slabels[$ev['statut']] ?? $ev['statut'] ?></span>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px">
-              <?php foreach([
-                ['📅','Date',         date('d/m/Y',strtotime($ev['date_event'])).' a '.substr($ev['heure'],0,5)],
-                ['📍','Lieu',         $ev['lieu']],
-                ['👤','Organisateur', $ev['organisateur']],
-                ['🏷','Categorie',    $ev['categorie']],
-              ] as list($ic,$lbl,$val)): ?>
+              <?php foreach ([
+                ['📅', 'Date', date('d/m/Y', strtotime($ev['date_event'])) . ' a ' . substr($ev['heure'], 0, 5)],
+                ['📍', 'Lieu', $ev['lieu']],
+                ['👤', 'Organisateur', $ev['organisateur']],
+                ['🏷', 'Categorie', $ev['categorie']],
+              ] as [$ic, $lbl, $val]): ?>
               <div style="background:var(--g100);border-radius:8px;padding:11px">
                 <div style="font-size:.68rem;color:var(--g500);font-weight:700;margin-bottom:3px"><?= $ic ?> <?= $lbl ?></div>
                 <div style="font-size:.86rem;font-weight:600"><?= htmlspecialchars($val) ?></div>
@@ -96,12 +93,11 @@ unset($_SESSION['flash']);
         </div>
       </div>
 
-      <!-- Sidebar action -->
       <div>
         <div class="card" style="position:sticky;top:80px">
           <div class="card-body" style="text-align:center">
             <div style="font-size:3rem;margin-bottom:12px">
-              <?= $ev['statut']==='past' ? '✅' : ($isFull ? '🔒' : '✍') ?>
+              <?= $ev['statut'] === 'past' ? '✅' : ($isFull ? '🔒' : '✍') ?>
             </div>
             <?php if ($ev['statut'] === 'past'): ?>
               <h3 style="font-family:var(--fh);margin-bottom:8px">Evenement termine</h3>
@@ -111,16 +107,10 @@ unset($_SESSION['flash']);
               <p style="font-size:.8rem;color:var(--g500)">Toutes les places sont prises.</p>
             <?php else: ?>
               <h3 style="font-family:var(--fh);margin-bottom:5px">Rejoindre cet evenement</h3>
-              <p style="font-size:.79rem;color:var(--g500);margin-bottom:15px">
-                <?= $ev['capacite'] - $nb ?> place(s) disponible(s)
-              </p>
-              <a href="inscription.php?id=<?= $ev['id'] ?>"
-                 class="btn btn-primary" style="width:100%;justify-content:center">
-                ✍ S'inscrire maintenant
-              </a>
+              <p style="font-size:.79rem;color:var(--g500);margin-bottom:15px"><?= $ev['capacite'] - $nb ?> place(s) disponible(s)</p>
+              <a href="inscription.php?id=<?= $ev['id'] ?>" class="btn btn-primary" style="width:100%;justify-content:center">✍ S'inscrire maintenant</a>
             <?php endif; ?>
-            <a href="evenements.php" class="btn btn-outline btn-sm"
-               style="margin-top:10px;width:100%;justify-content:center">← Tous les evenements</a>
+            <a href="evenements.php" class="btn btn-outline btn-sm" style="margin-top:10px;width:100%;justify-content:center">← Tous les evenements</a>
           </div>
         </div>
       </div>
@@ -132,6 +122,7 @@ unset($_SESSION['flash']);
   <div class="ff-brand"><div style="width:28px;height:28px;background:var(--green);border-radius:6px;display:flex;align-items:center;justify-content:center">🌿</div><strong>Food</strong><em>Save</em></div>
   <p>© 2026 FoodSave — Equipe NextWave</p>
 </footer>
+
 <div class="toast-wrap" id="toasts"></div>
 <script src="../../../public/js/validation.js"></script>
 </body>

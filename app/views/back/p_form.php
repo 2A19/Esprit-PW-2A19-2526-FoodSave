@@ -1,56 +1,54 @@
 <?php
-// ============================================================
-//  app/views/back/p_form.php — Creer / Modifier un participant
-// ============================================================
 session_start();
-require_once __DIR__ . '/../../../config/database.php';
-require_once __DIR__ . '/../../models/ParticipantModel.php';
-require_once __DIR__ . '/../../models/EvenementModel.php';
+require_once __DIR__ . '/../../controller/ParticipantController.php';
 
-$model  = new ParticipantModel();
-$evMdl  = new EvenementModel();
-$id     = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$preEv  = (int)($_GET['ev'] ?? 0);
+$controller = new ParticipantController();
+$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+$preEv = (int) ($_GET['ev'] ?? 0);
 $isEdit = $id > 0;
 $errors = [];
-$p      = [];
+$p = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $pid = (int)($_POST['id'] ?? 0);
+    $pid = (int) ($_POST['id'] ?? 0);
     $p = [
-        'nom'          => trim($_POST['nom']          ?? ''),
-        'prenom'       => trim($_POST['prenom']       ?? ''),
-        'email'        => strtolower(trim($_POST['email'] ?? '')),
-        'telephone'    => trim($_POST['telephone']    ?? ''),
-        'evenement_id' => $_POST['evenement_id']      ?? '',
-        'statut'       => $_POST['statut']            ?? 'pending',
+        'nom' => trim($_POST['nom'] ?? ''),
+        'prenom' => trim($_POST['prenom'] ?? ''),
+        'email' => strtolower(trim($_POST['email'] ?? '')),
+        'telephone' => trim($_POST['telephone'] ?? ''),
+        'evenement_id' => $_POST['evenement_id'] ?? '',
+        'statut' => $_POST['statut'] ?? 'pending',
     ];
 
-    // Validation PHP — PAS HTML5
-    $errors = ParticipantModel::validate($p);
+    $errors = $controller->validate($p);
 
-    if (empty($errors['email']) && $p['email'] !== '' && (int)$p['evenement_id'] > 0) {
-        if ($model->emailExists($p['email'], (int)$p['evenement_id'], $pid)) {
+    if (empty($errors['email']) && $p['email'] !== '' && (int) $p['evenement_id'] > 0) {
+        if ($controller->emailExists($p['email'], (int) $p['evenement_id'], $pid)) {
             $errors['email'] = 'Email deja inscrit pour cet evenement.';
         }
     }
 
     if (empty($errors)) {
         if ($pid > 0) {
-            $model->update($pid, $p);
-            $_SESSION['flash'] = ['type'=>'success','msg'=>'Participant modifie !'];
+            $controller->update($pid, $p);
+            $_SESSION['flash'] = ['type' => 'success', 'msg' => 'Participant modifie !'];
         } else {
-            $model->create($p);
-            $_SESSION['flash'] = ['type'=>'success','msg'=>'Participant ajoute !'];
+            $controller->create($p);
+            $_SESSION['flash'] = ['type' => 'success', 'msg' => 'Participant ajoute !'];
         }
-        header('Location: participants.php'); exit;
+
+        header('Location: participants.php');
+        exit;
     }
 } elseif ($isEdit) {
-    $p = $model->findById($id);
-    if (!$p) { header('Location: participants.php'); exit; }
+    $p = $controller->findById($id);
+    if (!$p) {
+        header('Location: participants.php');
+        exit;
+    }
 }
 
-$evenements = $evMdl->findAll();
+$evenements = $controller->getEventList();
 $selEv = $p['evenement_id'] ?? $preEv;
 ?>
 <!DOCTYPE html>
@@ -62,7 +60,6 @@ $selEv = $p['evenement_id'] ?? $preEv;
 <link rel="stylesheet" href="../../../public/css/style.css">
 </head>
 <body class="back-wrap">
-
 <aside class="sidebar" id="sb">
   <div class="sb-brand"><div class="sb-icon">🌿</div><div class="sb-name"><span>Food</span><em>Save</em><small>Admin</small></div></div>
   <nav class="sb-nav">
@@ -141,7 +138,7 @@ $selEv = $p['evenement_id'] ?? $preEv;
               <select id="evenement_id" name="evenement_id" data-validate="required">
                 <option value="">-- Selectionner --</option>
                 <?php foreach ($evenements as $e): ?>
-                <option value="<?= $e['id'] ?>" <?= (string)$selEv===(string)$e['id']?'selected':'' ?>>
+                <option value="<?= $e['id'] ?>" <?= (string) $selEv === (string) $e['id'] ? 'selected' : '' ?>>
                   <?= htmlspecialchars($e['titre']) ?>
                 </option>
                 <?php endforeach; ?>
@@ -152,9 +149,9 @@ $selEv = $p['evenement_id'] ?? $preEv;
             <div class="form-group">
               <label for="statut">Statut *</label>
               <select id="statut" name="statut" data-validate="required">
-                <option value="pending"   <?= ($p['statut']??'pending')==='pending'  ?'selected':'' ?>>En attente</option>
-                <option value="confirmed" <?= ($p['statut']??'')==='confirmed'       ?'selected':'' ?>>Confirme</option>
-                <option value="cancelled" <?= ($p['statut']??'')==='cancelled'       ?'selected':'' ?>>Annule</option>
+                <option value="pending" <?= ($p['statut'] ?? 'pending') === 'pending' ? 'selected' : '' ?>>En attente</option>
+                <option value="confirmed" <?= ($p['statut'] ?? '') === 'confirmed' ? 'selected' : '' ?>>Confirme</option>
+                <option value="cancelled" <?= ($p['statut'] ?? '') === 'cancelled' ? 'selected' : '' ?>>Annule</option>
               </select>
               <?php if (isset($errors['statut'])): ?><span class="field-err"><?= $errors['statut'] ?></span><?php endif; ?>
               <div class="js-err" id="e-statut"></div>
@@ -163,9 +160,7 @@ $selEv = $p['evenement_id'] ?? $preEv;
 
           <div class="form-actions">
             <a href="participants.php" class="btn btn-outline">Annuler</a>
-            <button type="submit" class="btn btn-primary">
-              <?= $isEdit ? '💾 Enregistrer' : '＋ Ajouter' ?>
-            </button>
+            <button type="submit" class="btn btn-primary"><?= $isEdit ? '💾 Enregistrer' : '＋ Ajouter' ?></button>
           </div>
         </form>
       </div>
