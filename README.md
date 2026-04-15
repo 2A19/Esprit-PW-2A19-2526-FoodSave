@@ -78,15 +78,6 @@ Les contributions sont les bienvenues ! Pour contribuer :
 
 ---
 
-## 📄 Licence
-
-Ce projet est sous licence **MIT**. Voir le fichier [LICENSE](./LICENSE) pour plus de détails.
-
----
-
-<p align="center">
-  Fait avec 💚 par l'équipe <strong>NextWave</strong> — Esprit 2025/2026
-  <section class="dashboard">
 ## 📊 Tableau de Bord — Avancement des Tâches
 
 | Membre | Module | To Do | In Progress | Done |
@@ -96,6 +87,16 @@ Ce projet est sous licence **MIT**. Voir le fichier [LICENSE](./LICENSE) pour pl
 | Nermine Achour | Conseils |  |  |  |
 | Wadhah Laaribi | Événements |  |  |  |
 | Fares Chihaoui | Déchets |  |  |  |
+
+## 📄 Licence
+
+Ce projet est sous licence **MIT**. Voir le fichier [LICENSE](./LICENSE) pour plus de détails.
+
+---
+
+<p align="center">
+  Fait avec 💚 par l'équipe <strong>NextWave</strong> — Esprit 2025/2026
+  <section class="dashboard">
 
 ---
 </p>
