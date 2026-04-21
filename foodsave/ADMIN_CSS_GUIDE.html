@@ -1,0 +1,367 @@
+<!-- 
+  Guide CSS pour les Pages Admin - FoodSave
+  =========================================
+  
+  Appliquable aux fichiers:
+  - View/Back/user/users_list.html
+  - View/Back/user/user_details.html
+  - View/Back/user/edit_user.html
+  - View/Back/user/admin_dashboard.html
+-->
+
+/* 
+  TEMPLATE HTML DE BASE POUR ADMIN
+  ================================
+*/
+
+<!-- Header avec navigation administrative -->
+<header>
+    <div class="header-container">
+        <div class="logo">
+            <div class="logo-icon">🥗</div>
+            <div class="logo-text">
+                <span class="logo-text-food">Food</span><span class="logo-text-save">Save</span>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.php?action=adminDashboard">Tableau de bord</a></li>
+                <li><a href="index.php?action=usersList">Utilisateurs</a></li>
+                <li><a href="index.php?action=settings">Paramètres</a></li>
+                <li><a href="index.php?action=logout">Déconnexion</a></li>
+            </ul>
+        </nav>
+        <div class="user-menu">
+            <span class="user-name">👤 Admin</span>
+        </div>
+    </div>
+</header>
+
+<!-- Sidebar de navigation (optionnel) -->
+<aside class="admin-sidebar">
+    <nav class="sidebar-nav">
+        <h3 style="padding: 20px; color: var(--text-gray);">MENU</h3>
+        <ul>
+            <li><a href="#" class="sidebar-link active"><span>📊</span> Tableau de bord</a></li>
+            <li><a href="#" class="sidebar-link"><span>👥</span> Utilisateurs</a></li>
+            <li><a href="#" class="sidebar-link"><span>🍽️</span> Aliments</a></li>
+            <li><a href="#" class="sidebar-link"><span>📈</span> Statistiques</a></li>
+            <li><a href="#" class="sidebar-link"><span>⚙️</span> Paramètres</a></li>
+        </ul>
+    </nav>
+</aside>
+
+<!-- Container principal -->
+<div class="container admin-container" style="padding-top: 40px; padding-bottom: 40px;">
+    
+    <!-- Section des alertes -->
+    <?php if (isset($_SESSION['success'])): ?>
+        <div class="alert alert-success fade-in">
+            <span class="alert-icon">✓</span>
+            <div>
+                <strong>Succès !</strong> <?php echo htmlspecialchars($_SESSION['success']); ?>
+            </div>
+            <?php unset($_SESSION['success']); ?>
+        </div>
+    <?php endif; ?>
+
+    <!-- En-tête de section -->
+    <div class="section-header" style="margin-bottom: 40px;">
+        <h1>Gestion des Utilisateurs</h1>
+        <p style="color: var(--text-gray); margin-top: 8px;">Visualisez et gérez tous les utilisateurs du système</p>
+    </div>
+
+    <!-- Actions/Filtres -->
+    <div class="admin-actions" style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+        <input type="search" placeholder="🔍 Rechercher un utilisateur..." 
+               style="flex: 1; min-width: 200px; padding: 10px 16px; border: 1px solid var(--medium-gray); border-radius: 6px; font-size: 0.95rem;">
+        <a href="index.php?action=addUser" class="btn btn-primary">
+            ➕ Ajouter un utilisateur
+        </a>
+    </div>
+
+    <!-- Table responsive -->
+    <div class="table-container" style="background: var(--primary-white); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-md);">
+        <table style="width: 100%;">
+            <thead style="background: linear-gradient(135deg, var(--primary-green) 0%, var(--dark-green) 100%); color: white;">
+                <tr>
+                    <th style="padding: 16px; text-align: left; font-weight: 600;">Nom</th>
+                    <th style="padding: 16px; text-align: left; font-weight: 600;">Email</th>
+                    <th style="padding: 16px; text-align: left; font-weight: 600;">Date d'inscription</th>
+                    <th style="padding: 16px; text-align: center; font-weight: 600;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($users as $user): ?>
+                <tr style="border-bottom: 1px solid var(--medium-gray); transition: background-color 0.2s;">
+                    <td style="padding: 16px;">
+                        <strong><?php echo htmlspecialchars($user['prenom'] . ' ' . $user['nom']); ?></strong>
+                    </td>
+                    <td style="padding: 16px; color: var(--text-gray);">
+                        <?php echo htmlspecialchars($user['email']); ?>
+                    </td>
+                    <td style="padding: 16px; color: var(--text-gray);">
+                        <?php echo date('d/m/Y', strtotime($user['date_inscription'])); ?>
+                    </td>
+                    <td style="padding: 16px; text-align: center;">
+                        <div style="display: flex; gap: 8px; justify-content: center;">
+                            <a href="index.php?action=userDetails&id=<?php echo $user['id']; ?>" 
+                               class="btn-icon" title="Voir détails">
+                                👁️
+                            </a>
+                            <a href="index.php?action=editUser&id=<?php echo $user['id']; ?>" 
+                               class="btn-icon" title="Modifier">
+                                ✏️
+                            </a>
+                            <a href="index.php?action=deleteUser&id=<?php echo $user['id']; ?>" 
+                               class="btn-icon btn-danger" title="Supprimer" onclick="return confirm('Êtes-vous sûr?')">
+                                🗑️
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination (si nécessaire) -->
+    <div style="display: flex; justify-content: center; gap: 8px; margin-top: 24px;">
+        <a href="#" class="btn btn-outline" style="padding: 8px 16px;">← Précédent</a>
+        <button style="padding: 8px 16px; background: var(--primary-green); color: white; border: none; border-radius: 6px;">
+            1
+        </button>
+        <button style="padding: 8px 16px; background: transparent; border: 1px solid var(--medium-gray); border-radius: 6px;">
+            2
+        </button>
+        <a href="#" class="btn btn-outline" style="padding: 8px 16px;">Suivant →</a>
+    </div>
+
+</div>
+
+<!-- 
+  STYLES CSS À AJOUTER À style.css
+  ================================
+-->
+
+<style>
+/* Admin Sidebar */
+.admin-sidebar {
+    position: fixed;
+    left: 0;
+    top: 60px;
+    width: 280px;
+    height: calc(100vh - 60px);
+    background: var(--primary-white);
+    border-right: 1px solid var(--medium-gray);
+    overflow-y: auto;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar-nav li {
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    color: var(--text-gray);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.sidebar-link:hover {
+    background-color: var(--light-gray);
+    color: var(--primary-green);
+    border-left: 4px solid var(--primary-green);
+    padding-left: 16px;
+}
+
+.sidebar-link.active {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--primary-green);
+    border-left: 4px solid var(--primary-green);
+    padding-left: 16px;
+    font-weight: 600;
+}
+
+.admin-container {
+    margin-left: 280px;
+}
+
+/* Section Header */
+.section-header h1 {
+    font-size: 2rem;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+/* Button Icons */
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    background: var(--light-gray);
+    border: 1px solid var(--medium-gray);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.btn-icon:hover {
+    background: var(--primary-green);
+    color: white;
+    border-color: var(--primary-green);
+    transform: translateY(-2px);
+}
+
+.btn-icon.btn-danger {
+    background: rgba(255, 167, 38, 0.1);
+    border-color: var(--primary-orange);
+}
+
+.btn-icon.btn-danger:hover {
+    background: var(--primary-orange);
+    color: white;
+    border-color: var(--primary-orange);
+}
+
+/* Table Container */
+.table-container {
+    overflow-x: auto;
+}
+
+.table-container table tbody tr:hover {
+    background-color: var(--light-gray);
+}
+
+.table-container table tbody tr:last-child {
+    border-bottom: none;
+}
+
+/* Admin Actions */
+.admin-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: var(--primary-white);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .admin-sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        top: 0;
+        border-right: none;
+        border-bottom: 1px solid var(--medium-gray);
+    }
+
+    .admin-container {
+        margin-left: 0;
+    }
+
+    .sidebar-nav ul {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .sidebar-nav li {
+        flex: 1;
+        min-width: 150px;
+        border-bottom: none;
+        border-right: 1px solid var(--medium-gray);
+    }
+
+    .sidebar-nav li:last-child {
+        border-right: none;
+    }
+
+    .admin-actions {
+        flex-direction: column;
+    }
+
+    .admin-actions input {
+        width: 100% !important;
+    }
+
+    .table-container {
+        font-size: 0.9rem;
+    }
+
+    .table-container table th,
+    .table-container table td {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar-nav ul {
+        flex-direction: column;
+    }
+
+    .sidebar-nav li {
+        flex: none;
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--medium-gray);
+    }
+
+    .btn-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+
+    .table-container table {
+        font-size: 0.85rem;
+    }
+}
+</style>
+
+<!--
+  ASTUCES ET BONNES PRATIQUES
+  ===========================
+  
+  1. COHÉRENCE DES COULEURS:
+     - Utilisez var(--primary-green) pour les actions primaires
+     - Utilisez var(--primary-orange) pour les alertes/avertissements
+     - Utilisez var(--shadow-md) pour les cartes
+  
+  2. ESPACEMENT:
+     - Utilisez des multiples de 8px (8, 16, 24, 32, 40, 48px)
+     - padding: 16px pour la plupart des éléments
+     - gap: 12px entre les éléments flexbox
+  
+  3. RESPONSIVE:
+     - Masquer la sidebar à 768px, la convertir en navigation horizontale
+     - Full-width sur mobile
+     - Tester sur différentes résolutions
+  
+  4. ANIMATIONS:
+     - Transition: 0.3s ease pour les interactions
+     - translateY(-2px) au hover pour les boutons
+     - Ombres au hover pour la profondeur
+  
+  5. ACCESSIBILITÉ:
+     - Focus states visibles (outline-style: auto)
+     - Contraste suffisant (WCAG AA minimum)
+     - Labels claires pour les formulaires
+     - Icons + texte pour les boutons
+-->

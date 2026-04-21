@@ -1,28 +1,48 @@
-<?php
-require_once __DIR__ . '/../config/Database.php';
-
+﻿<?php
 class User {
-    private $db;
-    private $table = 'user';
-    
-    // Propriétés de l'utilisateur
-    public $id;
-    public $prenom;
-    public $nom;
-    public $email;
-    public $password;
-    public $telephone;
-    public $date_naissance;
-    public $role;
-    public $statut;
-    public $date_inscription;
-    
+    private ?int $id;
+    private ?string $prenom;
+    private ?string $nom;
+    private ?string $email;
+    private ?string $password;
+    private ?string $telephone;
+    private ?DateTime $date_naissance;
+    private ?string $role;
+    private ?string $statut;
+    private ?DateTime $date_inscription;
+
     // Erreurs de validation
     public $errors = [];
 
-    public function __construct() {
-        $database = new Database();
-        $this->db = $database->connect();
+    // Constructor
+    public function __construct(?int $id = null, ?string $prenom = null, ?string $nom = null, ?string $email = null, ?string $password = null, ?string $telephone = null, ?DateTime $date_naissance = null, ?string $role = null, ?string $statut = null, ?DateTime $date_inscription = null) {
+        $this->id = $id;
+        $this->prenom = $prenom;
+        $this->nom = $nom;
+        $this->email = $email;
+        $this->password = $password;
+        $this->telephone = $telephone;
+        $this->date_naissance = $date_naissance;
+        $this->role = $role;
+        $this->statut = $statut;
+        $this->date_inscription = $date_inscription;
+    }
+
+    public function show() {
+        echo '<table border="1" cellpadding="5">';
+        echo '<tr><th>ID</th><th>Prénom</th><th>Nom</th><th>Email</th><th>Téléphone</th><th>Date de naissance</th><th>Rôle</th><th>Statut</th><th>Date d\'inscription</th></tr>';
+        echo '<tr>';
+        echo '<td>' . $this->id . '</td>';
+        echo '<td>' . $this->prenom . '</td>';
+        echo '<td>' . $this->nom . '</td>';
+        echo '<td>' . $this->email . '</td>';
+        echo '<td>' . $this->telephone . '</td>';
+        echo '<td>' . ($this->date_naissance ? $this->date_naissance->format('Y-m-d') : '') . '</td>';
+        echo '<td>' . $this->role . '</td>';
+        echo '<td>' . $this->statut . '</td>';
+        echo '<td>' . ($this->date_inscription ? $this->date_inscription->format('Y-m-d H:i:s') : '') . '</td>';
+        echo '</tr>';
+        echo '</table>';
     }
 
     /**
@@ -54,13 +74,13 @@ class User {
             $this->errors['email'] = 'L\'email est requis';
         } else if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             $this->errors['email'] = 'L\'email n\'est pas valide';
-        } else if ($this->emailExists($this->email, isset($this->id) ? $this->id : null)) {
+        } else if ($this->emailExists($this->email, $this->id)) {
             $this->errors['email'] = 'Cet email est déjà utilisé';
         }
 
         // Validation du mot de passe
         if (empty($this->password)) {
-            if (!isset($this->id)) {
+            if (!$this->id) {
                 $this->errors['password'] = 'Le mot de passe est requis';
             }
         } else if (strlen($this->password) < 8) {
@@ -80,7 +100,9 @@ class User {
         }
 
         // Validation de la date de naissance (optionnel)
-        if (!empty($this->date_naissance)) {
+        if (!empty($this->date_naissance) && $this->date_naissance instanceof DateTime) {
+            // Already DateTime, no need to validate format
+        } elseif (!empty($this->date_naissance)) {
             $date = DateTime::createFromFormat('Y-m-d', $this->date_naissance);
             if (!$date || $date->format('Y-m-d') !== $this->date_naissance) {
                 $this->errors['date_naissance'] = 'La date de naissance n\'est pas valide';
@@ -94,12 +116,12 @@ class User {
      * Vérifie si un email existe déjà
      */
     private function emailExists($email, $excludeId = null) {
-        $query = 'SELECT id FROM ' . $this->table . ' WHERE email = :email';
+        $db = config::getConnexion();
+        $query = 'SELECT id FROM user WHERE email = :email';
         if ($excludeId) {
             $query .= ' AND id != :id';
         }
-
-        $stmt = $this->db->prepare($query);
+        $stmt = $db->prepare($query);
         $stmt->bindParam(':email', $email);
         if ($excludeId) {
             $stmt->bindParam(':id', $excludeId);
@@ -109,141 +131,85 @@ class User {
         return $stmt->rowCount() > 0;
     }
 
-    /**
-     * Crée un nouvel utilisateur
-     */
-    public function create() {
-        if (!$this->validate()) {
-            return false;
-        }
-
-        $this->password = password_hash($this->password, PASSWORD_BCRYPT);
-        $this->role = 'user';
-        $this->statut = 'actif';
-        $this->date_inscription = date('Y-m-d H:i:s');
-
-        $query = 'INSERT INTO ' . $this->table . ' 
-                  (prenom, nom, email, password, telephone, date_naissance, role, statut, date_inscription)
-                  VALUES (:prenom, :nom, :email, :password, :telephone, :date_naissance, :role, :statut, :date_inscription)';
-
-        $stmt = $this->db->prepare($query);
-
-        $stmt->bindParam(':prenom', $this->prenom);
-        $stmt->bindParam(':nom', $this->nom);
-        $stmt->bindParam(':email', $this->email);
-        $stmt->bindParam(':password', $this->password);
-        $stmt->bindParam(':telephone', $this->telephone);
-        $stmt->bindParam(':date_naissance', $this->date_naissance);
-        $stmt->bindParam(':role', $this->role);
-        $stmt->bindParam(':statut', $this->statut);
-        $stmt->bindParam(':date_inscription', $this->date_inscription);
-
-        return $stmt->execute();
+    // Getters and Setters
+    public function getId(): ?int {
+        return $this->id;
     }
 
-    /**
-     * Authentifie un utilisateur
-     */
-    public function login($email, $password) {
-        $query = 'SELECT * FROM ' . $this->table . ' WHERE email = :email LIMIT 1';
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();
-
-        if ($stmt->rowCount() === 0) {
-            $this->errors['login'] = 'Email ou mot de passe incorrect';
-            return false;
-        }
-
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!password_verify($password, $user['password'])) {
-            $this->errors['login'] = 'Email ou mot de passe incorrect';
-            return false;
-        }
-
-        return $user;
+    public function setId(?int $id): void {
+        $this->id = $id;
     }
 
-    /**
-     * Récupère tous les utilisateurs
-     */
-    public function getAll() {
-        $query = 'SELECT id, prenom, nom, email, role, statut, telephone, date_inscription FROM ' . $this->table . ' ORDER BY date_inscription DESC';
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function getPrenom(): ?string {
+        return $this->prenom;
     }
 
-    /**
-     * Récupère un utilisateur par ID
-     */
-    public function getById($id) {
-        $query = 'SELECT id, prenom, nom, email, role, statut, telephone, date_naissance, date_inscription FROM ' . $this->table . ' WHERE id = :id LIMIT 1';
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+    public function setPrenom(?string $prenom): void {
+        $this->prenom = $prenom;
     }
 
-    /**
-     * Met à jour les informations d'un utilisateur
-     */
-    public function update($id) {
-        if (!$this->validate()) {
-            return false;
-        }
-
-        $query = 'UPDATE ' . $this->table . ' 
-                  SET prenom = :prenom, nom = :nom, email = :email, 
-                      telephone = :telephone, date_naissance = :date_naissance';
-
-        if (isset($this->statut)) {
-            $query .= ', statut = :statut';
-        }
-
-        $query .= ' WHERE id = :id';
-
-        $stmt = $this->db->prepare($query);
-
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':prenom', $this->prenom);
-        $stmt->bindParam(':nom', $this->nom);
-        $stmt->bindParam(':email', $this->email);
-        $stmt->bindParam(':telephone', $this->telephone);
-        $stmt->bindParam(':date_naissance', $this->date_naissance);
-
-        if (isset($this->statut)) {
-            $stmt->bindParam(':statut', $this->statut);
-        }
-
-        return $stmt->execute();
+    public function getNom(): ?string {
+        return $this->nom;
     }
 
-    /**
-     * Supprime un utilisateur
-     */
-    public function delete($id) {
-        $query = 'DELETE FROM ' . $this->table . ' WHERE id = :id';
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute();
+    public function setNom(?string $nom): void {
+        $this->nom = $nom;
     }
 
-    /**
-     * Change le rôle d'un utilisateur
-     */
-    public function changeRole($id, $role) {
-        if (!in_array($role, ['user', 'admin'])) {
-            $this->errors['role'] = 'Le rôle est invalide';
-            return false;
-        }
+    public function getEmail(): ?string {
+        return $this->email;
+    }
 
-        $query = 'UPDATE ' . $this->table . ' SET role = :role WHERE id = :id';
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':role', $role);
-        return $stmt->execute();
+    public function setEmail(?string $email): void {
+        $this->email = $email;
+    }
+
+    public function getPassword(): ?string {
+        return $this->password;
+    }
+
+    public function setPassword(?string $password): void {
+        $this->password = $password;
+    }
+
+    public function getTelephone(): ?string {
+        return $this->telephone;
+    }
+
+    public function setTelephone(?string $telephone): void {
+        $this->telephone = $telephone;
+    }
+
+    public function getDateNaissance(): ?DateTime {
+        return $this->date_naissance;
+    }
+
+    public function setDateNaissance(?DateTime $date_naissance): void {
+        $this->date_naissance = $date_naissance;
+    }
+
+    public function getRole(): ?string {
+        return $this->role;
+    }
+
+    public function setRole(?string $role): void {
+        $this->role = $role;
+    }
+
+    public function getStatut(): ?string {
+        return $this->statut;
+    }
+
+    public function setStatut(?string $statut): void {
+        $this->statut = $statut;
+    }
+
+    public function getDateInscription(): ?DateTime {
+        return $this->date_inscription;
+    }
+
+    public function setDateInscription(?DateTime $date_inscription): void {
+        $this->date_inscription = $date_inscription;
     }
 }
 ?>

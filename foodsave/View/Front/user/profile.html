@@ -9,55 +9,111 @@
 <body>
     <header>
         <div class="header-container">
-            <div class="logo">Food<span class="logo-orange">Save</span></div>
+            <a href="index.php" class="logo">
+                <img src="assets/images/logo.png" alt="FoodSave" class="logo-image">
+            </a>
             <nav>
                 <ul>
                     <li><a href="index.php?action=dashboard">Tableau de bord</a></li>
                     <li><a href="index.php?action=profile">Mon profil</a></li>
-                    <li><a href="index.php?action=logout" style="color: var(--color-error);">Déconnexion</a></li>
+                    <li><a href="index.php?action=logout">Déconnexion</a></li>
                 </ul>
             </nav>
+            <div class="user-menu">
+                <span class="user-name">👤 <?php echo htmlspecialchars($_SESSION['user_prenom']); ?></span>
+            </div>
         </div>
     </header>
 
-    <div class="container-small">
+    <div class="container" style="padding-top: 40px; padding-bottom: 40px; max-width: 700px;">
         <?php if (isset($_SESSION['success'])): ?>
-            <div class="alert alert-success mt-2">
-                <?php echo htmlspecialchars($_SESSION['success']); ?>
+            <div class="alert alert-success fade-in">
+                <span class="alert-icon">✓</span>
+                <div>
+                    <strong>Succès !</strong> <?php echo htmlspecialchars($_SESSION['success']); ?>
+                </div>
                 <?php unset($_SESSION['success']); ?>
             </div>
         <?php endif; ?>
 
-        <div style="background-color: white; padding: 2rem; border-radius: 8px; margin-top: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-            <h1 style="color: var(--color-primary-green); margin-bottom: 1.5rem;">Mon Profil</h1>
+        <div style="background-color: var(--primary-white); padding: 32px; border-radius: 12px; box-shadow: var(--shadow-md);">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--medium-gray);">
+                <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--primary-green), var(--dark-green)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px;">
+                    👤
+                </div>
+                <div>
+                    <h1 style="font-size: 1.75rem; margin-bottom: 4px;">
+                        <?php echo htmlspecialchars($user['prenom'] . ' ' . $user['nom']); ?>
+                    </h1>
+                    <p style="color: var(--text-gray);">Mon profil utilisateur</p>
+                </div>
+            </div>
 
             <div class="profile-info">
-                <div style="margin-bottom: 1.5rem;">
-                    <strong>Prénom :</strong>
-                    <p><?php echo htmlspecialchars($user['prenom']); ?></p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                    <div style="padding: 16px; background: var(--light-gray); border-radius: 8px;">
+                        <strong style="display: block; margin-bottom: 8px; color: var(--text-gray); font-size: 0.9rem; text-transform: uppercase;">Prénom</strong>
+                        <p style="font-size: 1.1rem; font-weight: 500;">
+                            <?php echo htmlspecialchars($user['prenom']); ?>
+                        </p>
+                    </div>
+
+                    <div style="padding: 16px; background: var(--light-gray); border-radius: 8px;">
+                        <strong style="display: block; margin-bottom: 8px; color: var(--text-gray); font-size: 0.9rem; text-transform: uppercase;">Nom</strong>
+                        <p style="font-size: 1.1rem; font-weight: 500;">
+                            <?php echo htmlspecialchars($user['nom']); ?>
+                        </p>
+                    </div>
                 </div>
 
-                <div style="margin-bottom: 1.5rem;">
-                    <strong>Nom :</strong>
-                    <p><?php echo htmlspecialchars($user['nom']); ?></p>
+                <div style="padding: 16px; background: var(--light-gray); border-radius: 8px; margin-bottom: 24px;">
+                    <strong style="display: block; margin-bottom: 8px; color: var(--text-gray); font-size: 0.9rem; text-transform: uppercase;">📧 Email</strong>
+                    <p style="font-size: 1.1rem; font-weight: 500;">
+                        <?php echo htmlspecialchars($user['email']); ?>
+                    </p>
                 </div>
 
-                <div style="margin-bottom: 1.5rem;">
-                    <strong>Email :</strong>
-                    <p><?php echo htmlspecialchars($user['email']); ?></p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                    <div style="padding: 16px; background: var(--light-gray); border-radius: 8px;">
+                        <strong style="display: block; margin-bottom: 8px; color: var(--text-gray); font-size: 0.9rem; text-transform: uppercase;">📱 Téléphone</strong>
+                        <p style="font-size: 1.1rem; font-weight: 500;">
+                            <?php echo htmlspecialchars($user['telephone'] ?? '—'); ?>
+                        </p>
+                    </div>
+
+                    <div style="padding: 16px; background: var(--light-gray); border-radius: 8px;">
+                        <strong style="display: block; margin-bottom: 8px; color: var(--text-gray); font-size: 0.9rem; text-transform: uppercase;">🎂 Date de naissance</strong>
+                        <p style="font-size: 1.1rem; font-weight: 500;">
+                            <?php echo $user['date_naissance'] ? date('d/m/Y', strtotime($user['date_naissance'])) : '—'; ?>
+                        </p>
+                    </div>
                 </div>
 
-                <div style="margin-bottom: 1.5rem;">
-                    <strong>Téléphone :</strong>
-                    <p><?php echo htmlspecialchars($user['telephone'] ?? 'Non renseigné'); ?></p>
+                <div style="padding: 16px; background: var(--light-gray); border-radius: 8px; margin-bottom: 24px;">
+                    <strong style="display: block; margin-bottom: 8px; color: var(--text-gray); font-size: 0.9rem; text-transform: uppercase;">📅 Date d'inscription</strong>
+                    <p style="font-size: 1.1rem; font-weight: 500;">
+                        <?php echo $user['date_inscription'] ? date('d/m/Y', strtotime($user['date_inscription'])) : '—'; ?>
+                    </p>
                 </div>
 
-                <div style="margin-bottom: 1.5rem;">
-                    <strong>Date de naissance :</strong>
-                    <p><?php echo $user['date_naissance'] ? date('d/m/Y', strtotime($user['date_naissance'])) : 'Non renseignée'; ?></p>
+                <div style="display: flex; gap: 12px; margin-top: 32px;">
+                    <a href="index.php?action=editProfile" class="btn btn-primary" style="flex: 1; text-align: center;">
+                        ✏️ Modifier mon profil
+                    </a>
+                    <a href="index.php?action=dashboard" class="btn btn-outline" style="flex: 1; text-align: center;">
+                        ← Retour au tableau de bord
+                    </a>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <div style="margin-bottom: 1.5rem;">
+    <footer>
+        <p>&copy; 2026 FoodSave. Tous droits réservés.</p>
+    </footer>
+
+    <script src="assets/js/validation.js"></script>
+</body>
                     <strong>Compte créé le :</strong>
                     <p><?php echo date('d/m/Y', strtotime($user['date_inscription'])); ?></p>
                 </div>

@@ -9,68 +9,88 @@
 <body>
     <header>
         <div class="header-container">
-            <div class="logo">Food<span class="logo-orange">Save</span></div>
+            <a href="index.php" class="logo">
+                <img src="assets/images/logo.png" alt="FoodSave" class="logo-image">
+            </a>
             <nav>
                 <ul>
-                    <li><a href="index.php">Accueil</a></li>
+                    <li><a href="index.php?action=login">Accueil</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <div class="auth-page">
-        <div class="auth-card">
-            <h1>Inscription</h1>
-            <p>Créez votre compte FoodSave</p>
-
-            <?php if (isset($errors) && count($errors) > 0): ?>
-                <div class="alert alert-error">
-                    <strong>Erreurs de validation :</strong>
-                    <ul>
-                        <?php foreach ($errors as $error): ?>
-                            <li><?php echo htmlspecialchars($error); ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            <?php endif; ?>
-
-            <form id="registerForm" method="POST" action="index.php?action=handleRegister">
-                <div class="form-group">
-                    <label for="prenom">Prénom *</label>
-                    <input type="text" id="prenom" name="prenom" placeholder="Jean" required>
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-card-header">
+                    <h1>Inscription</h1>
+                    <p>Créez votre compte FoodSave et rejoignez notre communauté</p>
                 </div>
 
-                <div class="form-group">
-                    <label for="nom">Nom *</label>
-                    <input type="text" id="nom" name="nom" placeholder="Dupont" required>
+                <?php if (isset($errors) && count($errors) > 0): ?>
+                    <div class="alert alert-error">
+                        <span class="alert-icon">✕</span>
+                        <div>
+                            <strong>Erreurs de validation :</strong>
+                            <ul style="margin-top: 8px; margin-left: 20px;">
+                                <?php foreach ($errors as $error): ?>
+                                    <li><?php echo htmlspecialchars($error); ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <form id="registerForm" method="POST" action="index.php?action=handleRegister">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label for="prenom">Prénom</label>
+                            <input type="text" id="prenom" name="prenom" placeholder="Jean" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nom">Nom</label>
+                            <input type="text" id="nom" name="nom" placeholder="Dupont" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Adresse email</label>
+                        <input type="email" id="email" name="email" placeholder="votre@email.com" required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label for="telephone">Téléphone</label>
+                            <input type="tel" id="telephone" name="telephone" placeholder="+33 1 23 45 67 89">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="date_naissance">Date de naissance</label>
+                            <input type="date" id="date_naissance" name="date_naissance">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Mot de passe</label>
+                        <input type="password" id="password" name="password" placeholder="••••••••" required>
+                        <small style="color: #666; display: block; margin-top: 6px;">
+                            ✓ Minimum 8 caractères<br>
+                            ✓ Une majuscule, une minuscule et un chiffre
+                        </small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 16px;">
+                        <span>Créer mon compte</span>
+                    </button>
+                </form>
+
+                <div class="auth-links-toggle">
+                    <p>Vous avez déjà un compte ?
+                        <a href="index.php?action=login">Se connecter</a>
+                    </p>
                 </div>
-
-                <div class="form-group">
-                    <label for="email">Adresse email *</label>
-                    <input type="email" id="email" name="email" placeholder="votre@email.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="telephone">Téléphone</label>
-                    <input type="tel" id="telephone" name="telephone" placeholder="+33 1 23 45 67 89">
-                </div>
-
-                <div class="form-group">
-                    <label for="date_naissance">Date de naissance</label>
-                    <input type="date" id="date_naissance" name="date_naissance">
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Mot de passe *</label>
-                    <input type="password" id="password" name="password" placeholder="••••••••" required>
-                    <small style="color: #666;">Minimum 8 caractères, une majuscule, une minuscule et un chiffre</small>
-                </div>
-
-                <button type="submit" class="btn btn-primary" style="width: 100%;">S'inscrire</button>
-            </form>
-
-            <div class="toggle-register">
-                <p>Vous avez déjà un compte ? <a href="index.php?action=login">Se connecter</a></p>
             </div>
         </div>
     </div>
