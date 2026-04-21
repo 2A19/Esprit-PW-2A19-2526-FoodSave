@@ -116,7 +116,7 @@ body {
 }
 
 .logo-image {
-    width: 52px;
+    width: 200px;
     height: auto;
     display: block;
 }
@@ -307,6 +307,8 @@ body {
     background: linear-gradient(180deg, #ffffff 0%, var(--color-surface) 100%);
     border-radius: 20px;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .comment-card {
@@ -408,6 +410,8 @@ body {
 .post-content {
     padding: 20px;
     flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .post-content p {
@@ -423,6 +427,7 @@ body {
     gap: 12px;
     flex-wrap: wrap;
     border-top: 1px solid var(--color-border);
+    margin-top: auto;
 }
 
 .post-actions .btn {

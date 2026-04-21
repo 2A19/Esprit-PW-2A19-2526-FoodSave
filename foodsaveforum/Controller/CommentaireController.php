@@ -1,28 +1,94 @@
 <?php
-require_once __DIR__ . '/../Model/Database.php';
-require_once __DIR__ . '/../Model/CommentaireModel.php';
-require_once __DIR__ . '/../Model/PostModel.php';
+include(__DIR__ . '/../config.php');
+include(__DIR__ . '/../Model/CommentaireModel.php');
+include(__DIR__ . '/../Model/PostModel.php');
 
 class CommentaireController {
-    private $db;
-    private $commentaireModel;
-    private $postModel;
 
-    public function __construct() {
-        $database = new Database();
-        $this->db = $database->connect();
-        $this->commentaireModel = new CommentaireModel($this->db);
-        $this->postModel = new PostModel($this->db);
+    public function listCommentaires() {
+        $sql = "SELECT * FROM commentaires";
+        $db = config::getConnexion();
+        try {
+            $list = $db->query($sql);
+            return $list;
+        } catch (Exception $e) {
+            die('Error:' . $e->getMessage());
+        }
     }
 
-    // FrontOffice: Créer un commentaire
-    public function create($contenu, $id_post, $id_utilisateur) {
-        // Vérifier que le post existe
-        $post = $this->postModel->getById($id_post);
-        if (!$post) {
-            return ['success' => false, 'errors' => ['Post non trouvé']];
+    public function deleteCommentaire($id) {
+        $sql = "DELETE FROM commentaires WHERE id_commentaire = :id";
+        $db = config::getConnexion();
+        $req = $db->prepare($sql);
+        $req->bindValue(':id', $id);
+        try {
+            $req->execute();
+        } catch (Exception $e) {
+            die('Error:' . $e->getMessage());
         }
+    }
 
+    public function addCommentaire(CommentaireModel $commentaire) {
+        $sql = "INSERT INTO commentaires VALUES (NULL, :contenu, :date_publication, :id_post, :id_utilisateur, :statue)";
+        $db = config::getConnexion();
+        try {
+            $query = $db->prepare($sql);
+            $query->execute([
+                'contenu' => $commentaire->getContenu(),
+                'date_publication' => $commentaire->getDatePublication() ? $commentaire->getDatePublication()->format('Y-m-d H:i:s') : null,
+                'id_post' => $commentaire->getIdPost(),
+                'id_utilisateur' => $commentaire->getIdUtilisateur(),
+                'statue' => $commentaire->getStatue()
+            ]);
+        } catch (Exception $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
+    }
+
+    public function updateCommentaire(CommentaireModel $commentaire, $id) {
+        try {
+            $db = config::getConnexion();
+            $query = $db->prepare(
+                'UPDATE commentaires SET
+                    contenu = :contenu,
+                    date_publication = :date_publication,
+                    id_post = :id_post,
+                    id_utilisateur = :id_utilisateur,
+                    statue = :statue
+                WHERE id_commentaire = :id'
+            );
+            $query->execute([
+                'id' => $id,
+                'contenu' => $commentaire->getContenu(),
+                'date_publication' => $commentaire->getDatePublication() ? $commentaire->getDatePublication()->format('Y-m-d H:i:s') : null,
+                'id_post' => $commentaire->getIdPost(),
+                'id_utilisateur' => $commentaire->getIdUtilisateur(),
+                'statue' => $commentaire->getStatue()
+            ]);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+
+    public function showCommentaire($id) {
+        $sql="SELECT * FROM commentaires WHERE id_commentaire = $id";
+        $db= config::getConnexion();
+        $query= $db->prepare($sql);
+
+        try
+        {
+            $query->execute();
+            $commentaire= $query->fetch();
+            return $commentaire;
+        }
+        catch(Exception $e)
+        {
+            die('Error: '. $e->getMessage());
+        }
+    }
+
+    // Additional methods to keep functionality
+    public function create($contenu, $id_post, $id_utilisateur) {
         // Validation
         $errors = [];
 
@@ -42,26 +108,30 @@ class CommentaireController {
             return ['success' => false, 'errors' => $errors];
         }
 
-        $this->commentaireModel->contenu = $contenu;
-        $this->commentaireModel->id_post = $id_post;
-        $this->commentaireModel->id_utilisateur = $id_utilisateur;
-
-        if ($this->commentaireModel->create()) {
-            return ['success' => true, 'message' => 'Commentaire créé avec succès'];
-        } else {
-            return ['success' => false, 'errors' => ['Erreur lors de la création du commentaire']];
+        // Check if post exists
+        $sql = "SELECT id_post FROM posts WHERE id_post = :id_post";
+        $db = config::getConnexion();
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':id_post', $id_post);
+        $stmt->execute();
+        if (!$stmt->fetch()) {
+            return ['success' => false, 'errors' => ['Post non trouvé']];
         }
+
+        $commentaire = new CommentaireModel(null, htmlspecialchars(strip_tags($contenu)), new DateTime(), $id_post, $id_utilisateur, 'actif');
+        $this->addCommentaire($commentaire);
+
+        return ['success' => true, 'message' => 'Commentaire créé avec succès'];
     }
 
-    // FrontOffice: Modifier un commentaire
     public function update($id, $contenu, $id_utilisateur) {
-        $commentaire = $this->commentaireModel->getById($id);
+        $commentaireData = $this->showCommentaire($id);
         
-        if (!$commentaire) {
+        if (!$commentaireData) {
             return ['success' => false, 'errors' => ['Commentaire non trouvé']];
         }
 
-        if ($commentaire['id_utilisateur'] != $id_utilisateur) {
+        if ($commentaireData['id_utilisateur'] != $id_utilisateur) {
             return ['success' => false, 'errors' => ['Vous ne pouvez modifier que vos propres commentaires']];
         }
 
@@ -80,59 +150,62 @@ class CommentaireController {
             return ['success' => false, 'errors' => $errors];
         }
 
-        $this->commentaireModel->id_commentaire = $id;
-        $this->commentaireModel->contenu = $contenu;
+        $commentaire = new CommentaireModel($id, htmlspecialchars(strip_tags($contenu)), new DateTime($commentaireData['date_publication']), $commentaireData['id_post'], $commentaireData['id_utilisateur'], $commentaireData['statue']);
+        $this->updateCommentaire($commentaire, $id);
 
-        if ($this->commentaireModel->update()) {
-            return ['success' => true, 'message' => 'Commentaire modifié avec succès'];
-        } else {
-            return ['success' => false, 'errors' => ['Erreur lors de la modification du commentaire']];
-        }
+        return ['success' => true, 'message' => 'Commentaire modifié avec succès'];
     }
 
-    // Récupérer un commentaire par ID (FrontOffice)
-    public function getById($id) {
-        return $this->commentaireModel->getById($id);
-    }
-
-    // FrontOffice: Supprimer un commentaire
     public function delete($id, $id_utilisateur) {
-        $commentaire = $this->commentaireModel->getById($id);
+        $commentaireData = $this->showCommentaire($id);
         
-        if (!$commentaire) {
+        if (!$commentaireData) {
             return ['success' => false, 'errors' => ['Commentaire non trouvé']];
         }
 
-        if ($commentaire['id_utilisateur'] != $id_utilisateur) {
+        if ($commentaireData['id_utilisateur'] != $id_utilisateur) {
             return ['success' => false, 'errors' => ['Vous ne pouvez supprimer que vos propres commentaires']];
         }
 
-        if ($this->commentaireModel->delete($id)) {
-            return ['success' => true, 'message' => 'Commentaire supprimé avec succès'];
-        } else {
-            return ['success' => false, 'errors' => ['Erreur lors de la suppression du commentaire']];
+        $this->deleteCommentaire($id);
+
+        return ['success' => true, 'message' => 'Commentaire supprimé avec succès'];
+    }
+
+    // BackOffice methods
+    public function listAllForAdmin() {
+        $sql = "SELECT * FROM commentaires ORDER BY date_publication DESC";
+        $db = config::getConnexion();
+        try {
+            $list = $db->query($sql);
+            return $list->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die('Error:' . $e->getMessage());
         }
     }
 
-    // BackOffice: Afficher tous les commentaires
-    public function listAllForAdmin() {
-        return $this->commentaireModel->getAllForAdmin();
-    }
-
-    // BackOffice: Bannir un commentaire
     public function ban($id) {
-        if ($this->commentaireModel->ban($id)) {
+        $sql = "UPDATE commentaires SET statue = 'banni' WHERE id_commentaire = :id";
+        $db = config::getConnexion();
+        $req = $db->prepare($sql);
+        $req->bindValue(':id', $id);
+        try {
+            $req->execute();
             return ['success' => true, 'message' => 'Commentaire banni avec succès'];
-        } else {
+        } catch (Exception $e) {
             return ['success' => false, 'errors' => ['Erreur lors du bannissement du commentaire']];
         }
     }
 
-    // BackOffice: Débannir un commentaire
     public function unban($id) {
-        if ($this->commentaireModel->unban($id)) {
+        $sql = "UPDATE commentaires SET statue = 'actif' WHERE id_commentaire = :id";
+        $db = config::getConnexion();
+        $req = $db->prepare($sql);
+        $req->bindValue(':id', $id);
+        try {
+            $req->execute();
             return ['success' => true, 'message' => 'Commentaire débanni avec succès'];
-        } else {
+        } catch (Exception $e) {
             return ['success' => false, 'errors' => ['Erreur lors du débannissement du commentaire']];
         }
     }

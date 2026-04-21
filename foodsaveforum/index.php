@@ -4,6 +4,7 @@ session_start();
 // Simulated current user - in a real app, this would come from authentication
 $_SESSION['user_id'] = $_SESSION['user_id'] ?? 1;
 $_SESSION['username'] = $_SESSION['username'] ?? 'User #' . $_SESSION['user_id'];
+$_SESSION['is_admin'] = $_SESSION['is_admin'] ?? true; // For demo purposes
 
 require_once __DIR__ . '/Controller/PostController.php';
 require_once __DIR__ . '/Controller/CommentaireController.php';

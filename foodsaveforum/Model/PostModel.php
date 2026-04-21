@@ -1,118 +1,96 @@
 <?php
+if (!class_exists('PostModel')) {
 class PostModel {
-    private $conn;
-    private $table = 'posts';
+    private ?int $id_post;
+    private ?string $titre;
+    private ?string $contenu;
+    private ?DateTime $date_creation;
+    private ?int $id_utilisateur;
+    private ?string $categorie;
+    private ?string $statue;
 
-    public $id_post;
-    public $titre;
-    public $contenu;
-    public $date_creation;
-    public $id_utilisateur;
-    public $categorie;
-    public $statue;
-
-    public function __construct($db) {
-        $this->conn = $db;
+    // Constructor
+    public function __construct(?int $id_post, ?string $titre, ?string $contenu, ?DateTime $date_creation, ?int $id_utilisateur, ?string $categorie, ?string $statue) {
+        $this->id_post = $id_post;
+        $this->titre = $titre;
+        $this->contenu = $contenu;
+        $this->date_creation = $date_creation;
+        $this->id_utilisateur = $id_utilisateur;
+        $this->categorie = $categorie;
+        $this->statue = $statue;
     }
 
-    // Récupérer tous les posts
-    public function getAll() {
-        $query = "SELECT * FROM " . $this->table . " WHERE statue != 'bannL' ORDER BY date_creation DESC";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function show() {
+        echo "<table border='1' cellpadding='5'>";
+        echo "<tr><th>ID Post</th><th>Titre</th><th>Contenu</th><th>Date Creation</th><th>ID Utilisateur</th><th>Categorie</th><th>Statue</th></tr>";
+        echo "<tr>";
+        echo "<td>{$this->id_post}</td>";
+        echo "<td>{$this->titre}</td>";
+        echo "<td>{$this->contenu}</td>";
+        echo "<td>" . ($this->date_creation ? $this->date_creation->format('Y-m-d H:i:s') : '') . "</td>";
+        echo "<td>{$this->id_utilisateur}</td>";
+        echo "<td>{$this->categorie}</td>";
+        echo "<td>{$this->statue}</td>";
+        echo "</tr>";
+        echo "</table>";
     }
 
-    // Récupérer un post par ID
-    public function getById($id) {
-        $query = "SELECT * FROM " . $this->table . " WHERE id_post = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+    // Getters and Setters
+    public function getIdPost(): ?int {
+        return $this->id_post;
     }
 
-    // Créer un nouveau post
-    public function create() {
-        $query = "INSERT INTO " . $this->table . " 
-                  (titre, contenu, date_creation, id_utilisateur, categorie, statue) 
-                  VALUES 
-                  (:titre, :contenu, NOW(), :id_utilisateur, :categorie, 'actif')";
-
-        $stmt = $this->conn->prepare($query);
-
-        // Nettoyer et valider les données
-        $this->titre = htmlspecialchars(strip_tags($this->titre));
-        $this->contenu = htmlspecialchars(strip_tags($this->contenu));
-        $this->categorie = htmlspecialchars(strip_tags($this->categorie));
-
-        $stmt->bindParam(':titre', $this->titre);
-        $stmt->bindParam(':contenu', $this->contenu);
-        $stmt->bindParam(':id_utilisateur', $this->id_utilisateur);
-        $stmt->bindParam(':categorie', $this->categorie);
-
-        return $stmt->execute();
+    public function setIdPost(?int $id_post): void {
+        $this->id_post = $id_post;
     }
 
-    // Modifier un post
-    public function update() {
-        $query = "UPDATE " . $this->table . " 
-                  SET titre = :titre, contenu = :contenu, categorie = :categorie 
-                  WHERE id_post = :id";
-
-        $stmt = $this->conn->prepare($query);
-
-        $this->titre = htmlspecialchars(strip_tags($this->titre));
-        $this->contenu = htmlspecialchars(strip_tags($this->contenu));
-        $this->categorie = htmlspecialchars(strip_tags($this->categorie));
-
-        $stmt->bindParam(':titre', $this->titre);
-        $stmt->bindParam(':contenu', $this->contenu);
-        $stmt->bindParam(':categorie', $this->categorie);
-        $stmt->bindParam(':id', $this->id_post);
-
-        return $stmt->execute();
+    public function getTitre(): ?string {
+        return $this->titre;
     }
 
-    // Supprimer un post
-    public function delete($id) {
-        $query = "DELETE FROM " . $this->table . " WHERE id_post = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute();
+    public function setTitre(?string $titre): void {
+        $this->titre = $titre;
     }
 
-    // Bannir un post (BackOffice Admin)
-    public function ban($id) {
-        $query = "UPDATE " . $this->table . " SET statue = 'banni' WHERE id_post = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute();
+    public function getContenu(): ?string {
+        return $this->contenu;
     }
 
-    // Débannir un post
-    public function unban($id) {
-        $query = "UPDATE " . $this->table . " SET statue = 'actif' WHERE id_post = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute();
+    public function setContenu(?string $contenu): void {
+        $this->contenu = $contenu;
     }
 
-    // Récupérer tous les posts (y compris bannis) pour l'admin
-    public function getAllForAdmin() {
-        $query = "SELECT * FROM " . $this->table . " ORDER BY date_creation DESC";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function getDateCreation(): ?DateTime {
+        return $this->date_creation;
     }
 
-    // Filtrer par catégorie
-    public function getByCategory($category) {
-        $query = "SELECT * FROM " . $this->table . " WHERE categorie = :categorie AND statue != 'banni' ORDER BY date_creation DESC";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':categorie', $category);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function setDateCreation(?DateTime $date_creation): void {
+        $this->date_creation = $date_creation;
     }
+
+    public function getIdUtilisateur(): ?int {
+        return $this->id_utilisateur;
+    }
+
+    public function setIdUtilisateur(?int $id_utilisateur): void {
+        $this->id_utilisateur = $id_utilisateur;
+    }
+
+    public function getCategorie(): ?string {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?string $categorie): void {
+        $this->categorie = $categorie;
+    }
+
+    public function getStatue(): ?string {
+        return $this->statue;
+    }
+
+    public function setStatue(?string $statue): void {
+        $this->statue = $statue;
+    }
+}
 }
 ?>

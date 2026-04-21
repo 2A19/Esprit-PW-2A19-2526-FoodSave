@@ -4,18 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($title) ? $title : 'FoodSave - BackOffice'; ?></title>
-    <link rel="stylesheet" href="/foodsaveforum/public/assets/css/style.css">
+    <link rel="stylesheet" href="/foodsaveforum/public/assets/css/style.css?v=1.2">
 </head>
 <body class="admin-dashboard">
     <header class="admin-header">
         <div class="container header-inner">
             <div class="logo logo-brand">
                 <a href="admin.php?action=dashboard">
-                    <img src="/foodsaveforum/public/assets/images/logo-foodsave.svg" alt="FoodSave Logo" class="logo-image">
+                    <img src="/foodsaveforum/public/assets/images/logo-foodsave.svg?v=20260421_v2" alt="FoodSave Logo" class="logo-image">
                 </a>
                 <div class="logo-text">
-                    <span class="brand-name">FoodSave</span>
-                    <span class="brand-subtitle">BackOffice Modération</span>
                 </div>
             </div>
             <nav class="admin-navbar">
@@ -23,6 +21,7 @@
                     <li><a href="admin.php?action=dashboard">Dashboard</a></li>
                     <li><a href="admin.php?action=posts">Gérer Posts</a></li>
                     <li><a href="admin.php?action=commentaires">Gérer Commentaires</a></li>
+                    <li><a href="index.php?action=posts">Retour au Front</a></li>
                     <li><a href="#logout">Déconnexion</a></li>
                 </ul>
             </nav>

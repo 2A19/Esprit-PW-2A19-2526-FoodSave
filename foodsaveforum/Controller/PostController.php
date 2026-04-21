@@ -1,33 +1,119 @@
 <?php
-require_once __DIR__ . '/../Model/Database.php';
-require_once __DIR__ . '/../Model/PostModel.php';
-require_once __DIR__ . '/../Model/CommentaireModel.php';
+include(__DIR__ . '/../config.php');
+include(__DIR__ . '/../Model/PostModel.php');
+include(__DIR__ . '/../Model/CommentaireModel.php');
 
 class PostController {
-    private $db;
-    private $postModel;
-    private $commentaireModel;
 
-    public function __construct() {
-        $database = new Database();
-        $this->db = $database->connect();
-        $this->postModel = new PostModel($this->db);
-        $this->commentaireModel = new CommentaireModel($this->db);
+    public function listPosts() {
+        $sql = "SELECT * FROM posts";
+        $db = config::getConnexion();
+        try {
+            $list = $db->query($sql);
+            return $list->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die('Error:' . $e->getMessage());
+        }
+    }
+
+    public function deletePost($id) {
+        $sql = "DELETE FROM posts WHERE id_post = :id";
+        $db = config::getConnexion();
+        $req = $db->prepare($sql);
+        $req->bindValue(':id', $id);
+        try {
+            $req->execute();
+        } catch (Exception $e) {
+            die('Error:' . $e->getMessage());
+        }
+    }
+
+    public function addPost(PostModel $post) {
+        $sql = "INSERT INTO posts VALUES (NULL, :titre, :contenu, :date_creation, :id_utilisateur, :categorie, :statue)";
+        $db = config::getConnexion();
+        try {
+            $query = $db->prepare($sql);
+            $query->execute([
+                'titre' => $post->getTitre(),
+                'contenu' => $post->getContenu(),
+                'date_creation' => $post->getDateCreation() ? $post->getDateCreation()->format('Y-m-d H:i:s') : null,
+                'id_utilisateur' => $post->getIdUtilisateur(),
+                'categorie' => $post->getCategorie(),
+                'statue' => $post->getStatue()
+            ]);
+        } catch (Exception $e) {
+            echo 'Error: ' . $e->getMessage();
+        }
+    }
+
+    public function updatePost(PostModel $post, $id) {
+        try {
+            $db = config::getConnexion();
+            $query = $db->prepare(
+                'UPDATE posts SET
+                    titre = :titre,
+                    contenu = :contenu,
+                    date_creation = :date_creation,
+                    id_utilisateur = :id_utilisateur,
+                    categorie = :categorie,
+                    statue = :statue
+                WHERE id_post = :id'
+            );
+            $query->execute([
+                'id' => $id,
+                'titre' => $post->getTitre(),
+                'contenu' => $post->getContenu(),
+                'date_creation' => $post->getDateCreation() ? $post->getDateCreation()->format('Y-m-d H:i:s') : null,
+                'id_utilisateur' => $post->getIdUtilisateur(),
+                'categorie' => $post->getCategorie(),
+                'statue' => $post->getStatue()
+            ]);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+
+    public function showPost($id) {
+        $sql="SELECT * FROM posts WHERE id_post = $id";
+        $db= config::getConnexion();
+        $query= $db->prepare($sql);
+
+        try
+        {
+            $query->execute();
+            $post= $query->fetch(PDO::FETCH_ASSOC);
+            return $post;
+        }
+        catch(Exception $e)
+        {
+            die('Error: '. $e->getMessage());
+        }
     }
 
     // FrontOffice: Afficher tous les posts
     public function listAll() {
-        $posts = $this->postModel->getAll();
-        return $posts;
+        $sql = "SELECT * FROM posts WHERE statue != 'banni' ORDER BY date_creation DESC";
+        $db = config::getConnexion();
+        try {
+            $list = $db->query($sql);
+            return $list->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die('Error:' . $e->getMessage());
+        }
     }
 
     // FrontOffice: Afficher un post avec ses commentaires
     public function view($id) {
-        $post = $this->postModel->getById($id);
+        $post = $this->showPost($id);
         if (!$post) {
             return null;
         }
-        $commentaires = $this->commentaireModel->getByPost($id);
+        $sql = "SELECT * FROM commentaires WHERE id_post = :id_post AND statue != 'banni' ORDER BY date_publication DESC";
+        $db = config::getConnexion();
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':id_post', $id);
+        $stmt->execute();
+        $commentaires = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return ['post' => $post, 'commentaires' => $commentaires];
     }
 
@@ -60,27 +146,21 @@ class PostController {
             return ['success' => false, 'errors' => $errors];
         }
 
-        $this->postModel->titre = $titre;
-        $this->postModel->contenu = $contenu;
-        $this->postModel->categorie = $categorie;
-        $this->postModel->id_utilisateur = $id_utilisateur;
+        $post = new PostModel(null, htmlspecialchars(strip_tags($titre)), htmlspecialchars(strip_tags($contenu)), new DateTime(), $id_utilisateur, htmlspecialchars(strip_tags($categorie)), 'actif');
+        $this->addPost($post);
 
-        if ($this->postModel->create()) {
-            return ['success' => true, 'message' => 'Post créé avec succès'];
-        } else {
-            return ['success' => false, 'errors' => ['Erreur lors de la création du post']];
-        }
+        return ['success' => true, 'message' => 'Post créé avec succès'];
     }
 
     // FrontOffice: Modifier un post
     public function update($id, $titre, $contenu, $categorie, $id_utilisateur) {
-        $post = $this->postModel->getById($id);
+        $postData = $this->showPost($id);
         
-        if (!$post) {
+        if (!$postData) {
             return ['success' => false, 'errors' => ['Post non trouvé']];
         }
 
-        if ($post['id_utilisateur'] != $id_utilisateur) {
+        if ($postData['id_utilisateur'] != $id_utilisateur) {
             return ['success' => false, 'errors' => ['Vous ne pouvez modifier que vos propres posts']];
         }
 
@@ -103,63 +183,77 @@ class PostController {
             return ['success' => false, 'errors' => $errors];
         }
 
-        $this->postModel->id_post = $id;
-        $this->postModel->titre = $titre;
-        $this->postModel->contenu = $contenu;
-        $this->postModel->categorie = $categorie;
+        $post = new PostModel($id, htmlspecialchars(strip_tags($titre)), htmlspecialchars(strip_tags($contenu)), new DateTime($postData['date_creation']), $postData['id_utilisateur'], htmlspecialchars(strip_tags($categorie)), $postData['statue']);
+        $this->updatePost($post, $id);
 
-        if ($this->postModel->update()) {
-            return ['success' => true, 'message' => 'Post modifié avec succès'];
-        } else {
-            return ['success' => false, 'errors' => ['Erreur lors de la modification du post']];
-        }
+        return ['success' => true, 'message' => 'Post modifié avec succès'];
     }
 
     // FrontOffice: Supprimer un post
     public function delete($id, $id_utilisateur) {
-        $post = $this->postModel->getById($id);
+        $postData = $this->showPost($id);
         
-        if (!$post) {
+        if (!$postData) {
             return ['success' => false, 'errors' => ['Post non trouvé']];
         }
 
-        if ($post['id_utilisateur'] != $id_utilisateur) {
+        if ($postData['id_utilisateur'] != $id_utilisateur) {
             return ['success' => false, 'errors' => ['Vous ne pouvez supprimer que vos propres posts']];
         }
 
-        if ($this->postModel->delete($id)) {
-            return ['success' => true, 'message' => 'Post supprimé avec succès'];
-        } else {
-            return ['success' => false, 'errors' => ['Erreur lors de la suppression du post']];
-        }
+        $this->deletePost($id);
+
+        return ['success' => true, 'message' => 'Post supprimé avec succès'];
     }
 
     // BackOffice: Afficher tous les posts (y compris bannis)
     public function listAllForAdmin() {
-        return $this->postModel->getAllForAdmin();
+        $sql = "SELECT * FROM posts ORDER BY date_creation DESC";
+        $db = config::getConnexion();
+        try {
+            $list = $db->query($sql);
+            return $list->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            die('Error:' . $e->getMessage());
+        }
     }
 
     // BackOffice: Bannir un post
     public function ban($id) {
-        if ($this->postModel->ban($id)) {
+        $sql = "UPDATE posts SET statue = 'banni' WHERE id_post = :id";
+        $db = config::getConnexion();
+        $req = $db->prepare($sql);
+        $req->bindValue(':id', $id);
+        try {
+            $req->execute();
             return ['success' => true, 'message' => 'Post banni avec succès'];
-        } else {
+        } catch (Exception $e) {
             return ['success' => false, 'errors' => ['Erreur lors du bannissement du post']];
         }
     }
 
     // BackOffice: Débannir un post
     public function unban($id) {
-        if ($this->postModel->unban($id)) {
+        $sql = "UPDATE posts SET statue = 'actif' WHERE id_post = :id";
+        $db = config::getConnexion();
+        $req = $db->prepare($sql);
+        $req->bindValue(':id', $id);
+        try {
+            $req->execute();
             return ['success' => true, 'message' => 'Post débanni avec succès'];
-        } else {
+        } catch (Exception $e) {
             return ['success' => false, 'errors' => ['Erreur lors du débannissement du post']];
         }
     }
 
     // Filtrer par catégorie
     public function getByCategory($category) {
-        return $this->postModel->getByCategory($category);
+        $sql = "SELECT * FROM posts WHERE categorie = :categorie AND statue != 'banni' ORDER BY date_creation DESC";
+        $db = config::getConnexion();
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':categorie', $category);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 ?>

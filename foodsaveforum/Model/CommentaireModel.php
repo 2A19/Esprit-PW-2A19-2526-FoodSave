@@ -1,98 +1,85 @@
 <?php
+if (!class_exists('CommentaireModel')) {
 class CommentaireModel {
-    private $conn;
-    private $table = 'commentaires';
+    private ?int $id_commentaire;
+    private ?string $contenu;
+    private ?DateTime $date_publication;
+    private ?int $id_post;
+    private ?int $id_utilisateur;
+    private ?string $statue;
 
-    public $id_commentaire;
-    public $contenu;
-    public $date_publication;
-    public $id_post;
-    public $id_utilisateur;
-    public $statue;
-
-    public function __construct($db) {
-        $this->conn = $db;
+    // Constructor
+    public function __construct(?int $id_commentaire, ?string $contenu, ?DateTime $date_publication, ?int $id_post, ?int $id_utilisateur, ?string $statue) {
+        $this->id_commentaire = $id_commentaire;
+        $this->contenu = $contenu;
+        $this->date_publication = $date_publication;
+        $this->id_post = $id_post;
+        $this->id_utilisateur = $id_utilisateur;
+        $this->statue = $statue;
     }
 
-    // Récupérer les commentaires d'un post
-    public function getByPost($id_post) {
-        $query = "SELECT * FROM " . $this->table . " WHERE id_post = :id_post AND statue != 'banni' ORDER BY date_publication DESC";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id_post', $id_post);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function show() {
+        echo "<table border='1' cellpadding='5'>";
+        echo "<tr><th>ID Commentaire</th><th>Contenu</th><th>Date Publication</th><th>ID Post</th><th>ID Utilisateur</th><th>Statue</th></tr>";
+        echo "<tr>";
+        echo "<td>{$this->id_commentaire}</td>";
+        echo "<td>{$this->contenu}</td>";
+        echo "<td>" . ($this->date_publication ? $this->date_publication->format('Y-m-d H:i:s') : '') . "</td>";
+        echo "<td>{$this->id_post}</td>";
+        echo "<td>{$this->id_utilisateur}</td>";
+        echo "<td>{$this->statue}</td>";
+        echo "</tr>";
+        echo "</table>";
     }
 
-    // Récupérer un commentaire par ID
-    public function getById($id) {
-        $query = "SELECT * FROM " . $this->table . " WHERE id_commentaire = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+    // Getters and Setters
+    public function getIdCommentaire(): ?int {
+        return $this->id_commentaire;
     }
 
-    // Créer un nouveau commentaire
-    public function create() {
-        $query = "INSERT INTO " . $this->table . " 
-                  (contenu, date_publication, id_post, id_utilisateur, statue) 
-                  VALUES 
-                  (:contenu, NOW(), :id_post, :id_utilisateur, 'actif')";
-
-        $stmt = $this->conn->prepare($query);
-
-        $this->contenu = htmlspecialchars(strip_tags($this->contenu));
-
-        $stmt->bindParam(':contenu', $this->contenu);
-        $stmt->bindParam(':id_post', $this->id_post);
-        $stmt->bindParam(':id_utilisateur', $this->id_utilisateur);
-
-        return $stmt->execute();
+    public function setIdCommentaire(?int $id_commentaire): void {
+        $this->id_commentaire = $id_commentaire;
     }
 
-    // Modifier un commentaire
-    public function update() {
-        $query = "UPDATE " . $this->table . " SET contenu = :contenu WHERE id_commentaire = :id";
-        $stmt = $this->conn->prepare($query);
-
-        $this->contenu = htmlspecialchars(strip_tags($this->contenu));
-
-        $stmt->bindParam(':contenu', $this->contenu);
-        $stmt->bindParam(':id', $this->id_commentaire);
-
-        return $stmt->execute();
+    public function getContenu(): ?string {
+        return $this->contenu;
     }
 
-    // Supprimer un commentaire
-    public function delete($id) {
-        $query = "DELETE FROM " . $this->table . " WHERE id_commentaire = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute();
+    public function setContenu(?string $contenu): void {
+        $this->contenu = $contenu;
     }
 
-    // Bannir un commentaire
-    public function ban($id) {
-        $query = "UPDATE " . $this->table . " SET statue = 'banni' WHERE id_commentaire = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute();
+    public function getDatePublication(): ?DateTime {
+        return $this->date_publication;
     }
 
-    // Débannir un commentaire
-    public function unban($id) {
-        $query = "UPDATE " . $this->table . " SET statue = 'actif' WHERE id_commentaire = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute();
+    public function setDatePublication(?DateTime $date_publication): void {
+        $this->date_publication = $date_publication;
     }
 
-    // Récupérer tous les commentaires (y compris bannis) pour l'admin
-    public function getAllForAdmin() {
-        $query = "SELECT * FROM " . $this->table . " ORDER BY date_publication DESC";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function getIdPost(): ?int {
+        return $this->id_post;
     }
+
+    public function setIdPost(?int $id_post): void {
+        $this->id_post = $id_post;
+    }
+
+    public function getIdUtilisateur(): ?int {
+        return $this->id_utilisateur;
+    }
+
+    public function setIdUtilisateur(?int $id_utilisateur): void {
+        $this->id_utilisateur = $id_utilisateur;
+    }
+
+    public function getStatue(): ?string {
+        return $this->statue;
+    }
+
+    public function setStatue(?string $statue): void {
+        $this->statue = $statue;
+    }
+}
 }
 ?>
