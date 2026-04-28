@@ -1,12 +1,4 @@
--- ========================================
--- FoodSave Forum - Export Base de Données
--- ========================================
--- Date: 2026-04-11
--- Description: Schéma complet pour le module Forum
 
--- ========================================
--- Créer la base de données
--- ========================================
 CREATE DATABASE IF NOT EXISTS foodsave_forum;
 USE foodsave_forum;
 
@@ -92,7 +84,3 @@ INSERT INTO commentaires (contenu, id_post, id_utilisateur, statue) VALUES
 ('Est-ce qu\'on peut aussi congeler les tomates ? Les miennes vont avant qu\'on les utilise...', 3, 2, 'actif'),
 ('Très utile ! J\'attendais juste ce genre de guide.', 3, 1, 'actif'),
 ('Je pense que je vais commencer mon compost ce week-end !', 4, 1, 'actif');
-
--- ========================================
--- Fin de l'export
--- ========================================

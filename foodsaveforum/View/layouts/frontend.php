@@ -6,32 +6,35 @@
     <title><?php echo isset($title) ? $title : 'FoodSave Forum'; ?></title>
     <link rel="stylesheet" href="/foodsaveforum/public/assets/css/style.css?v=1.2">
 </head>
-<body>
+<body class="front-office">
     <header class="header">
         <div class="container header-inner">
             <div class="logo logo-brand">
                 <a href="index.php?action=posts">
                     <img src="/foodsaveforum/public/assets/images/logo-foodsave.svg?v=20260421_v2" alt="FoodSave Logo" class="logo-image">
                 </a>
-                <div class="logo-text">
-                </div>
             </div>
             <nav class="navbar">
                 <ul>
-                    <li><a href="index.php?action=posts">Forum</a></li>
+                    <li><a href="index.php?action=posts">Accueil</a></li>
+                    <li><a href="index.php?action=posts">Catégories</a></li>
+                    <li><a href="index.php?action=posts">Sujets récents</a></li>
                     <li><a href="index.php?action=create-post">Créer un post</a></li>
                     <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']): ?>
-                    <li><a href="admin.php">Admin</a></li>
+                        <li><a href="admin.php?action=dashboard">Administration</a></li>
                     <?php endif; ?>
-                    <li><a href="#profile">Mon Profil</a></li>
-                    <li><a href="#logout">Déconnexion</a></li>
                 </ul>
             </nav>
+            <div class="header-actions">
+                <input type="text" class="search-input" placeholder="Rechercher...">
+                <a href="#profile" class="btn-small btn-secondary">Connexion</a>
+                <a href="#logout" class="btn-small btn-warning">S'inscrire</a>
+            </div>
         </div>
     </header>
 
     <main class="main-content">
-        <div class="container">
+        <div class="container page-card">
             <?php
             if (isset($errors) && !empty($errors)) {
                 echo '<div class="alert alert-danger">';

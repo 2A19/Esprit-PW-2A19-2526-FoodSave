@@ -1,82 +1,63 @@
 <div class="admin-dashboard-content">
-    <h2>Bienvenue au Dashboard Admin 🔐</h2>
-
-    <div class="dashboard-intro">
-        <p>Vous êtes connecté en tant qu'administrateur du forum FoodSave.</p>
-        <p>Utilisez la navigation pour gérer les posts et commentaires.</p>
+    <h2>Tableau de bord</h2>
+    <div class="admin-stats-grid">
+        <article class="admin-stat-card">
+            <span class="admin-stat-icon">👥</span>
+            <div>
+                <strong>1,248</strong>
+                <small>Membres</small>
+            </div>
+        </article>
+        <article class="admin-stat-card">
+            <span class="admin-stat-icon">💬</span>
+            <div>
+                <strong>2,531</strong>
+                <small>Sujets</small>
+            </div>
+        </article>
+        <article class="admin-stat-card">
+            <span class="admin-stat-icon">📌</span>
+            <div>
+                <strong>8,974</strong>
+                <small>Messages</small>
+            </div>
+        </article>
+        <article class="admin-stat-card">
+            <span class="admin-stat-icon">🛡️</span>
+            <div>
+                <strong>15</strong>
+                <small>Signalements</small>
+            </div>
+        </article>
     </div>
 
-    <div class="dashboard-quick-links">
-        <h3>Accès rapide</h3>
-        <div class="quick-links-grid">
-            <div class="quick-link-card">
-                <h4>📋 Gérer les Posts</h4>
-                <p>Visualiser, bannir ou supprimer les posts du forum</p>
-                <a href="admin.php?action=posts" class="btn btn-primary">Accéder</a>
+    <div class="admin-widgets-grid">
+        <section class="admin-widget">
+            <h3>Activité du forum</h3>
+            <div class="activity-chart-placeholder">
+                <div class="line line-top"></div>
+                <div class="line line-bottom"></div>
             </div>
+        </section>
 
-            <div class="quick-link-card">
-                <h4>💬 Gérer les Commentaires</h4>
-                <p>Visualiser, bannir ou supprimer les commentaires</p>
-                <a href="admin.php?action=commentaires" class="btn btn-primary">Accéder</a>
+        <section class="admin-widget">
+            <h3>Derniers membres inscrits</h3>
+            <ul class="admin-mini-list">
+                <li><span>Sophie.M</span><small>il y a 1 heure</small></li>
+                <li><span>GreenMind</span><small>il y a 3 heures</small></li>
+                <li><span>EcoWarrior</span><small>il y a 5 heures</small></li>
+                <li><span>JulieL</span><small>hier</small></li>
+            </ul>
+        </section>
+
+        <section class="admin-widget">
+            <h3>Actions rapides</h3>
+            <div class="admin-quick-actions">
+                <a href="admin.php?action=posts" class="btn btn-primary">+ Nouveau sujet</a>
+                <a href="admin.php?action=commentaires" class="btn btn-warning">+ Modérer messages</a>
+                <a href="index.php?action=posts" class="btn btn-secondary">Voir le forum public</a>
             </div>
-        </div>
+        </section>
     </div>
 </div>
 
-<style>
-.dashboard-intro {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 30px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-}
-
-.dashboard-intro p {
-    margin: 10px 0;
-    color: #555;
-}
-
-.dashboard-quick-links h3 {
-    color: var(--color-primary);
-    margin-bottom: 20px;
-    font-size: 20px;
-}
-
-.quick-links-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-}
-
-.quick-link-card {
-    background: white;
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    border-left: 4px solid var(--color-primary);
-    transition: all 0.3s ease;
-}
-
-.quick-link-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-}
-
-.quick-link-card h4 {
-    color: var(--color-primary);
-    margin-bottom: 10px;
-    font-size: 18px;
-}
-
-.quick-link-card p {
-    color: #666;
-    margin-bottom: 15px;
-    font-size: 14px;
-}
-
-.quick-link-card .btn {
-    width: 100%;
-}
-</style>

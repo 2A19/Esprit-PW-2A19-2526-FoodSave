@@ -8,28 +8,29 @@
 </head>
 <body class="admin-dashboard">
     <header class="admin-header">
-        <div class="container header-inner">
-            <div class="logo logo-brand">
-                <a href="admin.php?action=dashboard">
-                    <img src="/foodsaveforum/public/assets/images/logo-foodsave.svg?v=20260421_v2" alt="FoodSave Logo" class="logo-image">
-                </a>
-                <div class="logo-text">
-                </div>
+        <div class="container admin-header-inner">
+            <a href="admin.php?action=dashboard" class="logo logo-brand">
+                <img src="/foodsaveforum/public/assets/images/logo-foodsave.svg?v=20260421_v2" alt="FoodSave Logo" class="logo-image">
+            </a>
+            <div class="admin-user-chip">
+                <span class="admin-avatar">👤</span>
+                <span>Admin</span>
             </div>
-            <nav class="admin-navbar">
-                <ul>
-                    <li><a href="admin.php?action=dashboard">Dashboard</a></li>
-                    <li><a href="admin.php?action=posts">Gérer Posts</a></li>
-                    <li><a href="admin.php?action=commentaires">Gérer Commentaires</a></li>
-                    <li><a href="index.php?action=posts">Retour au Front</a></li>
-                    <li><a href="#logout">Déconnexion</a></li>
-                </ul>
-            </nav>
         </div>
     </header>
 
-    <main class="admin-content">
-        <div class="container">
+    <div class="admin-shell container">
+        <aside class="admin-sidebar">
+            <ul>
+                <li><a href="admin.php?action=dashboard">Tableau de bord</a></li>
+                <li><a href="admin.php?action=posts">Sujets</a></li>
+                <li><a href="admin.php?action=commentaires">Messages</a></li>
+                <li><a href="index.php?action=posts">Retour au front</a></li>
+                <li><a href="#logout">Déconnexion</a></li>
+            </ul>
+        </aside>
+
+        <main class="admin-content page-card">
             <?php
             if (isset($errors) && !empty($errors)) {
                 echo '<div class="alert alert-danger">';
@@ -43,8 +44,8 @@
             }
             ?>
             <?php include $content; ?>
-        </div>
-    </main>
+        </main>
+    </div>
 
     <footer class="footer">
         <div class="container">

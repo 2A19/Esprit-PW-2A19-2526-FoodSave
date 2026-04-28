@@ -35,12 +35,3 @@
     </div>
 </div>
 
-<style>
-.comment-detail-box {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    border-left: 4px solid var(--color-primary);
-}
-</style>
