@@ -139,5 +139,35 @@ class Article {
         $stmt->bindParam(':id', $id);
         return $stmt->execute();
     }
+    // ========== NOUVELLES MÉTHODES AVEC JOINTURE AVIS ==========
+
+// Récupérer un article avec tous ses avis
+public function getArticleWithAvis($id) {
+    $query = "SELECT a.*, 
+              (SELECT COUNT(*) FROM avis WHERE article_id = a.id AND statut = 'approuvé') as nb_avis,
+              (SELECT AVG(note) FROM avis WHERE article_id = a.id AND statut = 'approuvé') as note_moyenne
+              FROM articles a
+              WHERE a.id = :id";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':id', $id);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+// Récupérer les articles les mieux notés
+public function getTopRated($limit = 3) {
+    $query = "SELECT a.*, AVG(av.note) as note_moyenne, COUNT(av.id) as nb_avis
+              FROM articles a
+              LEFT JOIN avis av ON a.id = av.article_id AND av.statut = 'approuvé'
+              WHERE a.statut = 'publié'
+              GROUP BY a.id
+              ORDER BY note_moyenne DESC
+              LIMIT :limit";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+    
 }
 ?>

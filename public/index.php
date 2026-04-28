@@ -4,51 +4,89 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once 'C:/xampp/htdocs/FoodSave/app/controllers/ArticleController.php';
+require_once 'C:/xampp/htdocs/FoodSave/app/controllers/AvisController.php';
 require_once 'C:/xampp/htdocs/FoodSave/app/models/Article.php';
+require_once 'C:/xampp/htdocs/FoodSave/app/models/Avis.php';
 require_once 'C:/xampp/htdocs/FoodSave/config/database.php';
 
 $action = isset($_GET['action']) ? $_GET['action'] : 'blog';
 
-
-$controller = new ArticleController();
+$articleController = new ArticleController();
+$avisController = new AvisController();
 
 switch($action) {
-    // Front Office
+    // ========== FRONT OFFICE - ARTICLES ==========
     case 'blog':
-        $controller->blog();
+        $articleController->blog();
         break;
     case 'detail':
-        $controller->detail();
+        $articleController->detail();
         break;
     case 'conseils':
-        $controller->conseils();
+        $articleController->conseils();
         break;
     case 'recettes':
-        $controller->recettes();
+        $articleController->recettes();
         break;
     
-    // Back Office (CRUD)
+    // ========== BACK OFFICE - ARTICLES (CRUD) ==========
     case 'adminArticles':
-        $controller->adminArticles();
+        $articleController->adminArticles();
         break;
     case 'addArticleForm':
-        $controller->addArticleForm();
+        $articleController->addArticleForm();
         break;
     case 'addArticle':
-        $controller->addArticle();
+        $articleController->addArticle();
         break;
     case 'editArticleForm':
-        $controller->editArticleForm();
+        $articleController->editArticleForm();
         break;
     case 'editArticle':
-        $controller->editArticle();
+        $articleController->editArticle();
         break;
     case 'deleteArticle':
-        $controller->deleteArticle();
+        $articleController->deleteArticle();
         break;
     
-    default:
-        $controller->blog();
+    // ========== FRONT OFFICE - AVIS ==========
+    case 'showAvis':
+        $avisController->show();
         break;
+    case 'addAvisForm':
+        $avisController->addForm();
+        break;
+    case 'addAvis':
+        $avisController->add();
+        break;
+    
+    // ========== BACK OFFICE - AVIS ==========
+case 'adminAvis':
+    $avisController->adminAvis();
+    break;
+case 'approveAvis':
+    $avisController->approve();
+    break;
+case 'rejectAvis':
+    $avisController->reject();
+    break;
+case 'deleteAvis':
+    $avisController->delete();
+    break;
+case 'editAvisForm':
+    $avisController->editForm();
+    break;
+case 'editAvis':
+    $avisController->edit();
+    break;
+
+// ========== FRONT OFFICE - MODIFICATION AVIS PAR USER ==========
+case 'editUserAvis':
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $avisController->editUser();
+    } else {
+        $avisController->editUserForm();
+    }
+    break;
 }
 ?>

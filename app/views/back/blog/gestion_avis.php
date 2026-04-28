@@ -1,6 +1,6 @@
 <?php
 // Vérifier que les variables existent
-if(!isset($articles) || !isset($totalArticles) || !isset($totalPublished) || !isset($totalDrafts) || !isset($totalViews)) {
+if(!isset($avis) || !isset($totalAvis) || !isset($totalPending) || !isset($totalApproved) || !isset($averageNote)) {
     header('Location: index.php?action=adminArticles');
     exit;
 }
@@ -11,7 +11,7 @@ if(!isset($articles) || !isset($totalArticles) || !isset($totalPublished) || !is
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FoodSave - Admin : Gestion des articles</title>
+    <title>FoodSave - Admin : Gestion des avis</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -20,10 +20,7 @@ if(!isset($articles) || !isset($totalArticles) || !isset($totalPublished) || !is
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #EDE8D0;
-        }
+        body { font-family: 'Poppins', sans-serif; background: #EDE8D0; }
         
         /* ========== SIDEBAR ========== */
         .admin-container { display: flex; min-height: 100vh; }
@@ -157,23 +154,7 @@ if(!isset($articles) || !isset($totalArticles) || !isset($totalPublished) || !is
             align-items: center;
             gap: 10px;
         }
-        .content-header h1 i { color: #4caf50; }
-        
-        .btn-add {
-            background: linear-gradient(135deg, #4caf50, #2e7d32);
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn-add:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(76,175,80,0.3); }
+        .content-header h1 i { color: #ffc107; }
         
         /* ========== STATS CARDS ========== */
         .stats-cards {
@@ -206,24 +187,24 @@ if(!isset($articles) || !isset($totalArticles) || !isset($totalPublished) || !is
         
         .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         .stat-card .number { font-size: 2.2rem; font-weight: 800; color: #4caf50; }
-        .stat-card h3 { font-size: 0.85rem; color: #888; margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-card h4 { font-size: 0.85rem; color: #888; margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
         
         /* ========== TABLE CARD ========== */
-        .table-card {
+        .avis-table {
             background: white;
             border-radius: 20px;
             padding: 1.5rem;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
         
-        .table-card h3 {
+        .avis-table h3 {
             margin-bottom: 1rem;
             color: #333;
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        .table-card h3 i { color: #4caf50; }
+        .avis-table h3 i { color: #4caf50; }
         
         table {
             width: 100%;
@@ -248,26 +229,19 @@ if(!isset($articles) || !isset($totalArticles) || !isset($totalPublished) || !is
         tr:hover td { background: rgba(76,175,80,0.03); }
         
         /* ========== BADGES & BUTTONS ========== */
-        .badge-category {
-            background: rgba(76,175,80,0.12);
-            color: #4caf50;
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        
-        .badge {
+        .badge-status {
             padding: 4px 12px;
             border-radius: 50px;
             font-size: 0.7rem;
             font-weight: 600;
             color: white;
         }
-        .badge.publie { background: #4caf50; }
-        .badge.brouillon { background: #ff6b35; }
+        .badge-status { background: #4caf50; }
+        .badge-status.warning { background: #ffc107; color: #333; }
         
-        .btn-edit, .btn-delete {
+        .stars { color: #ffc107; font-size: 0.85rem; letter-spacing: 2px; }
+        
+        .btn-edit, .btn-validate, .btn-delete {
             padding: 6px 14px;
             border-radius: 50px;
             border: none;
@@ -281,6 +255,8 @@ if(!isset($articles) || !isset($totalArticles) || !isset($totalPublished) || !is
         }
         .btn-edit { background: #ffc107; color: #333; }
         .btn-edit:hover { background: #e0a800; transform: translateY(-1px); }
+        .btn-validate { background: #4caf50; color: white; }
+        .btn-validate:hover { background: #2e7d32; transform: translateY(-1px); }
         .btn-delete { background: #dc3545; color: white; }
         .btn-delete:hover { background: #c82333; transform: translateY(-1px); }
         
@@ -317,8 +293,8 @@ if(!isset($articles) || !isset($totalArticles) || !isset($totalPublished) || !is
             </div>
         </div>
         <ul class="sidebar-menu">
-            <li><a href="index.php?action=adminArticles" class="active"><i class="fas fa-newspaper"></i> <span>Articles</span></a></li>
-            <li><a href="index.php?action=adminAvis"><i class="fas fa-star"></i> <span>Avis</span></a></li>
+            <li><a href="index.php?action=adminArticles"><i class="fas fa-newspaper"></i> <span>Articles</span></a></li>
+            <li><a href="index.php?action=adminAvis" class="active"><i class="fas fa-star"></i> <span>Avis</span></a></li>
             <li><a href="#"><i class="fas fa-users"></i> <span>Utilisateurs</span></a></li>
             <li><a href="#"><i class="fas fa-chart-line"></i> <span>Statistiques</span></a></li>
         </ul>
@@ -335,8 +311,8 @@ if(!isset($articles) || !isset($totalArticles) || !isset($totalPublished) || !is
                     <span>FoodSave Admin</span>
                 </div>
                 <div class="nav-menu">
-                    <a href="index.php?action=adminArticles" class="nav-link active">Articles</a>
-                    <a href="index.php?action=adminAvis" class="nav-link">Avis</a>
+                    <a href="index.php?action=adminArticles" class="nav-link">Articles</a>
+                    <a href="index.php?action=adminAvis" class="nav-link active">Avis</a>
                 </div>
                 <div class="user-actions">
                     <button class="login-btn login-outline"><i class="fas fa-user"></i> Profil</button>
@@ -346,60 +322,78 @@ if(!isset($articles) || !isset($totalArticles) || !isset($totalPublished) || !is
         </nav>
 
         <div class="content-header">
-            <h1><i class="fas fa-newspaper"></i> Gestion des articles</h1>
-            <a href="index.php?action=addArticleForm" class="btn-add"><i class="fas fa-plus"></i> Nouvel article</a>
+            <h1><i class="fas fa-star" style="color: #ffc107;"></i> Gestion des avis</h1>
         </div>
 
         <?php if(isset($_GET['success'])): ?>
-            <?php if($_GET['success'] == 'created'): ?>
-                <div class="success"><i class="fas fa-check-circle"></i> Article créé avec succès !</div>
+            <?php if($_GET['success'] == 'approved'): ?>
+                <div class="success"><i class="fas fa-check-circle"></i> Avis approuvé !</div>
             <?php elseif($_GET['success'] == 'updated'): ?>
-                <div class="success"><i class="fas fa-check-circle"></i> Article modifié avec succès !</div>
+                <div class="success"><i class="fas fa-check-circle"></i> Avis modifié !</div>
             <?php elseif($_GET['success'] == 'deleted'): ?>
-                <div class="success"><i class="fas fa-check-circle"></i> Article supprimé avec succès !</div>
+                <div class="success"><i class="fas fa-check-circle"></i> Avis supprimé !</div>
             <?php endif; ?>
         <?php endif; ?>
 
-        <!-- Stats Cards -->
+        <!-- Statistiques -->
         <div class="stats-cards">
             <div class="stat-card">
-                <div class="number"><?php echo $totalArticles; ?></div>
-                <h3>Total articles</h3>
+                <div class="number"><?php echo $totalAvis; ?></div>
+                <h4>Total avis</h4>
             </div>
             <div class="stat-card">
-                <div class="number"><?php echo $totalPublished; ?></div>
-                <h3>Publiés</h3>
+                <div class="number"><?php echo $totalApproved; ?></div>
+                <h4>Approuvés</h4>
             </div>
             <div class="stat-card">
-                <div class="number"><?php echo $totalDrafts; ?></div>
-                <h3>Brouillons</h3>
+                <div class="number"><?php echo $totalPending; ?></div>
+                <h4>En attente</h4>
             </div>
             <div class="stat-card">
-                <div class="number"><?php echo $totalViews; ?></div>
-                <h3>Vues totales</h3>
+                <div class="number"><?php echo $averageNote; ?></div>
+                <h4>Note moyenne</h4>
             </div>
         </div>
-
-        <!-- Liste des articles -->
-        <div class="table-card">
-            <h3><i class="fas fa-list-ul"></i> Liste des articles</h3>
+        
+        <!-- Tableau des avis -->
+        <div class="avis-table">
+            <h3><i class="fas fa-list-ul"></i> Liste des avis</h3>
             <div class="table-responsive">
                 <table>
                     <thead>
-                        <th>ID</th><th>Titre</th><th>Catégorie</th><th>Statut</th><th>Date</th><th>Vues</th><th>Actions</th>
+                        <th>ID</th><th>Article</th><th>Utilisateur</th><th>Note</th><th>Avis</th><th>Statut</th><th>Actions</th>
                     </thead>
                     <tbody>
-                        <?php foreach($articles as $article): ?>
+                        <?php foreach($avis as $a): ?>
                         <tr>
-                            <td><?php echo $article['id']; ?></td>
-                            <td><strong><?php echo htmlspecialchars($article['titre']); ?></strong></td>
-                            <td><span class="badge-category"><?php echo htmlspecialchars($article['categorie']); ?></span></td>
-                            <td><span class="badge <?php echo $article['statut'] == 'publié' ? 'publie' : 'brouillon'; ?>"><?php echo $article['statut']; ?></span></td>
-                            <td><?php echo date('d/m/Y', strtotime($article['created_at'])); ?></td>
-                            <td><?php echo $article['vue']; ?></td>
+                            <td><?php echo $a['id']; ?></td>
+                            <td><?php echo htmlspecialchars($a['article_titre']); ?></td>
+                            <td><?php echo htmlspecialchars($a['user_name']); ?></td>
+                            <td class="stars">
+                                <?php for($i = 1; $i <= 5; $i++): ?>
+                                    <?php if($i <= $a['note']): ?>
+                                        <i class="fas fa-star"></i>
+                                    <?php else: ?>
+                                        <i class="far fa-star"></i>
+                                    <?php endif; ?>
+                                <?php endfor; ?>
+                            </td>
+                            <td><?php echo htmlspecialchars(substr($a['contenu'], 0, 50)) . '...'; ?></td>
                             <td>
-                                <a href="index.php?action=editArticleForm&id=<?php echo $article['id']; ?>" class="btn-edit"><i class="fas fa-edit"></i> Modifier</a>
-                                <a href="index.php?action=deleteArticle&id=<?php echo $article['id']; ?>" class="btn-delete" onclick="return confirm('Supprimer cet article ?')"><i class="fas fa-trash-alt"></i> Supprimer</a>
+                                <?php if($a['statut'] == 'approuvé'): ?>
+                                    <span class="badge-status">Approuvé</span>
+                                <?php elseif($a['statut'] == 'en attente'): ?>
+                                    <span class="badge-status warning">En attente</span>
+                                <?php else: ?>
+                                    <span class="badge-status warning">Rejeté</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <a href="index.php?action=editAvisForm&id=<?php echo $a['id']; ?>" class="btn-edit"><i class="fas fa-edit"></i> Modifier</a>
+                                <?php if($a['statut'] == 'en attente'): ?>
+                                    <a href="index.php?action=approveAvis&id=<?php echo $a['id']; ?>" class="btn-validate" onclick="return confirm('Approuver cet avis ?')"><i class="fas fa-check"></i> Approuver</a>
+                                <?php endif; ?>
+                                <a href="index.php?action=deleteAvis&id=<?php echo $a['id']; ?>" class="btn-delete" onclick="return confirm('Supprimer cet avis ?')"><i class="fas fa-trash-alt"></i> Supprimer</a>
                             </td>
                         </tr>
                         <?php endforeach; ?>
