@@ -1,16 +1,16 @@
 <?php
 /**
- * API Dechets (PHP + MySQL/PDO)
- * GET  -> liste des dechets
- * POST -> ajout d'un dechet
+ * FoodSave – API : dechets.php
+ * GET    → liste de tous les déchets
+ * GET?id → un déchet
+ * POST   → créer
+ * PUT    → modifier
+ * DELETE → supprimer
  */
 
 declare(strict_types=1);
 
-session_start();
-
 require_once __DIR__ . '/../models/Dechet.php';
-require_once __DIR__ . '/../models/User.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -20,217 +20,128 @@ function respond(int $status, array $payload): void {
     exit;
 }
 
-function readJsonBody(): array {
-    $raw = file_get_contents('php://input');
+function readBody(): array {
+    $raw  = file_get_contents('php://input');
     $body = json_decode($raw ?: '{}', true);
-
     if (!is_array($body)) {
         respond(400, ['success' => false, 'message' => 'Payload JSON invalide.']);
     }
-
     return $body;
 }
 
+function clean(string $v): string {
+    return htmlspecialchars(trim($v), ENT_QUOTES, 'UTF-8');
+}
+
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-$model = new Dechet();
-$userModel = new User();
-
-function getActorUserId(): int {
-    $sessionUserId = (int) ($_SESSION['user_id'] ?? 0);
-    if ($sessionUserId > 0) {
-        return $sessionUserId;
-    }
-
-    $queryActor = isset($_GET['as_user_id']) ? (int) $_GET['as_user_id'] : 0;
-    return $queryActor > 0 ? $queryActor : 0;
-}
-
-function isAdminSession(): bool {
-    return (string) ($_SESSION['role'] ?? '') === 'admin';
-}
+$model  = new Dechet();
 
 try {
+
+    /* -------- GET -------- */
     if ($method === 'GET') {
-        $resource = isset($_GET['resource']) ? trim((string) $_GET['resource']) : '';
-
-        if ($resource === 'users') {
-            respond(200, [
-                'success' => true,
-                'data' => $userModel->getAllBasic(),
-            ]);
+        if (isset($_GET['id'])) {
+            $d = $model->getById((int) $_GET['id']);
+            if (!$d) respond(404, ['success' => false, 'message' => 'Déchet introuvable.']);
+            respond(200, ['success' => true, 'data' => $d]);
         }
-
-        $userId = isset($_GET['user_id']) ? (int) $_GET['user_id'] : 0;
-        $scope = isset($_GET['scope']) ? trim((string) $_GET['scope']) : '';
-        $actorUserId = getActorUserId();
-        $isAdmin = isAdminSession();
-
-        if ($userId > 0) {
-            $items = $model->getByUser($userId);
-        } elseif ($scope === 'all' || $isAdmin) {
-            $items = $model->getAll(500, 0);
-        } elseif ($actorUserId > 0) {
-            $items = $model->getByUser($actorUserId);
-        } else {
-            $items = $model->getAll(500, 0);
+        if (isset($_GET['stats'])) {
+            respond(200, ['success' => true, 'data' => $model->getStats()]);
         }
-
-        respond(200, [
-            'success' => true,
-            'data' => $items,
-        ]);
+        respond(200, ['success' => true, 'data' => $model->getAll()]);
     }
 
+    /* -------- POST -------- */
     if ($method === 'POST') {
-        $body = readJsonBody();
-        $actorUserId = getActorUserId();
-        $isAdmin = isAdminSession();
+        $b = readBody();
 
-        $required = ['type_aliment', 'quantite', 'unite', 'date_dechet', 'raison'];
-        foreach ($required as $field) {
-            if (!isset($body[$field]) || trim((string) $body[$field]) === '') {
-                respond(422, ['success' => false, 'message' => "Le champ {$field} est obligatoire."]);
+        foreach (['type_aliment', 'quantite', 'unite', 'date_dechet', 'raison'] as $f) {
+            if (empty($b[$f])) {
+                respond(422, ['success' => false, 'message' => "Le champ {$f} est obligatoire."]);
             }
         }
 
-        $quantite = (float) $body['quantite'];
-        if ($quantite <= 0 || $quantite > 9999) {
-            respond(422, ['success' => false, 'message' => 'Quantite invalide.']);
+        $q = (float) $b['quantite'];
+        if ($q <= 0 || $q > 9999) {
+            respond(422, ['success' => false, 'message' => 'Quantité invalide (0.001 – 9999).']);
         }
 
-        $date = (string) $body['date_dechet'];
-        if (strtotime($date) === false || strtotime($date) > time()) {
-            respond(422, ['success' => false, 'message' => 'Date invalide.']);
-        }
-
-        $targetUserId = isset($body['user_id']) ? (int) $body['user_id'] : 0;
-
-        if (!$isAdmin && $actorUserId > 0) {
-            $targetUserId = $actorUserId;
-        }
-
-        if ($targetUserId <= 0) {
-            $targetUserId = 1;
-        }
-
-        if (!$userModel->existsById($targetUserId)) {
-            respond(422, ['success' => false, 'message' => 'Utilisateur invalide.']);
+        if (strtotime((string) $b['date_dechet']) === false || strtotime((string) $b['date_dechet']) > time()) {
+            respond(422, ['success' => false, 'message' => 'Date invalide ou dans le futur.']);
         }
 
         $data = [
-            'user_id' => $targetUserId,
-            'type_aliment' => htmlspecialchars(trim((string) $body['type_aliment']), ENT_QUOTES, 'UTF-8'),
-            'quantite' => $quantite,
-            'unite' => htmlspecialchars(trim((string) $body['unite']), ENT_QUOTES, 'UTF-8'),
-            'date_dechet' => $date,
-            'raison' => htmlspecialchars(trim((string) $body['raison']), ENT_QUOTES, 'UTF-8'),
-            'notes' => htmlspecialchars(trim((string) ($body['notes'] ?? '')), ENT_QUOTES, 'UTF-8'),
+            'type_aliment' => clean((string) $b['type_aliment']),
+            'quantite'     => $q,
+            'unite'        => clean((string) $b['unite']),
+            'date_dechet'  => clean((string) $b['date_dechet']),
+            'raison'       => clean((string) $b['raison']),
+            'notes'        => clean((string) ($b['notes'] ?? '')),
+            'categorie_id' => isset($b['categorie_id']) && (int) $b['categorie_id'] > 0
+                              ? (int) $b['categorie_id'] : null,
         ];
 
-        $ok = $model->create($data);
-
-        if (!$ok) {
-            respond(500, ['success' => false, 'message' => 'Impossible d\'ajouter le dechet.']);
+        if (!$model->create($data)) {
+            respond(500, ['success' => false, 'message' => 'Erreur lors de l\'ajout.']);
         }
 
-        respond(201, [
-            'success' => true,
-            'message' => 'Dechet ajoute avec succes.',
-        ]);
+        respond(201, ['success' => true, 'message' => 'Déchet ajouté avec succès.']);
     }
 
+    /* -------- PUT -------- */
     if ($method === 'PUT') {
-        $body = readJsonBody();
-        $id = isset($body['id']) ? (int) $body['id'] : 0;
-        $actorUserId = isset($body['as_user_id']) ? (int) $body['as_user_id'] : getActorUserId();
-        $isAdmin = isAdminSession();
+        $b  = readBody();
+        $id = (int) ($b['id'] ?? 0);
 
-        if ($id <= 0) {
-            respond(422, ['success' => false, 'message' => 'Identifiant manquant.']);
-        }
+        if ($id <= 0) respond(422, ['success' => false, 'message' => 'Identifiant manquant.']);
+        if (!$model->getById($id)) respond(404, ['success' => false, 'message' => 'Déchet introuvable.']);
 
-        $existing = $model->getById($id);
-        if (!$existing) {
-            respond(404, ['success' => false, 'message' => 'Dechet introuvable.']);
-        }
-
-        if (!$isAdmin && $actorUserId > 0 && (int) $existing['user_id'] !== $actorUserId) {
-            respond(403, ['success' => false, 'message' => 'Operation non autorisee pour cet utilisateur.']);
-        }
-
-        $required = ['type_aliment', 'quantite', 'unite', 'date_dechet', 'raison'];
-        foreach ($required as $field) {
-            if (!isset($body[$field]) || trim((string) $body[$field]) === '') {
-                respond(422, ['success' => false, 'message' => "Le champ {$field} est obligatoire."]);
+        foreach (['type_aliment', 'quantite', 'unite', 'date_dechet', 'raison'] as $f) {
+            if (empty($b[$f])) {
+                respond(422, ['success' => false, 'message' => "Le champ {$f} est obligatoire."]);
             }
         }
 
-        $quantite = (float) $body['quantite'];
-        if ($quantite <= 0 || $quantite > 9999) {
-            respond(422, ['success' => false, 'message' => 'Quantite invalide.']);
+        $q = (float) $b['quantite'];
+        if ($q <= 0 || $q > 9999) {
+            respond(422, ['success' => false, 'message' => 'Quantité invalide.']);
         }
 
-        $date = (string) $body['date_dechet'];
-        if (strtotime($date) === false || strtotime($date) > time()) {
-            respond(422, ['success' => false, 'message' => 'Date invalide.']);
+        $data = [
+            'type_aliment' => clean((string) $b['type_aliment']),
+            'quantite'     => $q,
+            'unite'        => clean((string) $b['unite']),
+            'date_dechet'  => clean((string) $b['date_dechet']),
+            'raison'       => clean((string) $b['raison']),
+            'notes'        => clean((string) ($b['notes'] ?? '')),
+            'categorie_id' => isset($b['categorie_id']) && (int) $b['categorie_id'] > 0
+                              ? (int) $b['categorie_id'] : null,
+        ];
+
+        if (!$model->update($id, $data)) {
+            respond(500, ['success' => false, 'message' => 'Erreur lors de la modification.']);
         }
 
-        $ok = $model->update($id, [
-            'type_aliment' => htmlspecialchars(trim((string) $body['type_aliment']), ENT_QUOTES, 'UTF-8'),
-            'quantite' => $quantite,
-            'unite' => htmlspecialchars(trim((string) $body['unite']), ENT_QUOTES, 'UTF-8'),
-            'date_dechet' => $date,
-            'raison' => htmlspecialchars(trim((string) $body['raison']), ENT_QUOTES, 'UTF-8'),
-            'notes' => htmlspecialchars(trim((string) ($body['notes'] ?? '')), ENT_QUOTES, 'UTF-8'),
-        ]);
-
-        if (!$ok) {
-            respond(500, ['success' => false, 'message' => 'Impossible de modifier le dechet.']);
-        }
-
-        respond(200, [
-            'success' => true,
-            'message' => 'Dechet modifie avec succes.',
-        ]);
+        respond(200, ['success' => true, 'message' => 'Déchet modifié avec succès.']);
     }
 
+    /* -------- DELETE -------- */
     if ($method === 'DELETE') {
-        $body = readJsonBody();
-        $id = isset($body['id']) ? (int) $body['id'] : (int) ($_GET['id'] ?? 0);
-        $actorUserId = isset($body['as_user_id']) ? (int) $body['as_user_id'] : getActorUserId();
-        $isAdmin = isAdminSession();
+        $b  = readBody();
+        $id = (int) ($b['id'] ?? $_GET['id'] ?? 0);
 
-        if ($id <= 0) {
-            respond(422, ['success' => false, 'message' => 'Identifiant manquant.']);
+        if ($id <= 0) respond(422, ['success' => false, 'message' => 'Identifiant manquant.']);
+        if (!$model->getById($id)) respond(404, ['success' => false, 'message' => 'Déchet introuvable.']);
+
+        if (!$model->delete($id)) {
+            respond(500, ['success' => false, 'message' => 'Erreur lors de la suppression.']);
         }
 
-        $existing = $model->getById($id);
-        if (!$existing) {
-            respond(404, ['success' => false, 'message' => 'Dechet introuvable.']);
-        }
-
-        if (!$isAdmin && $actorUserId > 0 && (int) $existing['user_id'] !== $actorUserId) {
-            respond(403, ['success' => false, 'message' => 'Operation non autorisee pour cet utilisateur.']);
-        }
-
-        $ok = $model->delete($id);
-        if (!$ok) {
-            respond(500, ['success' => false, 'message' => 'Impossible de supprimer le dechet.']);
-        }
-
-        respond(200, [
-            'success' => true,
-            'message' => 'Dechet supprime avec succes.',
-        ]);
+        respond(200, ['success' => true, 'message' => 'Déchet supprimé avec succès.']);
     }
 
-    respond(405, [
-        'success' => false,
-        'message' => 'Methode non autorisee.',
-    ]);
+    respond(405, ['success' => false, 'message' => 'Méthode non autorisée.']);
+
 } catch (Throwable $e) {
-    respond(500, [
-        'success' => false,
-        'message' => 'Erreur serveur: ' . $e->getMessage(),
-    ]);
+    respond(500, ['success' => false, 'message' => 'Erreur serveur : ' . $e->getMessage()]);
 }

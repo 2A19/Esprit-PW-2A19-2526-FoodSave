@@ -1,7 +1,7 @@
 <?php
 /**
  * FoodSave – Model : Dechet
- * Architecture MVC | PDO obligatoire (conforme contrainte prof)
+ * Architecture MVC | PDO obligatoire
  * Fichier : models/Dechet.php
  */
 
@@ -16,30 +16,30 @@ class Dechet {
     }
 
     /* =========================================================
-       CREATE — Ajouter un déchet
+       CREATE — Ajouter un déchet (sans user_id)
     ========================================================= */
     public function create(array $data): bool {
-        $sql = "INSERT INTO dechets (user_id, type_aliment, quantite, unite, date_dechet, raison, notes)
-                VALUES (:user_id, :type_aliment, :quantite, :unite, :date_dechet, :raison, :notes)";
+        $sql = "INSERT INTO dechets (type_aliment, quantite, unite, date_dechet, raison, notes, categorie_id)
+                VALUES (:type_aliment, :quantite, :unite, :date_dechet, :raison, :notes, :categorie_id)";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
-            ':user_id'      => $data['user_id'],
             ':type_aliment' => $data['type_aliment'],
             ':quantite'     => $data['quantite'],
             ':unite'        => $data['unite'],
             ':date_dechet'  => $data['date_dechet'],
             ':raison'       => $data['raison'],
             ':notes'        => $data['notes'] ?? '',
+            ':categorie_id' => $data['categorie_id'] ?? null,
         ]);
     }
 
     /* =========================================================
        READ ALL — Lister tous les déchets (avec pagination)
     ========================================================= */
-    public function getAll(int $limit = 50, int $offset = 0): array {
-        $sql = "SELECT d.*, u.nom, u.prenom
+    public function getAll(int $limit = 500, int $offset = 0): array {
+        $sql = "SELECT d.*, c.nom AS categorie_nom, c.couleur AS categorie_couleur
                 FROM dechets d
-                JOIN users u ON u.id = d.user_id
+                LEFT JOIN categories c ON c.id = d.categorie_id
                 ORDER BY d.date_dechet DESC
                 LIMIT :limit OFFSET :offset";
         $stmt = $this->pdo->prepare($sql);
@@ -50,20 +50,13 @@ class Dechet {
     }
 
     /* =========================================================
-       READ BY USER — Déchets d'un utilisateur
-    ========================================================= */
-    public function getByUser(int $userId): array {
-        $sql = "SELECT * FROM dechets WHERE user_id = :user_id ORDER BY date_dechet DESC";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':user_id' => $userId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    /* =========================================================
        READ ONE — Un déchet par ID
     ========================================================= */
     public function getById(int $id): array|false {
-        $sql = "SELECT * FROM dechets WHERE id = :id LIMIT 1";
+        $sql = "SELECT d.*, c.nom AS categorie_nom
+                FROM dechets d
+                LEFT JOIN categories c ON c.id = d.categorie_id
+                WHERE d.id = :id LIMIT 1";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -79,7 +72,8 @@ class Dechet {
                     unite        = :unite,
                     date_dechet  = :date_dechet,
                     raison       = :raison,
-                    notes        = :notes
+                    notes        = :notes,
+                    categorie_id = :categorie_id
                 WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
@@ -89,6 +83,7 @@ class Dechet {
             ':date_dechet'  => $data['date_dechet'],
             ':raison'       => $data['raison'],
             ':notes'        => $data['notes'] ?? '',
+            ':categorie_id' => $data['categorie_id'] ?? null,
             ':id'           => $id,
         ]);
     }
@@ -97,25 +92,21 @@ class Dechet {
        DELETE — Supprimer un déchet
     ========================================================= */
     public function delete(int $id): bool {
-        $sql = "DELETE FROM dechets WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->pdo->prepare("DELETE FROM dechets WHERE id = :id");
         return $stmt->execute([':id' => $id]);
     }
 
     /* =========================================================
-       STATS — Statistiques pour le dashboard
+       STATS — Statistiques globales
     ========================================================= */
-    public function getStats(int $userId): array {
+    public function getStats(): array {
         $sql = "SELECT
-                    COUNT(*)        AS total_entrees,
-                    SUM(quantite)   AS total_quantite,
-                    AVG(quantite)   AS moyenne_quantite,
+                    COUNT(*)         AS total_entrees,
+                    SUM(quantite)    AS total_quantite,
+                    AVG(quantite)    AS moyenne_quantite,
                     MAX(date_dechet) AS derniere_date
-                FROM dechets
-                WHERE user_id = :user_id";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':user_id' => $userId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+                FROM dechets";
+        return $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
     }
 
     /* =========================================================
@@ -141,13 +132,13 @@ class Dechet {
             $conditions[] = 'date_dechet <= :date_to';
             $params[':date_to'] = $filters['date_to'];
         }
-        if (!empty($filters['user_id'])) {
-            $conditions[] = 'user_id = :user_id';
-            $params[':user_id'] = $filters['user_id'];
-        }
 
         $where = implode(' AND ', $conditions);
-        $sql = "SELECT * FROM dechets WHERE {$where} ORDER BY date_dechet DESC";
+        $sql = "SELECT d.*, c.nom AS categorie_nom
+                FROM dechets d
+                LEFT JOIN categories c ON c.id = d.categorie_id
+                WHERE {$where}
+                ORDER BY d.date_dechet DESC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

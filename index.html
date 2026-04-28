@@ -17,27 +17,33 @@
   </div>
 
   <nav class="sidebar-nav">
-    <div class="nav-label">Menu principal</div>
+    <div class="nav-label">Tableau de bord</div>
 
     <a class="nav-item" data-page="dashboard" onclick="navigate('dashboard')">
-      <span class="icon">📊</span> Tableau de bord
+      <span class="icon">📊</span> Vue d'ensemble
     </a>
+
+    <div class="nav-label" style="margin-top:8px;">Gestion</div>
+
     <a class="nav-item" data-page="list" onclick="navigate('list')">
-      <span class="icon">🗑️</span> Mes Déchets
+      <span class="icon">🗑️</span> Déchets
     </a>
     <a class="nav-item" data-page="add" onclick="navigate('add')">
-      <span class="icon">➕</span> Ajouter un déchet
+      <span class="icon">➕</span> Nouveau déchet
+    </a>
+    <a class="nav-item" data-page="categories" onclick="navigate('categories')">
+      <span class="icon">🏷️</span> Catégories
+    </a>
+    <a class="nav-item" data-page="collectes" onclick="navigate('collectes')">
+      <span class="icon">🚛</span> Collectes
     </a>
     <a class="nav-item" data-page="historique" onclick="navigate('historique')">
       <span class="icon">📅</span> Historique
     </a>
 
-    <div class="nav-label" style="margin-top:12px;">Compte</div>
-    <a class="nav-item" data-page="profile" onclick="navigate('profile')">
-      <span class="icon">👤</span> Mon profil
-    </a>
+    <div class="nav-label" style="margin-top:8px;">Système</div>
     <a class="nav-item" href="backoffice.html">
-      <span class="icon">⚙️</span> Back Office
+      <span class="icon">⚙️</span> Administration
     </a>
   </nav>
 
@@ -53,8 +59,7 @@
   <header class="topbar">
     <h1 class="topbar-title" id="page-title">📊 Tableau de bord</h1>
     <div class="topbar-right">
-      <select id="current-user-select" style="padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:var(--white);font-size:0.85rem;"></select>
-      <div class="avatar" title="Utilisateur">FK</div>
+      <div class="avatar" title="FoodSave">FS</div>
     </div>
   </header>
 
@@ -302,6 +307,177 @@
     </div>
   </div><!-- /profile -->
 
+  <!-- ===== PAGE: CATEGORIES ===== -->
+  <div id="page-categories" class="page">
+
+    <div id="cat-alert" class="alert"></div>
+
+    <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:28px;">
+      <div class="stat-card">
+        <div class="stat-icon green">🏷️</div>
+        <div class="stat-info"><h3 id="cat-stat-total">—</h3><p>Total catégories</p></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon orange">🗑️</div>
+        <div class="stat-info"><h3 id="cat-stat-dechets">—</h3><p>Déchets catégorisés</p></div>
+      </div>
+    </div>
+
+    <!-- Formulaire ajout rapide -->
+    <div class="card" style="margin-bottom:28px;">
+      <div class="card-header">
+        <h2>➕ Nouvelle catégorie</h2>
+        <button class="btn btn-outline btn-sm" onclick="toggleCatForm()">▾ Formulaire</button>
+      </div>
+      <div class="card-body" id="cat-form-wrap" style="display:none;">
+        <form id="form-cat" novalidate onsubmit="return false;">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="cat-nom">Nom *</label>
+              <input type="text" id="cat-nom" placeholder="Ex: Céréales" />
+              <span class="error-msg" id="cat-nom-err"></span>
+            </div>
+            <div class="form-group">
+              <label for="cat-icone">Icône (emoji)</label>
+              <input type="text" id="cat-icone" placeholder="Ex: 🌾" maxlength="4" style="font-size:1.4rem;" />
+            </div>
+            <div class="form-group">
+              <label for="cat-couleur">Couleur</label>
+              <div style="display:flex;gap:10px;align-items:center;">
+                <input type="color" id="cat-couleur" value="#4CAF50" style="width:50px;height:40px;padding:2px;border:1px solid var(--border);border-radius:8px;cursor:pointer;" />
+                <span id="cat-couleur-hex" style="font-size:0.85rem;color:var(--text-muted);">#4CAF50</span>
+              </div>
+            </div>
+            <div class="form-group span2">
+              <label for="cat-description">Description</label>
+              <input type="text" id="cat-description" placeholder="Description optionnelle..." />
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-outline" type="button" onclick="resetCatForm()">🔄 Réinitialiser</button>
+              <button class="btn btn-primary" type="button" onclick="submitCategory()">💾 Enregistrer</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Grille des catégories -->
+    <div class="card">
+      <div class="card-header">
+        <h2>🏷️ Liste des catégories</h2>
+      </div>
+      <div class="card-body">
+        <div id="cat-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;">
+          <div style="text-align:center;padding:40px;color:var(--text-muted);">Chargement...</div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /categories -->
+
+  <!-- ===== PAGE: COLLECTES ===== -->
+  <div id="page-collectes" class="page">
+
+    <div id="col-alert" class="alert"></div>
+
+    <div class="stats-grid" style="margin-bottom:28px;">
+      <div class="stat-card">
+        <div class="stat-icon green">🚛</div>
+        <div class="stat-info"><h3 id="col-stat-total">—</h3><p>Total collectes</p></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon orange">✅</div>
+        <div class="stat-info"><h3 id="col-stat-terminees">—</h3><p>Terminées</p></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue">🔄</div>
+        <div class="stat-info"><h3 id="col-stat-encours">—</h3><p>En cours</p></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon red">📅</div>
+        <div class="stat-info"><h3 id="col-stat-planifiees">—</h3><p>Planifiées</p></div>
+      </div>
+    </div>
+
+    <!-- Bouton + formulaire -->
+    <div class="card" style="margin-bottom:28px;">
+      <div class="card-header">
+        <h2>➕ Nouvelle collecte</h2>
+        <button class="btn btn-outline btn-sm" onclick="toggleColForm()">▾ Formulaire</button>
+      </div>
+      <div class="card-body" id="col-form-wrap" style="display:none;">
+        <form id="form-col" novalidate onsubmit="return false;">
+          <div class="form-grid">
+            <div class="form-group span2">
+              <label for="col-titre">Titre *</label>
+              <input type="text" id="col-titre" placeholder="Ex: Collecte Marché Central" />
+              <span class="error-msg" id="col-titre-err"></span>
+            </div>
+            <div class="form-group">
+              <label for="col-lieu">Lieu *</label>
+              <input type="text" id="col-lieu" placeholder="Ex: Marché Bab El Bhar, Tunis" />
+              <span class="error-msg" id="col-lieu-err"></span>
+            </div>
+            <div class="form-group">
+              <label for="col-date">Date *</label>
+              <input type="date" id="col-date" />
+              <span class="error-msg" id="col-date-err"></span>
+            </div>
+            <div class="form-group">
+              <label for="col-quantite">Quantité estimée (kg)</label>
+              <input type="text" id="col-quantite" placeholder="Ex: 12.5" />
+            </div>
+            <div class="form-group">
+              <label for="col-statut">Statut</label>
+              <select id="col-statut">
+                <option value="planifiee">📅 Planifiée</option>
+                <option value="en_cours">🔄 En cours</option>
+                <option value="terminee">✅ Terminée</option>
+                <option value="annulee">❌ Annulée</option>
+              </select>
+            </div>
+            <div class="form-group span2">
+              <label for="col-description">Description</label>
+              <input type="text" id="col-description" placeholder="Détails de la collecte..." />
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-outline" type="button" onclick="resetColForm()">🔄 Réinitialiser</button>
+              <button class="btn btn-primary" type="button" onclick="submitCollecte()">💾 Enregistrer</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tableau collectes -->
+    <div class="card">
+      <div class="card-header">
+        <h2>🚛 Liste des collectes</h2>
+        <div class="search-bar">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="col-search" placeholder="Filtrer par lieu ou titre..." />
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Titre</th>
+              <th>Lieu</th>
+              <th>Date</th>
+              <th>Quantité</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="col-table-body">
+            <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted);">Chargement...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /collectes -->
+
 </div><!-- /main -->
 
 <!-- ===================== MODAL: EDIT ===================== -->
@@ -385,6 +561,136 @@
   </div>
 </div>
 
-<script src="js/app.js"></script>
+<!-- ===================== MODAL: EDIT CATEGORY ===================== -->
+<div class="modal-overlay" id="modal-edit-cat">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>✏️ Modifier la catégorie</h3>
+      <button class="modal-close" onclick="closeModal('modal-edit-cat')">✕</button>
+    </div>
+    <form id="form-edit-cat" novalidate onsubmit="return false;">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="ecat-nom">Nom *</label>
+          <input type="text" id="ecat-nom" />
+          <span class="error-msg" id="ecat-nom-err"></span>
+        </div>
+        <div class="form-group">
+          <label for="ecat-icone">Icône (emoji)</label>
+          <input type="text" id="ecat-icone" maxlength="4" style="font-size:1.4rem;" />
+        </div>
+        <div class="form-group">
+          <label for="ecat-couleur">Couleur</label>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <input type="color" id="ecat-couleur" style="width:50px;height:40px;padding:2px;border:1px solid var(--border);border-radius:8px;cursor:pointer;" />
+            <span id="ecat-couleur-hex" style="font-size:0.85rem;color:var(--text-muted);"></span>
+          </div>
+        </div>
+        <div class="form-group span2">
+          <label for="ecat-description">Description</label>
+          <input type="text" id="ecat-description" />
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-outline" type="button" onclick="closeModal('modal-edit-cat')">Annuler</button>
+          <button class="btn btn-primary" type="button" onclick="submitEditCategory()">💾 Enregistrer</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== MODAL: EDIT COLLECTE ===================== -->
+<div class="modal-overlay" id="modal-edit-col">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>✏️ Modifier la collecte</h3>
+      <button class="modal-close" onclick="closeModal('modal-edit-col')">✕</button>
+    </div>
+    <form id="form-edit-col" novalidate onsubmit="return false;">
+      <div class="form-grid">
+        <div class="form-group span2">
+          <label for="ecol-titre">Titre *</label>
+          <input type="text" id="ecol-titre" />
+          <span class="error-msg" id="ecol-titre-err"></span>
+        </div>
+        <div class="form-group">
+          <label for="ecol-lieu">Lieu *</label>
+          <input type="text" id="ecol-lieu" />
+          <span class="error-msg" id="ecol-lieu-err"></span>
+        </div>
+        <div class="form-group">
+          <label for="ecol-date">Date *</label>
+          <input type="date" id="ecol-date" />
+          <span class="error-msg" id="ecol-date-err"></span>
+        </div>
+        <div class="form-group">
+          <label for="ecol-quantite">Quantité (kg)</label>
+          <input type="text" id="ecol-quantite" />
+        </div>
+        <div class="form-group">
+          <label for="ecol-statut">Statut</label>
+          <select id="ecol-statut">
+            <option value="planifiee">📅 Planifiée</option>
+            <option value="en_cours">🔄 En cours</option>
+            <option value="terminee">✅ Terminée</option>
+            <option value="annulee">❌ Annulée</option>
+          </select>
+        </div>
+        <div class="form-group span2">
+          <label for="ecol-description">Description</label>
+          <input type="text" id="ecol-description" />
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-outline" type="button" onclick="closeModal('modal-edit-col')">Annuler</button>
+          <button class="btn btn-primary" type="button" onclick="submitEditCollecte()">💾 Enregistrer</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== MODAL: DELETE COLLECTE ===================== -->
+<div class="modal-overlay confirm-modal" id="modal-delete-col">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header">
+      <h3>⚠️ Confirmation</h3>
+      <button class="modal-close" onclick="closeModal('modal-delete-col')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="confirm-icon">🚛</div>
+      <h4>Supprimer cette collecte ?</h4>
+      <p>Vous êtes sur le point de supprimer :<br>
+      <strong id="delete-col-name" style="color:var(--text);"></strong></p>
+      <p style="margin-top:8px;color:#E53935;">Cette action est irréversible.</p>
+    </div>
+    <div class="modal-footer" style="margin-top:24px;">
+      <button class="btn btn-outline" onclick="closeModal('modal-delete-col')">Annuler</button>
+      <button class="btn btn-danger" onclick="confirmDeleteCollecte()">🗑️ Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MODAL: DELETE CATEGORY ===================== -->
+<div class="modal-overlay confirm-modal" id="modal-delete-cat">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header">
+      <h3>⚠️ Confirmation</h3>
+      <button class="modal-close" onclick="closeModal('modal-delete-cat')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="confirm-icon">🏷️</div>
+      <h4>Supprimer cette catégorie ?</h4>
+      <p>Vous êtes sur le point de supprimer :<br>
+      <strong id="delete-cat-name" style="color:var(--text);"></strong></p>
+      <p style="margin-top:8px;color:#E53935;">Les déchets liés ne seront pas supprimés.</p>
+    </div>
+    <div class="modal-footer" style="margin-top:24px;">
+      <button class="btn btn-outline" onclick="closeModal('modal-delete-cat')">Annuler</button>
+      <button class="btn btn-danger" onclick="confirmDeleteCategory()">🗑️ Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js?v=5"></script>
 </body>
 </html>
