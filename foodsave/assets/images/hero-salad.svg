@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" width="100%" height="100%" role="img" aria-label="Bol de salade et légumes frais">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#E8F5E9" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#E8F5E9" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bowl" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#81C784"/>
+      <stop offset="100%" stop-color="#4CAF50"/>
+    </linearGradient>
+    <linearGradient id="bowlInner" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#66BB6A"/>
+      <stop offset="100%" stop-color="#388E3C"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Soft blob background -->
+  <path d="M120 180 Q60 260 130 360 Q200 460 340 440 Q500 420 530 320 Q560 220 470 140 Q360 80 250 110 Q160 130 120 180 Z" fill="url(#bg)"/>
+
+  <!-- Floating leaves around -->
+  <g opacity="0.7">
+    <path d="M90 150 C80 140 85 120 100 115 C105 130 100 145 90 150 Z" fill="#81C784"/>
+    <path d="M520 130 C510 120 515 100 530 95 C535 110 530 125 520 130 Z" fill="#66BB6A"/>
+    <path d="M80 380 C70 370 75 350 90 345 C95 360 90 375 80 380 Z" fill="#A5D6A7"/>
+    <path d="M500 400 C490 390 495 370 510 365 C515 380 510 395 500 400 Z" fill="#81C784"/>
+  </g>
+
+  <!-- Decorative dots -->
+  <circle cx="110" cy="260" r="4" fill="#4CAF50" opacity="0.4"/>
+  <circle cx="540" cy="260" r="5" fill="#FFA726" opacity="0.4"/>
+  <circle cx="300" cy="70" r="4" fill="#66BB6A" opacity="0.5"/>
+  <circle cx="150" cy="90" r="3" fill="#FFA726" opacity="0.3"/>
+
+  <!-- Bowl shadow -->
+  <ellipse cx="300" cy="420" rx="180" ry="14" fill="#000" opacity="0.06"/>
+
+  <!-- Bowl base -->
+  <path d="M130 300 Q130 410 300 420 Q470 410 470 300 Z" fill="url(#bowl)"/>
+  <!-- Bowl rim -->
+  <ellipse cx="300" cy="300" rx="170" ry="34" fill="url(#bowlInner)"/>
+  <ellipse cx="300" cy="298" rx="162" ry="28" fill="#388E3C"/>
+
+  <!-- Salad contents (piled inside bowl, rising above rim) -->
+  <g>
+    <!-- Back layer of lettuce leaves -->
+    <path d="M170 295 Q150 240 180 210 Q210 195 230 225 Q240 260 220 290 Z" fill="#66BB6A"/>
+    <path d="M220 280 Q210 220 250 195 Q290 185 295 230 Q290 275 260 290 Z" fill="#81C784"/>
+    <path d="M290 270 Q285 200 330 185 Q375 190 370 235 Q365 280 330 290 Z" fill="#4CAF50"/>
+    <path d="M360 280 Q360 215 400 200 Q440 205 435 250 Q425 285 395 295 Z" fill="#66BB6A"/>
+    <path d="M410 290 Q415 240 450 225 Q475 230 470 265 Q460 290 435 298 Z" fill="#81C784"/>
+
+    <!-- Leaf veins -->
+    <path d="M200 215 Q210 250 215 285" stroke="#2E7D32" stroke-width="1.5" fill="none" opacity="0.5"/>
+    <path d="M270 205 Q275 245 270 285" stroke="#2E7D32" stroke-width="1.5" fill="none" opacity="0.5"/>
+    <path d="M340 195 Q345 240 340 285" stroke="#2E7D32" stroke-width="1.5" fill="none" opacity="0.5"/>
+    <path d="M415 215 Q418 250 415 290" stroke="#2E7D32" stroke-width="1.5" fill="none" opacity="0.5"/>
+
+    <!-- Tomatoes -->
+    <circle cx="240" cy="265" r="20" fill="#EF5350"/>
+    <circle cx="234" cy="258" r="5" fill="#FF8A80" opacity="0.7"/>
+    <path d="M235 248 Q240 242 245 248" stroke="#2E7D32" stroke-width="2" fill="none"/>
+
+    <circle cx="375" cy="255" r="18" fill="#E53935"/>
+    <circle cx="370" cy="249" r="4" fill="#FF8A80" opacity="0.7"/>
+    <path d="M372 240 Q376 236 380 240" stroke="#2E7D32" stroke-width="2" fill="none"/>
+
+    <!-- Orange/carrot pieces -->
+    <circle cx="310" cy="270" r="16" fill="#FFA726"/>
+    <circle cx="307" cy="265" r="4" fill="#FFCC80" opacity="0.8"/>
+
+    <circle cx="200" cy="280" r="14" fill="#FFB74D"/>
+    <circle cx="197" cy="275" r="3" fill="#FFE0B2" opacity="0.8"/>
+
+    <!-- Yellow pepper / lemon -->
+    <circle cx="280" cy="285" r="13" fill="#FFEE58"/>
+    <circle cx="277" cy="280" r="3" fill="#FFF59D" opacity="0.8"/>
+
+    <circle cx="420" cy="280" r="12" fill="#FDD835"/>
+    <circle cx="418" cy="276" r="3" fill="#FFF176" opacity="0.8"/>
+
+    <!-- Purple cabbage / beet chunk -->
+    <path d="M155 285 Q145 270 160 258 Q175 255 182 270 Q180 285 168 290 Z" fill="#8E24AA" opacity="0.85"/>
+
+    <!-- Small green peas -->
+    <circle cx="260" cy="295" r="6" fill="#9CCC65"/>
+    <circle cx="345" cy="295" r="6" fill="#9CCC65"/>
+    <circle cx="390" cy="285" r="5" fill="#9CCC65"/>
+
+    <!-- Top leaf accents -->
+    <path d="M250 215 Q258 195 275 200 Q272 220 255 225 Z" fill="#8BC34A"/>
+    <path d="M320 205 Q330 185 348 192 Q345 212 327 218 Z" fill="#9CCC65"/>
+    <path d="M395 220 Q405 200 422 208 Q418 225 400 230 Z" fill="#8BC34A"/>
+  </g>
+
+  <!-- Bowl highlight -->
+  <path d="M160 310 Q165 360 200 395" stroke="#C8E6C9" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Floating leaves at top right and bottom -->
+  <g>
+    <path d="M470 90 C460 82 462 66 478 60 C485 75 482 90 470 90 Z" fill="#4CAF50"/>
+    <path d="M472 85 Q475 75 478 66" stroke="#2E7D32" stroke-width="1" fill="none"/>
+  </g>
+  <g>
+    <path d="M135 440 C127 432 128 418 142 414 C147 426 145 438 135 440 Z" fill="#66BB6A"/>
+  </g>
+</svg>

@@ -3,99 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription - FoodSave</title>
+    <title>Inscription — FoodSave</title>
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <header>
+    <header class="site-header">
         <div class="header-container">
-            <a href="index.php" class="logo">
-                <img src="assets/images/logo.png" alt="FoodSave" class="logo-image">
+            <a href="home.html" class="brand">
+                <img src="assets/images/logo.png" alt="FoodSave">
             </a>
-            <nav>
-                <ul>
-                    <li><a href="index.php?action=login">Accueil</a></li>
-                </ul>
+            <nav class="primary-nav">
+                <a href="home.html">Accueil</a>
             </nav>
+            <div class="nav-actions">
+                <a href="index.php?action=login" class="btn-login">Connexion</a>
+            </div>
         </div>
     </header>
 
     <div class="auth-page">
-        <div class="auth-container">
-            <div class="auth-card">
-                <div class="auth-card-header">
-                    <h1>Inscription</h1>
-                    <p>Créez votre compte FoodSave et rejoignez notre communauté</p>
+        <div class="auth-card fade-in" style="max-width: 520px;">
+            <div class="auth-card-header">
+                <h1>Inscription</h1>
+                <p>Créez votre compte et rejoignez la communauté FoodSave</p>
+            </div>
+
+            <?php if (isset($errors) && count($errors) > 0): ?>
+                <div class="alert alert-error">
+                    <span class="alert-icon">✕</span>
+                    <div>
+                        <strong>Erreurs de validation&nbsp;:</strong>
+                        <ul style="margin-top: 6px; margin-left: 18px;">
+                            <?php foreach ($errors as $error): ?>
+                                <li><?php echo htmlspecialchars($error); ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <form id="registerForm" method="POST" action="index.php?action=handleRegister">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div class="form-group">
+                        <label for="prenom">Prénom</label>
+                        <input type="text" id="prenom" name="prenom" placeholder="Jean" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nom">Nom</label>
+                        <input type="text" id="nom" name="nom" placeholder="Dupont" required>
+                    </div>
                 </div>
 
-                <?php if (isset($errors) && count($errors) > 0): ?>
-                    <div class="alert alert-error">
-                        <span class="alert-icon">✕</span>
-                        <div>
-                            <strong>Erreurs de validation :</strong>
-                            <ul style="margin-top: 8px; margin-left: 20px;">
-                                <?php foreach ($errors as $error): ?>
-                                    <li><?php echo htmlspecialchars($error); ?></li>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
-                    </div>
-                <?php endif; ?>
-
-                <form id="registerForm" method="POST" action="index.php?action=handleRegister">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                        <div class="form-group">
-                            <label for="prenom">Prénom</label>
-                            <input type="text" id="prenom" name="prenom" placeholder="Jean" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="nom">Nom</label>
-                            <input type="text" id="nom" name="nom" placeholder="Dupont" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">Adresse email</label>
-                        <input type="email" id="email" name="email" placeholder="votre@email.com" required>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                        <div class="form-group">
-                            <label for="telephone">Téléphone</label>
-                            <input type="tel" id="telephone" name="telephone" placeholder="+33 1 23 45 67 89">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="date_naissance">Date de naissance</label>
-                            <input type="date" id="date_naissance" name="date_naissance">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Mot de passe</label>
-                        <input type="password" id="password" name="password" placeholder="••••••••" required>
-                        <small style="color: #666; display: block; margin-top: 6px;">
-                            ✓ Minimum 8 caractères<br>
-                            ✓ Une majuscule, une minuscule et un chiffre
-                        </small>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 16px;">
-                        <span>Créer mon compte</span>
-                    </button>
-                </form>
-
-                <div class="auth-links-toggle">
-                    <p>Vous avez déjà un compte ?
-                        <a href="index.php?action=login">Se connecter</a>
-                    </p>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="votre@email.com" required>
                 </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div class="form-group">
+                        <label for="telephone">Téléphone</label>
+                        <input type="tel" id="telephone" name="telephone" placeholder="+33 1 23 45 67 89">
+                    </div>
+                    <div class="form-group">
+                        <label for="date_naissance">Date de naissance</label>
+                        <input type="date" id="date_naissance" name="date_naissance">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                    <small style="color: var(--color-text-muted); display: block; margin-top: 6px; font-size: 0.82rem;">
+                        Minimum 8 caractères, une majuscule, une minuscule et un chiffre.
+                    </small>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 8px;">
+                    Créer mon compte
+                </button>
+            </form>
+
+            <div class="auth-links-toggle">
+                <p>Vous avez déjà un compte&nbsp;? <a href="index.php?action=login">Se connecter</a></p>
             </div>
         </div>
     </div>
 
-    <footer>
+    <footer class="site-footer">
         <p>&copy; 2026 FoodSave. Tous droits réservés.</p>
     </footer>
 

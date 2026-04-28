@@ -3,121 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails Utilisateur - FoodSave Admin</title>
+    <title>Détails utilisateur — FoodSave Admin</title>
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <a href="admin.php" class="logo">
-                <img src="assets/images/logo.png" alt="FoodSave" class="logo-image">
-            </a>
-            <nav>
-                <ul>
-                    <li><a href="admin.php?action=dashboard">Tableau de bord</a></li>
-                    <li><a href="admin.php?action=users">Gérer les utilisateurs</a></li>
-                    <li><a href="index.php?action=logout">Déconnexion</a></li>
-                </ul>
+    <div class="admin-body">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <img src="assets/images/logo.svg" alt="FoodSave">
+                <span><span class="brand-food">Food</span><span class="brand-save">Save</span></span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="admin.php?action=dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    Tableau de bord
+                </a>
+                <a href="admin.php?action=users" class="active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Utilisateurs
+                </a>
+                <a href="admin.php?action=users">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Profils
+                </a>
+                <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg> Recettes</a>
+                <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21h6M12 3a7 7 0 0 0-4 12.7c.7.7 1 1.5 1 2.3h6c0-.8.3-1.6 1-2.3A7 7 0 0 0 12 3z"/></svg> Astuces</a>
+                <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Commentaires</a>
+                <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Paramètres</a>
             </nav>
-        </div>
-    </header>
-
-    <div class="container-small">
-        <?php if (isset($_SESSION['success'])): ?>
-            <div class="alert alert-success mt-2">
-                <?php echo htmlspecialchars($_SESSION['success']); ?>
-                <?php unset($_SESSION['success']); ?>
+            <div class="sidebar-footer">
+                <a href="index.php?action=logout">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Déconnexion
+                </a>
             </div>
-        <?php endif; ?>
+        </aside>
 
-        <?php if (isset($_SESSION['error'])): ?>
-            <div class="alert alert-error mt-2">
-                <?php echo htmlspecialchars($_SESSION['error']); ?>
-                <?php unset($_SESSION['error']); ?>
-            </div>
-        <?php endif; ?>
-
-        <div style="background-color: white; padding: 2rem; border-radius: 8px; margin-top: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-            <h1 style="color: var(--color-primary-green); margin-bottom: 1.5rem;">Détails Utilisateur</h1>
-
-            <div style="margin-bottom: 2rem; padding: 1rem; background-color: var(--color-light-gray); border-radius: 4px;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div>
-                        <strong>ID :</strong>
-                        <p><?php echo htmlspecialchars($user['id']); ?></p>
+        <div class="admin-main">
+            <div class="admin-topbar">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+                    <div class="admin-topbar-title">
+                        <h1>Détails utilisateur</h1>
+                        <div class="admin-breadcrumb"><a href="admin.php?action=dashboard">Accueil</a> / <a href="admin.php?action=users">Utilisateurs</a> / Détails</div>
                     </div>
-                    <div>
-                        <strong>Rôle :</strong>
-                        <p style="color: <?php echo $user['role'] === 'admin' ? 'var(--color-error)' : 'var(--color-primary-green)'; ?>;">
-                            <?php echo strtoupper($user['role']); ?>
-                        </p>
-                    </div>
-                    <div>
-                        <strong>Prénom :</strong>
-                        <p><?php echo htmlspecialchars($user['prenom']); ?></p>
-                    </div>
-                    <div>
-                        <strong>Nom :</strong>
-                        <p><?php echo htmlspecialchars($user['nom']); ?></p>
-                    </div>
-                    <div>
-                        <strong>Email :</strong>
-                        <p><?php echo htmlspecialchars($user['email']); ?></p>
-                    </div>
-                    <div>
-                        <strong>Téléphone :</strong>
-                        <p><?php echo htmlspecialchars($user['telephone'] ?? 'Non renseigné'); ?></p>
-                    </div>
-                    <div>
-                        <strong>Date de naissance :</strong>
-                        <p><?php echo htmlspecialchars($user['date_naissance'] ?? 'Non renseignée'); ?></p>
-                    </div>
-                    <div>
-                        <strong>Statut :</strong>
-                        <p><?php echo htmlspecialchars($user['statut']); ?></p>
-                    </div>
-                    <div>
-                        <strong>Membre depuis :</strong>
-                        <p><?php echo !empty($user['date_inscription']) ? date('d/m/Y H:i', strtotime($user['date_inscription'])) : 'Non disponible'; ?></p>
+                </div>
+                <div class="admin-topbar-actions">
+                    <div class="admin-user">
+                        <div class="avatar"><?php echo strtoupper(substr($_SESSION['user_prenom'] ?? 'A', 0, 1)); ?></div>
+                        <div class="admin-user-info">
+                            <div class="name"><?php echo htmlspecialchars($_SESSION['user_prenom'] ?? 'Admin'); ?></div>
+                            <div class="role">Administrateur</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <section style="margin-bottom: 2rem; padding: 1.5rem; background-color: white; border: 2px solid var(--color-border-gray); border-radius: 4px;">
-                <h3 style="color: var(--color-primary-green); margin-bottom: 1rem;">Changer le Rôle</h3>
-                <form method="POST" action="admin.php?action=changeUserRole">
-                    <input type="hidden" name="id" value="<?php echo htmlspecialchars($user['id']); ?>">
-                    <div class="form-group radio">
-                        <label>Sélectionner le rôle :</label>
-                        <div class="radio-group">
-                            <label>
-                                <input type="radio" name="role" value="user" <?php echo $user['role'] === 'user' ? 'checked' : ''; ?> required>
-                                Utilisateur
-                            </label>
-                            <label>
-                                <input type="radio" name="role" value="admin" <?php echo $user['role'] === 'admin' ? 'checked' : ''; ?> required>
-                                Administrateur
-                            </label>
+            <div class="admin-content">
+                <?php if (isset($_SESSION['success'])): ?>
+                    <div class="alert alert-success fade-in"><span class="alert-icon">✓</span><div><?php echo htmlspecialchars($_SESSION['success']); ?></div><?php unset($_SESSION['success']); ?></div>
+                <?php endif; ?>
+                <?php if (isset($_SESSION['error'])): ?>
+                    <div class="alert alert-error fade-in"><span class="alert-icon">✕</span><div><?php echo htmlspecialchars($_SESSION['error']); ?></div><?php unset($_SESSION['error']); ?></div>
+                <?php endif; ?>
+
+                <div class="panel" style="max-width: 880px;">
+                    <div style="display: flex; align-items: center; gap: 18px; padding-bottom: 22px; margin-bottom: 24px; border-bottom: 1px solid var(--color-border-light);">
+                        <div class="avatar-lg">
+                            <?php echo strtoupper(substr($user['prenom'], 0, 1) . substr($user['nom'], 0, 1)); ?>
+                        </div>
+                        <div style="flex: 1;">
+                            <h2 style="font-size: 1.35rem; margin-bottom: 4px;">
+                                <?php echo htmlspecialchars($user['prenom'] . ' ' . $user['nom']); ?>
+                            </h2>
+                            <div style="display: flex; gap: 8px; align-items: center; margin-top: 6px;">
+                                <span class="badge badge-<?php echo $user['role'] === 'admin' ? 'admin' : 'user'; ?>">
+                                    <?php echo $user['role'] === 'admin' ? 'Administrateur' : 'Utilisateur'; ?>
+                                </span>
+                                <span class="badge badge-<?php echo htmlspecialchars($user['statut']); ?>">
+                                    <?php echo ucfirst(htmlspecialchars($user['statut'])); ?>
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-secondary">Modifier le rôle</button>
-                </form>
-            </section>
 
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                <a href="admin.php?action=edit_user&id=<?php echo $user['id']; ?>" class="btn btn-primary">Éditer les informations</a>
-                <a href="admin.php?action=users" class="btn btn-secondary">Retour à la liste</a>
-                <form method="POST" action="admin.php?action=deleteUser" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
-                    <input type="hidden" name="id" value="<?php echo htmlspecialchars($user['id']); ?>">
-                    <button type="submit" class="btn btn-danger">Supprimer l'utilisateur</button>
-                </form>
+                    <div class="profile-info-grid">
+                        <div class="profile-info-item">
+                            <strong>ID</strong>
+                            <p><?php echo htmlspecialchars($user['id']); ?></p>
+                        </div>
+                        <div class="profile-info-item">
+                            <strong>Email</strong>
+                            <p><?php echo htmlspecialchars($user['email']); ?></p>
+                        </div>
+                        <div class="profile-info-item">
+                            <strong>Prénom</strong>
+                            <p><?php echo htmlspecialchars($user['prenom']); ?></p>
+                        </div>
+                        <div class="profile-info-item">
+                            <strong>Nom</strong>
+                            <p><?php echo htmlspecialchars($user['nom']); ?></p>
+                        </div>
+                        <div class="profile-info-item">
+                            <strong>Téléphone</strong>
+                            <p><?php echo htmlspecialchars($user['telephone'] ?? '—'); ?></p>
+                        </div>
+                        <div class="profile-info-item">
+                            <strong>Date de naissance</strong>
+                            <p><?php echo !empty($user['date_naissance']) ? date('d/m/Y', strtotime($user['date_naissance'])) : '—'; ?></p>
+                        </div>
+                        <div class="profile-info-item" style="grid-column: 1 / -1;">
+                            <strong>Membre depuis</strong>
+                            <p><?php echo !empty($user['date_inscription']) ? date('d/m/Y à H:i', strtotime($user['date_inscription'])) : '—'; ?></p>
+                        </div>
+                    </div>
+
+                    <!-- Change role -->
+                    <div style="margin-top: 24px; padding: 20px; background: var(--color-bg-alt); border: 1px solid var(--color-border-light); border-radius: var(--radius-md);">
+                        <h3 style="font-size: 1rem; margin-bottom: 12px;">Changer le rôle</h3>
+                        <form method="POST" action="admin.php?action=changeUserRole">
+                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($user['id']); ?>">
+                            <div class="form-group radio" style="margin-bottom: 14px;">
+                                <div class="radio-group">
+                                    <label>
+                                        <input type="radio" name="role" value="user" <?php echo $user['role'] === 'user' ? 'checked' : ''; ?> required>
+                                        Utilisateur
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="role" value="admin" <?php echo $user['role'] === 'admin' ? 'checked' : ''; ?> required>
+                                        Administrateur
+                                    </label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-secondary btn-sm">Modifier le rôle</button>
+                        </form>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px;">
+                        <a href="admin.php?action=edit_user&id=<?php echo $user['id']; ?>" class="btn btn-primary">Éditer</a>
+                        <a href="admin.php?action=users" class="btn btn-outline">Retour à la liste</a>
+                        <form method="POST" action="admin.php?action=deleteUser" style="display:inline; margin-left:auto;" onsubmit="return confirm('Supprimer cet utilisateur ?');">
+                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($user['id']); ?>">
+                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-    <footer>
-        <p>&copy; 2026 FoodSave - Admin. Tous droits réservés.</p>
-    </footer>
 
     <script src="assets/js/validation.js"></script>
 </body>

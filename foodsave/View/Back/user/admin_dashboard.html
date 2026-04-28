@@ -3,126 +3,300 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin - FoodSave</title>
+    <title>Tableau de bord — FoodSave Admin</title>
+    <link rel="icon" type="image/svg+xml" href="assets/images/logo.svg">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <a href="admin.php" class="logo">
-                <img src="assets/images/logo.png" alt="FoodSave" class="logo-image">
-            </a>
-            <nav>
-                <ul>
-                    <li><a href="admin.php?action=dashboard">Tableau de bord</a></li>
-                    <li><a href="admin.php?action=users">Gérer les utilisateurs</a></li>
-                    <li><a href="index.php?action=logout">Déconnexion</a></li>
-                </ul>
+    <div class="admin-body">
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <img src="assets/images/logo.svg" alt="FoodSave">
+                <span><span class="brand-food">Food</span><span class="brand-save">Save</span></span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="admin.php?action=dashboard" class="active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    Tableau de bord
+                </a>
+                <a href="admin.php?action=users">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Utilisateurs
+                </a>
+                <a href="admin.php?action=users">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Profils
+                </a>
+                <a href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
+                    Recettes
+                </a>
+                <a href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21h6M12 3a7 7 0 0 0-4 12.7c.7.7 1 1.5 1 2.3h6c0-.8.3-1.6 1-2.3A7 7 0 0 0 12 3z"/></svg>
+                    Astuces
+                </a>
+                <a href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Commentaires
+                </a>
+                <a href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    Paramètres
+                </a>
             </nav>
-        </div>
-    </header>
-
-    <div class="container">
-        <?php if (isset($_SESSION['success'])): ?>
-            <div class="alert alert-success mt-2">
-                <?php echo htmlspecialchars($_SESSION['success']); ?>
-                <?php unset($_SESSION['success']); ?>
+            <div class="sidebar-footer">
+                <a href="index.php?action=logout">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Déconnexion
+                </a>
             </div>
-        <?php endif; ?>
+        </aside>
 
-        <div class="dashboard-header">
-            <h1>🔐 Tableau de Bord Administrateur</h1>
-            <p>Bienvenue, <?php echo htmlspecialchars($_SESSION['user_prenom']); ?> !</p>
-        </div>
-
-        <div class="dashboard-grid">
-            <div class="dashboard-card">
-                <h3>👥 Gestion des Utilisateurs</h3>
-                <p>Consultez, modifiez et gérez tous les utilisateurs du système</p>
-                <a href="admin.php?action=users" class="btn btn-primary">Accéder à la gestion</a>
-            </div>
-
-            <div class="dashboard-card">
-                <h3>📊 Statistiques Globales</h3>
-                <p><?php echo count($users); ?> utilisateurs enregistrés</p>
-                <div style="margin-top: 1rem;">
-                    <p><strong>Répartition :</strong></p>
-                    <p>
-                        Actifs: <?php echo count(array_filter($users, fn($u) => $u['statut'] === 'actif')); ?><br>
-                        Inactifs: <?php echo count(array_filter($users, fn($u) => $u['statut'] === 'inactif')); ?><br>
-                        Bannis: <?php echo count(array_filter($users, fn($u) => $u['statut'] === 'banni')); ?>
-                    </p>
+        <!-- MAIN -->
+        <div class="admin-main">
+            <!-- Top bar -->
+            <div class="admin-topbar">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" aria-label="Menu">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    </button>
+                    <div class="admin-topbar-title">
+                        <h1>Tableau de bord</h1>
+                        <div class="admin-breadcrumb"><a href="admin.php?action=dashboard">Accueil</a> / Dashboard</div>
+                    </div>
+                </div>
+                <div class="admin-topbar-actions">
+                    <button class="icon-btn" aria-label="Notifications">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        <span class="notif-dot"></span>
+                    </button>
+                    <div class="admin-user">
+                        <div class="avatar"><?php echo strtoupper(substr($_SESSION['user_prenom'] ?? 'A', 0, 1)); ?></div>
+                        <div class="admin-user-info">
+                            <div class="name"><?php echo htmlspecialchars($_SESSION['user_prenom'] ?? 'Admin'); ?></div>
+                            <div class="role">Administrateur</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="dashboard-card">
-                <h3>🛡️ Événements Récents</h3>
-                <p>Suivi des activités système</p>
-                <a href="#" class="btn btn-secondary">Voir les logs</a>
-            </div>
+            <div class="admin-content">
+                <?php if (isset($_SESSION['success'])): ?>
+                    <div class="alert alert-success fade-in">
+                        <span class="alert-icon">✓</span>
+                        <div><?php echo htmlspecialchars($_SESSION['success']); ?></div>
+                        <?php unset($_SESSION['success']); ?>
+                    </div>
+                <?php endif; ?>
 
-            <div class="dashboard-card">
-                <h3>⚙️ Configuration</h3>
-                <p>Paramètres et configuration du système</p>
-                <a href="#" class="btn btn-secondary">Accéder aux paramètres</a>
-            </div>
+                <?php
+                    $totalUsers = count($users);
+                    $activeUsers = count(array_filter($users, fn($u) => $u['statut'] === 'actif'));
+                    $adminCount = count(array_filter($users, fn($u) => $u['role'] === 'admin'));
+                ?>
 
-            <div class="dashboard-card">
-                <h3>📬 Messages</h3>
-                <p>Centre de messages et notifications</p>
-                <a href="#" class="btn btn-secondary">Voir les messages</a>
-            </div>
+                <!-- STATS -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-label">Utilisateurs</div>
+                            <div class="stat-value"><?php echo number_format($totalUsers, 0, ',', ','); ?></div>
+                            <div class="stat-trend">+12% ce mois</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-label">Recettes</div>
+                            <div class="stat-value">320</div>
+                            <div class="stat-trend">+8% ce mois</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon cyan">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.7.7 1 1.5 1 2.3h6c0-.8.3-1.6 1-2.3A7 7 0 0 0 12 2z"/></svg>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-label">Astuces</div>
+                            <div class="stat-value">86</div>
+                            <div class="stat-trend">+15% ce mois</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon teal">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-label">Commentaires</div>
+                            <div class="stat-value">532</div>
+                            <div class="stat-trend">+10% ce mois</div>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="dashboard-card">
-                <h3>📈 Rapports</h3>
-                <p>Générez des rapports détaillés</p>
-                <a href="#" class="btn btn-secondary">Générer un rapport</a>
+                <!-- CHARTS -->
+                <div class="panels-grid">
+                    <!-- Line chart -->
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h3>Activité récente</h3>
+                            <select>
+                                <option>7 derniers jours</option>
+                                <option>30 derniers jours</option>
+                                <option>3 derniers mois</option>
+                            </select>
+                        </div>
+                        <svg viewBox="0 0 520 220" width="100%" height="220" role="img" aria-label="Graphique d'activité récente">
+                            <defs>
+                                <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#4CAF50" stop-opacity="0.25"/>
+                                    <stop offset="100%" stop-color="#4CAF50" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
+                            <!-- grid lines -->
+                            <g stroke="#F3F4F6" stroke-width="1">
+                                <line x1="40" y1="30"  x2="510" y2="30"/>
+                                <line x1="40" y1="80"  x2="510" y2="80"/>
+                                <line x1="40" y1="130" x2="510" y2="130"/>
+                                <line x1="40" y1="180" x2="510" y2="180"/>
+                            </g>
+                            <!-- y labels -->
+                            <g font-family="Poppins" font-size="11" fill="#9CA3AF">
+                                <text x="30" y="34" text-anchor="end">50</text>
+                                <text x="30" y="84" text-anchor="end">40</text>
+                                <text x="30" y="134" text-anchor="end">20</text>
+                                <text x="30" y="184" text-anchor="end">0</text>
+                            </g>
+                            <!-- area -->
+                            <path d="M40,150 L118,135 L196,110 L274,95 L352,75 L430,62 L510,55 L510,180 L40,180 Z" fill="url(#areaFill)"/>
+                            <!-- line -->
+                            <path d="M40,150 L118,135 L196,110 L274,95 L352,75 L430,62 L510,55" stroke="#4CAF50" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- dots -->
+                            <g fill="white" stroke="#4CAF50" stroke-width="2.5">
+                                <circle cx="40"  cy="150" r="4"/>
+                                <circle cx="118" cy="135" r="4"/>
+                                <circle cx="196" cy="110" r="4"/>
+                                <circle cx="274" cy="95"  r="4"/>
+                                <circle cx="352" cy="75"  r="4"/>
+                                <circle cx="430" cy="62"  r="4"/>
+                                <circle cx="510" cy="55"  r="4"/>
+                            </g>
+                            <!-- x labels -->
+                            <g font-family="Poppins" font-size="11" fill="#9CA3AF" text-anchor="middle">
+                                <text x="40"  y="205">Jan</text>
+                                <text x="118" y="205">Fév</text>
+                                <text x="196" y="205">Mar</text>
+                                <text x="274" y="205">Avr</text>
+                                <text x="352" y="205">Mai</text>
+                                <text x="430" y="205">Juin</text>
+                                <text x="510" y="205">Juil</text>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- Donut -->
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h3>Répartition des recettes</h3>
+                        </div>
+                        <div class="donut-wrap">
+                            <svg viewBox="0 0 120 120" width="140" height="140" role="img" aria-label="Donut répartition des recettes">
+                                <!-- segments are stroke dasharrays on circles with circumference ~314 (r=50) -->
+                                <circle cx="60" cy="60" r="50" fill="none" stroke="#F3F4F6" stroke-width="18"/>
+                                <!-- Petit-déjeuner 25% = 78.5 -->
+                                <circle cx="60" cy="60" r="50" fill="none" stroke="#4CAF50" stroke-width="18"
+                                    stroke-dasharray="78.5 235.5" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
+                                <!-- Déjeuner 35% = 110 starts at -25% -->
+                                <circle cx="60" cy="60" r="50" fill="none" stroke="#FDD835" stroke-width="18"
+                                    stroke-dasharray="110 204" stroke-dashoffset="-78.5" transform="rotate(-90 60 60)"/>
+                                <!-- Dîner 25% = 78.5 starts at -60% -->
+                                <circle cx="60" cy="60" r="50" fill="none" stroke="#66BB6A" stroke-width="18"
+                                    stroke-dasharray="78.5 235.5" stroke-dashoffset="-188.5" transform="rotate(-90 60 60)"/>
+                                <!-- Collation 15% = 47.1 starts at -85% -->
+                                <circle cx="60" cy="60" r="50" fill="none" stroke="#FFA726" stroke-width="18"
+                                    stroke-dasharray="47.1 266.9" stroke-dashoffset="-267" transform="rotate(-90 60 60)"/>
+                            </svg>
+                            <ul class="donut-legend">
+                                <li><span class="dot" style="background:#4CAF50"></span> Petit-déjeuner <span class="pct">25%</span></li>
+                                <li><span class="dot" style="background:#FDD835"></span> Déjeuner <span class="pct">35%</span></li>
+                                <li><span class="dot" style="background:#66BB6A"></span> Dîner <span class="pct">25%</span></li>
+                                <li><span class="dot" style="background:#FFA726"></span> Collation <span class="pct">15%</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RECENT USERS TABLE -->
+                <div class="table-wrap">
+                    <div class="table-head">
+                        <div>
+                            <h2 style="font-size: 1.05rem;">Utilisateurs récents</h2>
+                            <p style="color: var(--color-text-muted); font-size: 0.85rem; margin-top: 2px;">Les 5 derniers utilisateurs inscrits</p>
+                        </div>
+                        <a href="admin.php?action=users" class="btn btn-outline btn-sm">Voir tout</a>
+                    </div>
+                    <?php if (count($users) > 0): ?>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Utilisateur</th>
+                                    <th>Email</th>
+                                    <th>Rôle</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach (array_slice($users, 0, 5) as $u): ?>
+                                <tr>
+                                    <td>
+                                        <span class="user-name"><?php echo htmlspecialchars($u['prenom'] . ' ' . $u['nom']); ?></span>
+                                    </td>
+                                    <td><?php echo htmlspecialchars($u['email']); ?></td>
+                                    <td>
+                                        <span class="badge badge-<?php echo $u['role'] === 'admin' ? 'admin' : 'user'; ?>">
+                                            <?php echo $u['role'] === 'admin' ? 'Administrateur' : 'Utilisateur'; ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-<?php echo htmlspecialchars($u['statut']); ?>">
+                                            <?php echo ucfirst(htmlspecialchars($u['statut'])); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="actions">
+                                            <a href="admin.php?action=edit_user&id=<?php echo $u['id']; ?>" class="action-btn action-btn-edit" title="Modifier">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                            </a>
+                                            <form method="POST" action="admin.php?action=deleteUser" style="display:inline;" onsubmit="return confirm('Supprimer cet utilisateur ?');">
+                                                <input type="hidden" name="id" value="<?php echo $u['id']; ?>">
+                                                <button type="submit" class="action-btn action-btn-delete" title="Supprimer">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <?php else: ?>
+                    <div style="padding: 32px; text-align: center; color: var(--color-text-muted);">
+                        Aucun utilisateur enregistré pour le moment.
+                    </div>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
-
-        <section class="mb-3" style="background-color: white; padding: 2rem; border-radius: 8px; margin-top: 2rem;">
-            <h2>Utilisateurs Récemment Inscrits</h2>
-            <?php if (count($users) > 0): ?>
-                <table style="margin-top: 1rem;">
-                    <thead>
-                        <tr>
-                            <th>Prénom</th>
-                            <th>Nom</th>
-                            <th>Email</th>
-                            <th>Statut</th>
-                            <th>Rôle</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach (array_slice($users, 0, 5) as $u): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($u['prenom']); ?></td>
-                                <td><?php echo htmlspecialchars($u['nom']); ?></td>
-                                <td><?php echo htmlspecialchars($u['email']); ?></td>
-                                <td><?php echo htmlspecialchars($u['statut']); ?></td>
-                                <td><strong><?php echo strtoupper($u['role']); ?></strong></td>
-                                <td>
-                                    <div class="actions">
-                                        <a href="admin.php?action=user_details&id=<?php echo $u['id']; ?>" class="action-btn action-btn-edit">Voir</a>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-                <div style="margin-top: 1rem; text-align: center;">
-                    <a href="admin.php?action=users" class="btn btn-secondary">Voir tous les utilisateurs</a>
-                </div>
-            <?php else: ?>
-                <p style="color: #666;">Aucun utilisateur enregistré pour le moment.</p>
-            <?php endif; ?>
-        </section>
     </div>
-
-    <footer>
-        <p>&copy; 2026 FoodSave - Admin. Tous droits réservés.</p>
-    </footer>
 
     <script src="assets/js/validation.js"></script>
 </body>

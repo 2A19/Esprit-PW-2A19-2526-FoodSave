@@ -3,257 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FoodSave - Réduisez le Gaspillage Alimentaire</title>
+    <title>FoodSave — Mangez mieux, gaspillez moins.</title>
+    <meta name="description" content="Rejoignez FoodSave pour réduire le gaspillage alimentaire et adopter une alimentation plus saine pour vous et pour la planète.">
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
     <link rel="stylesheet" href="assets/css/style.css">
-    <style>
-        .hero {
-            background: linear-gradient(135deg, rgba(76, 175, 80, 0.9) 0%, rgba(255, 167, 38, 0.9) 100%);
-            color: white;
-            padding: 6rem 2rem;
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            max-width: 700px;
-            margin: 0 auto 2rem;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            border-top: 4px solid var(--color-primary-green);
-        }
-
-        .feature-card h3 {
-            color: var(--color-primary-green);
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-
-        .feature-card .icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .cta-section {
-            background: var(--color-light-gray);
-            padding: 4rem 2rem;
-            border-radius: 8px;
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .cta-section h2 {
-            color: var(--color-primary-green);
-            margin-bottom: 2rem;
-            font-size: 2rem;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .cta-button {
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .cta-button.primary {
-            background-color: var(--color-primary-green);
-            color: white;
-        }
-
-        .cta-button.primary:hover {
-            background-color: #45a049;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-        }
-
-        .cta-button.secondary {
-            background-color: var(--color-primary-orange);
-            color: white;
-        }
-
-        .cta-button.secondary:hover {
-            background-color: #ff9800;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(255, 167, 38, 0.3);
-        }
-
-        .stats {
-            background: white;
-            padding: 3rem 2rem;
-            border-radius: 8px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            color: var(--color-primary-green);
-            font-weight: bold;
-        }
-
-        .stat-label {
-            color: #666;
-            margin-top: 0.5rem;
-        }
-    </style>
 </head>
 <body>
-    <header>
+    <header class="site-header">
         <div class="header-container">
-            <div class="logo">Food<span class="logo-orange">Save</span></div>
-            <nav>
-                <ul>
-                    <li><a href="index.php#features">À Propos</a></li>
-                    <li><a href="index.php#contact">Contact</a></li>
-                </ul>
+            <a href="home.html" class="brand">
+                <img src="assets/images/logo.png" alt="FoodSave">
+            </a>
+
+            <button class="nav-toggle" onclick="document.querySelectorAll('.primary-nav,.nav-actions').forEach(e=>e.classList.toggle('open'))" aria-label="Menu">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+
+            <nav class="primary-nav">
+                <a href="home.html" class="active">Accueil</a>
+                <a href="#about">À propos</a>
+                <a href="#features">Recettes</a>
+                <a href="#features">Astuces</a>
+                <a href="#contact">Contact</a>
             </nav>
-            <div class="auth-links">
+
+            <div class="nav-actions">
                 <a href="index.php?action=login" class="btn-login">Connexion</a>
-                <a href="index.php?action=register" class="btn-register">Inscription</a>
+                <a href="index.php?action=register" class="btn-register">S'inscrire</a>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <div class="hero">
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-grid">
+            <div class="hero-text">
+                <span class="hero-pill">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2 L12 22 M2 12 L22 12" transform="rotate(45 12 12)"/></svg>
+                    ÉCOLOGIQUE &amp; SAIN
+                </span>
+                <h1 class="hero-title">
+                    Mangez <span class="accent-green">mieux</span>,<br>
+                    gaspillez <span class="accent-orange">moins.</span>
+                </h1>
+                <p class="hero-desc">
+                    Rejoignez FoodSave pour réduire le gaspillage alimentaire et adopter une alimentation plus saine pour vous et pour la planète.
+                </p>
+                <div class="hero-actions">
+                    <a href="index.php?action=register" class="btn btn-primary">
+                        Découvrir
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                    </a>
+                    <a href="#features" class="btn btn-outline">En savoir plus</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <img src="assets/images/hero-salad.svg" alt="Bol de salade frais et coloré">
+            </div>
+        </div>
+    </section>
+
+    <!-- VALUE BAR -->
+    <div class="values-bar">
+        <div class="values-inner">
+            <div class="value-item">
+                <div class="value-icon green">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <div>
+                    <h4>Écologique</h4>
+                    <p>Agir pour la planète</p>
+                </div>
+            </div>
+            <div class="value-item">
+                <div class="value-icon orange">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                </div>
+                <div>
+                    <h4>Énergétique</h4>
+                    <p>Nourriture saine</p>
+                </div>
+            </div>
+            <div class="value-item">
+                <div class="value-icon green">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M6 11c8 0 10-6 14-6-2 4-2 8 0 12-4 0-6 6-14 6"/></svg>
+                </div>
+                <div>
+                    <h4>Simplicité</h4>
+                    <p>Solutions faciles</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEATURES -->
+    <section class="section" id="features" style="padding-top:0">
         <div class="container">
-            <h1>FoodSave</h1>
-            <p>Réduisez le gaspillage alimentaire et contribuez à la préservation de l'environnement</p>
-            <div class="cta-buttons">
-                <a href="index.php?action=register" class="cta-button primary">S'inscrire Maintenant</a>
-                <a href="index.php?action=login" class="cta-button secondary">Se Connecter</a>
+            <div class="section-head">
+                <h2>Nos fonctionnalités</h2>
+                <p>Tout ce qu'il faut pour mieux manger et moins gaspiller, au quotidien.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-4"/><polyline points="9 11 9 3 15 3 15 11"/></svg>
+                    </div>
+                    <h3>Gérez vos listes</h3>
+                    <p>Créez et organisez vos listes de courses et vos stocks d'aliments facilement.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
+                    </div>
+                    <h3>Recettes créatives</h3>
+                    <p>Découvrez des recettes adaptées aux ingrédients que vous avez déjà.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    </div>
+                    <h3>Conseils pratiques</h3>
+                    <p>Des astuces simples pour réduire le gaspillage chaque jour.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    </div>
+                    <h3>Suivez votre impact</h3>
+                    <p>Visualisez vos économies et votre empreinte environnementale positive.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3>Rejoignez la communauté</h3>
+                    <p>Partagez vos expériences et apprenez des autres utilisateurs.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>
+                    </div>
+                    <h3>Écologie &amp; durabilité</h3>
+                    <p>Contribuez activement à un futur plus durable pour la planète.</p>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Main Content -->
-    <div class="container">
-        <!-- Stats Section -->
-        <div class="stats">
-            <div class="stat-item">
-                <div class="stat-number">+50%</div>
-                <div class="stat-label">Réduction du Gaspillage</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">10K+</div>
-                <div class="stat-label">Utilisateurs Actifs</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">500T</div>
-                <div class="stat-label">Nourriture Sauvée</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">🌍</div>
-                <div class="stat-label">Impact Environnemental</div>
+    <!-- ABOUT -->
+    <section class="section" id="about" style="padding-top:0">
+        <div class="container">
+            <div class="panel" style="padding: 40px;">
+                <h2 style="color: var(--color-primary-green); margin-bottom: 16px; font-size: 1.6rem;">À propos de FoodSave</h2>
+                <p style="color: var(--color-text-secondary); margin-bottom: 12px;">
+                    FoodSave est une plateforme dédiée à la lutte contre le gaspillage alimentaire.
+                    Nous aidons les particuliers et les startups à mieux gérer leurs stocks, à découvrir
+                    des recettes créatives et à contribuer à la préservation de l'environnement.
+                </p>
+                <p style="color: var(--color-text-secondary);">
+                    Rejoignez des milliers d'utilisateurs qui font la différence chaque jour pour construire
+                    un futur plus sain et plus durable.
+                </p>
             </div>
         </div>
+    </section>
 
-        <!-- Features Section -->
-        <h2 style="text-align: center; color: var(--color-primary-green); margin: 3rem 0 2rem;" id="features">Nos Fonctionnalités</h2>
-        <div class="features">
-            <div class="feature-card">
-                <div class="icon">📋</div>
-                <h3>Gérez Vos Listes</h3>
-                <p>Créez et gérez facilement vos listes de courses et vos stocks alimentaires</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="icon">🍽️</div>
-                <h3>Découvrez Recettes</h3>
-                <p>Trouvez des recettes créatives basées sur les ingrédients que vous avez</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="icon">💡</div>
-                <h3>Conseils Pratiques</h3>
-                <p>Recevez des conseils et astuces pour réduire le gaspillage au quotidien</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="icon">📊</div>
-                <h3>Suivez Votre Impact</h3>
-                <p>Consultez vos statistiques et votre impact environnemental positif</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="icon">🤝</div>
-                <h3>Rejoignez la Communauté</h3>
-                <p>Partagez vos expériences et apprenez des autres utilisateurs</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="icon">🌱</div>
-                <h3>Écologie & Durabilité</h3>
-                <p>Contribuez activement à un futur plus durable pour notre planète</p>
-            </div>
+    <!-- CTA -->
+    <section class="cta-section" id="contact">
+        <h2>Prêt à réduire le gaspillage&nbsp;?</h2>
+        <p>Créez votre compte gratuitement et rejoignez la communauté FoodSave.</p>
+        <div class="hero-actions" style="justify-content: center;">
+            <a href="index.php?action=register" class="btn btn-primary">Créer un compte</a>
+            <a href="index.php?action=login" class="btn btn-outline">Se connecter</a>
         </div>
+    </section>
 
-        <!-- About Section -->
-        <section style="background: white; padding: 3rem; border-radius: 8px; margin-bottom: 3rem; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
-            <h2 style="color: var(--color-primary-green); margin-bottom: 1.5rem;">À Propos de FoodSave</h2>
-            <p>
-                FoodSave est une plateforme révolutionnaire dédiée à la lutte contre le gaspillage alimentaire.
-                Nous aidons les utilisateurs particuliers et les startups à mieux gérer leurs stocks, à découvrir
-                des recettes créatives et à contribuer à la préservation de l'environnement.
-            </p>
-            <p style="margin-top: 1rem;">
-                Avec plus de 10 000 utilisateurs actifs et 500 tonnes de nourriture sauvée, FoodSave crée
-                un impact positif tangible sur notre planète. Rejoignez-nous dans cette mission importante !
-            </p>
-        </section>
-
-        <!-- CTA Section -->
-        <div class="cta-section">
-            <h2>Prêt à Réduire le Gaspillage ?</h2>
-            <p style="margin-bottom: 2rem; font-size: 1.1rem;">
-                Rejoignez des milliers d'utilisateurs qui font la différence chaque jour
-            </p>
-            <div class="cta-buttons">
-                <a href="index.php?action=register" class="cta-button primary">Créer un Compte Gratuit</a>
-                <a href="index.php?action=login" class="cta-button secondary">Connexion</a>
-            </div>
+    <footer class="site-footer">
+        <div class="brand">
+            <img src="assets/images/logo.svg" alt="FoodSave">
+            <span><span class="brand-food">Food</span><span class="brand-save">Save</span></span>
         </div>
-    </div>
-
-    <footer>
-        <p>&copy; 2026 FoodSave. Tous droits réservés. | Engagés pour un développement durable 🌍</p>
+        <p>&copy; 2026 FoodSave. Tous droits réservés. · Engagés pour un développement durable.</p>
     </footer>
 </body>
 </html>

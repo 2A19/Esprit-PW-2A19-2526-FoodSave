@@ -3,35 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier mon Profil - FoodSave</title>
+    <title>Modifier mon profil — FoodSave</title>
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <header>
+    <header class="site-header">
         <div class="header-container">
-            <a href="index.php" class="logo">
-                <img src="assets/images/logo.png" alt="FoodSave" class="logo-image">
+            <a href="index.php?action=dashboard" class="brand">
+                <img src="assets/images/logo.svg" alt="FoodSave">
+                <span><span class="brand-food">Food</span><span class="brand-save">Save</span></span>
             </a>
-            <nav>
-                <ul>
-                    <li><a href="index.php?action=dashboard">Tableau de bord</a></li>
-                    <li><a href="index.php?action=profile">Mon profil</a></li>
-                    <li><a href="index.php?action=logout">Déconnexion</a></li>
-                </ul>
+            <nav class="primary-nav">
+                <a href="index.php?action=dashboard">Tableau de bord</a>
+                <a href="index.php?action=profile" class="active">Mon profil</a>
             </nav>
-            <div class="user-menu">
-                <span class="user-name">👤 <?php echo htmlspecialchars($_SESSION['user_prenom']); ?></span>
+            <div class="nav-actions">
+                <a href="index.php?action=logout" class="btn-login">Déconnexion</a>
             </div>
         </div>
     </header>
 
-    <div class="container" style="padding-top: 40px; padding-bottom: 40px; max-width: 700px;">
+    <div class="container-small" style="padding-top: 28px; padding-bottom: 48px;">
         <?php if (isset($errors) && count($errors) > 0): ?>
             <div class="alert alert-error fade-in">
                 <span class="alert-icon">✕</span>
                 <div>
-                    <strong>Erreurs de validation :</strong>
-                    <ul style="margin-top: 8px; margin-left: 20px;">
+                    <strong>Erreurs de validation&nbsp;:</strong>
+                    <ul style="margin-top: 6px; margin-left: 18px;">
                         <?php foreach ($errors as $error): ?>
                             <li><?php echo htmlspecialchars($error); ?></li>
                         <?php endforeach; ?>
@@ -41,84 +40,58 @@
         <?php endif; ?>
 
         <form id="editProfileForm" method="POST" action="index.php?action=handleEditProfile">
-            <div style="background-color: var(--primary-white); padding: 32px; border-radius: 12px; box-shadow: var(--shadow-md);">
-                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--medium-gray);">
-                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--primary-orange), var(--dark-orange)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px;">
-                        ✏️
+            <div class="panel">
+                <div style="display: flex; align-items: center; gap: 16px; padding-bottom: 20px; margin-bottom: 24px; border-bottom: 1px solid var(--color-border-light);">
+                    <div class="avatar-lg" style="background: linear-gradient(135deg, var(--color-primary-orange), var(--color-orange-700)); box-shadow: var(--shadow-orange);">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                     </div>
                     <div>
-                        <h1 style="font-size: 1.75rem; margin-bottom: 4px;">Modifier mon profil</h1>
-                        <p style="color: var(--text-gray);">Mettez à jour vos informations personnelles</p>
+                        <h1 style="font-size: 1.4rem; margin-bottom: 4px;">Modifier mon profil</h1>
+                        <p style="color: var(--color-text-muted); font-size: 0.92rem;">Mettez à jour vos informations personnelles</p>
                     </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                     <div class="form-group <?php echo isset($errors['prenom']) ? 'error' : ''; ?>">
-                        <label for="prenom">Prénom <span style="color: var(--primary-orange);">*</span></label>
+                        <label for="prenom">Prénom <span style="color: var(--color-primary-orange);">*</span></label>
                         <input type="text" id="prenom" name="prenom" value="<?php echo htmlspecialchars($user['prenom']); ?>" required>
-                        <?php if (isset($errors['prenom'])): ?>
-                            <div class="form-error">✕ <?php echo htmlspecialchars($errors['prenom']); ?></div>
-                        <?php endif; ?>
+                        <?php if (isset($errors['prenom'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['prenom']); ?></div><?php endif; ?>
                     </div>
-
                     <div class="form-group <?php echo isset($errors['nom']) ? 'error' : ''; ?>">
-                        <label for="nom">Nom <span style="color: var(--primary-orange);">*</span></label>
+                        <label for="nom">Nom <span style="color: var(--color-primary-orange);">*</span></label>
                         <input type="text" id="nom" name="nom" value="<?php echo htmlspecialchars($user['nom']); ?>" required>
-                        <?php if (isset($errors['nom'])): ?>
-                            <div class="form-error">✕ <?php echo htmlspecialchars($errors['nom']); ?></div>
-                        <?php endif; ?>
+                        <?php if (isset($errors['nom'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['nom']); ?></div><?php endif; ?>
                     </div>
                 </div>
 
-                <div class="form-group <?php echo isset($errors['email']) ? 'error' : ''; ?>" style="margin-bottom: 24px;">
-                    <label for="email">Adresse email <span style="color: var(--primary-orange);">*</span></label>
+                <div class="form-group <?php echo isset($errors['email']) ? 'error' : ''; ?>">
+                    <label for="email">Email <span style="color: var(--color-primary-orange);">*</span></label>
                     <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
-                    <?php if (isset($errors['email'])): ?>
-                        <div class="form-error">✕ <?php echo htmlspecialchars($errors['email']); ?></div>
-                    <?php endif; ?>
+                    <?php if (isset($errors['email'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['email']); ?></div><?php endif; ?>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                     <div class="form-group <?php echo isset($errors['telephone']) ? 'error' : ''; ?>">
-                        <label for="telephone">📱 Téléphone</label>
+                        <label for="telephone">Téléphone</label>
                         <input type="tel" id="telephone" name="telephone" value="<?php echo htmlspecialchars($user['telephone'] ?? ''); ?>">
-                        <?php if (isset($errors['telephone'])): ?>
-                            <div class="form-error">✕ <?php echo htmlspecialchars($errors['telephone']); ?></div>
-                        <?php endif; ?>
+                        <?php if (isset($errors['telephone'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['telephone']); ?></div><?php endif; ?>
                     </div>
-
                     <div class="form-group <?php echo isset($errors['date_naissance']) ? 'error' : ''; ?>">
-                        <label for="date_naissance">🎂 Date de naissance</label>
+                        <label for="date_naissance">Date de naissance</label>
                         <input type="date" id="date_naissance" name="date_naissance" value="<?php echo htmlspecialchars($user['date_naissance'] ?? ''); ?>">
-                        <?php if (isset($errors['date_naissance'])): ?>
-                            <div class="form-error">✕ <?php echo htmlspecialchars($errors['date_naissance']); ?></div>
-                        <?php endif; ?>
+                        <?php if (isset($errors['date_naissance'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['date_naissance']); ?></div><?php endif; ?>
                     </div>
                 </div>
 
-                <div style="display: flex; gap: 12px; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--medium-gray);">
-                    <button type="submit" class="btn btn-primary" style="flex: 1;">
-                        💾 Enregistrer les modifications
-                    </button>
-                    <a href="index.php?action=profile" class="btn btn-outline" style="flex: 1; text-align: center;">
-                        Annuler
-                    </a>
+                <div style="display: flex; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--color-border-light);">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Enregistrer les modifications</button>
+                    <a href="index.php?action=profile" class="btn btn-outline" style="flex: 1; text-align: center;">Annuler</a>
                 </div>
             </div>
         </form>
     </div>
 
-    <footer>
-        <p>&copy; 2026 FoodSave. Tous droits réservés.</p>
-    </footer>
-
-    <script src="assets/js/validation.js"></script>
-</body>
-            </div>
-        </form>
-    </div>
-
-    <footer>
+    <footer class="site-footer">
         <p>&copy; 2026 FoodSave. Tous droits réservés.</p>
     </footer>
 

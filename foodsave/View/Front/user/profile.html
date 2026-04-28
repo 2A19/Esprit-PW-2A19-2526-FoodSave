@@ -3,130 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Profil - FoodSave</title>
+    <title>Mon profil — FoodSave</title>
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <header>
+    <header class="site-header">
         <div class="header-container">
-            <a href="index.php" class="logo">
-                <img src="assets/images/logo.png" alt="FoodSave" class="logo-image">
+            <a href="index.php?action=dashboard" class="brand">
+                <img src="assets/images/logo.svg" alt="FoodSave">
+                <span><span class="brand-food">Food</span><span class="brand-save">Save</span></span>
             </a>
-            <nav>
-                <ul>
-                    <li><a href="index.php?action=dashboard">Tableau de bord</a></li>
-                    <li><a href="index.php?action=profile">Mon profil</a></li>
-                    <li><a href="index.php?action=logout">Déconnexion</a></li>
-                </ul>
+            <nav class="primary-nav">
+                <a href="index.php?action=dashboard">Tableau de bord</a>
+                <a href="index.php?action=profile" class="active">Mon profil</a>
             </nav>
-            <div class="user-menu">
-                <span class="user-name">👤 <?php echo htmlspecialchars($_SESSION['user_prenom']); ?></span>
+            <div class="nav-actions">
+                <a href="index.php?action=logout" class="btn-login">Déconnexion</a>
             </div>
         </div>
     </header>
 
-    <div class="container" style="padding-top: 40px; padding-bottom: 40px; max-width: 700px;">
+    <div class="container-small" style="padding-top: 28px; padding-bottom: 48px;">
         <?php if (isset($_SESSION['success'])): ?>
             <div class="alert alert-success fade-in">
                 <span class="alert-icon">✓</span>
-                <div>
-                    <strong>Succès !</strong> <?php echo htmlspecialchars($_SESSION['success']); ?>
-                </div>
+                <div><strong>Succès&nbsp;!</strong> <?php echo htmlspecialchars($_SESSION['success']); ?></div>
                 <?php unset($_SESSION['success']); ?>
             </div>
         <?php endif; ?>
 
-        <div style="background-color: var(--primary-white); padding: 32px; border-radius: 12px; box-shadow: var(--shadow-md);">
-            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 2px solid var(--medium-gray);">
-                <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--primary-green), var(--dark-green)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px;">
-                    👤
+        <div class="panel">
+            <div style="display: flex; align-items: center; gap: 18px; padding-bottom: 20px; margin-bottom: 24px; border-bottom: 1px solid var(--color-border-light);">
+                <div class="avatar-lg">
+                    <?php echo strtoupper(substr($user['prenom'], 0, 1) . substr($user['nom'], 0, 1)); ?>
                 </div>
                 <div>
-                    <h1 style="font-size: 1.75rem; margin-bottom: 4px;">
+                    <h1 style="font-size: 1.4rem; margin-bottom: 4px;">
                         <?php echo htmlspecialchars($user['prenom'] . ' ' . $user['nom']); ?>
                     </h1>
-                    <p style="color: var(--text-gray);">Mon profil utilisateur</p>
+                    <p style="color: var(--color-text-muted); font-size: 0.92rem;">Mon profil utilisateur</p>
                 </div>
             </div>
 
-            <div class="profile-info">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
-                    <div style="padding: 16px; background: var(--light-gray); border-radius: 8px;">
-                        <strong style="display: block; margin-bottom: 8px; color: var(--text-gray); font-size: 0.9rem; text-transform: uppercase;">Prénom</strong>
-                        <p style="font-size: 1.1rem; font-weight: 500;">
-                            <?php echo htmlspecialchars($user['prenom']); ?>
-                        </p>
-                    </div>
-
-                    <div style="padding: 16px; background: var(--light-gray); border-radius: 8px;">
-                        <strong style="display: block; margin-bottom: 8px; color: var(--text-gray); font-size: 0.9rem; text-transform: uppercase;">Nom</strong>
-                        <p style="font-size: 1.1rem; font-weight: 500;">
-                            <?php echo htmlspecialchars($user['nom']); ?>
-                        </p>
-                    </div>
+            <div class="profile-info-grid">
+                <div class="profile-info-item">
+                    <strong>Prénom</strong>
+                    <p><?php echo htmlspecialchars($user['prenom']); ?></p>
                 </div>
-
-                <div style="padding: 16px; background: var(--light-gray); border-radius: 8px; margin-bottom: 24px;">
-                    <strong style="display: block; margin-bottom: 8px; color: var(--text-gray); font-size: 0.9rem; text-transform: uppercase;">📧 Email</strong>
-                    <p style="font-size: 1.1rem; font-weight: 500;">
-                        <?php echo htmlspecialchars($user['email']); ?>
-                    </p>
+                <div class="profile-info-item">
+                    <strong>Nom</strong>
+                    <p><?php echo htmlspecialchars($user['nom']); ?></p>
                 </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
-                    <div style="padding: 16px; background: var(--light-gray); border-radius: 8px;">
-                        <strong style="display: block; margin-bottom: 8px; color: var(--text-gray); font-size: 0.9rem; text-transform: uppercase;">📱 Téléphone</strong>
-                        <p style="font-size: 1.1rem; font-weight: 500;">
-                            <?php echo htmlspecialchars($user['telephone'] ?? '—'); ?>
-                        </p>
-                    </div>
-
-                    <div style="padding: 16px; background: var(--light-gray); border-radius: 8px;">
-                        <strong style="display: block; margin-bottom: 8px; color: var(--text-gray); font-size: 0.9rem; text-transform: uppercase;">🎂 Date de naissance</strong>
-                        <p style="font-size: 1.1rem; font-weight: 500;">
-                            <?php echo $user['date_naissance'] ? date('d/m/Y', strtotime($user['date_naissance'])) : '—'; ?>
-                        </p>
-                    </div>
+                <div class="profile-info-item" style="grid-column: 1 / -1;">
+                    <strong>Email</strong>
+                    <p><?php echo htmlspecialchars($user['email']); ?></p>
                 </div>
-
-                <div style="padding: 16px; background: var(--light-gray); border-radius: 8px; margin-bottom: 24px;">
-                    <strong style="display: block; margin-bottom: 8px; color: var(--text-gray); font-size: 0.9rem; text-transform: uppercase;">📅 Date d'inscription</strong>
-                    <p style="font-size: 1.1rem; font-weight: 500;">
-                        <?php echo $user['date_inscription'] ? date('d/m/Y', strtotime($user['date_inscription'])) : '—'; ?>
-                    </p>
+                <div class="profile-info-item">
+                    <strong>Téléphone</strong>
+                    <p><?php echo htmlspecialchars($user['telephone'] ?? '—'); ?></p>
                 </div>
-
-                <div style="display: flex; gap: 12px; margin-top: 32px;">
-                    <a href="index.php?action=editProfile" class="btn btn-primary" style="flex: 1; text-align: center;">
-                        ✏️ Modifier mon profil
-                    </a>
-                    <a href="index.php?action=dashboard" class="btn btn-outline" style="flex: 1; text-align: center;">
-                        ← Retour au tableau de bord
-                    </a>
+                <div class="profile-info-item">
+                    <strong>Date de naissance</strong>
+                    <p><?php echo $user['date_naissance'] ? date('d/m/Y', strtotime($user['date_naissance'])) : '—'; ?></p>
                 </div>
+                <div class="profile-info-item" style="grid-column: 1 / -1;">
+                    <strong>Date d'inscription</strong>
+                    <p><?php echo $user['date_inscription'] ? date('d/m/Y', strtotime($user['date_inscription'])) : '—'; ?></p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <a href="index.php?action=editProfile" class="btn btn-primary" style="flex: 1;">Modifier mon profil</a>
+                <a href="index.php?action=dashboard" class="btn btn-outline" style="flex: 1;">Retour</a>
             </div>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 FoodSave. Tous droits réservés.</p>
-    </footer>
-
-    <script src="assets/js/validation.js"></script>
-</body>
-                    <strong>Compte créé le :</strong>
-                    <p><?php echo date('d/m/Y', strtotime($user['date_inscription'])); ?></p>
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                <a href="index.php?action=editProfile" class="btn btn-primary">Modifier le profil</a>
-                <a href="index.php?action=dashboard" class="btn btn-secondary">Retour au tableau de bord</a>
-            </div>
-        </div>
-    </div>
-
-    <footer>
+    <footer class="site-footer">
         <p>&copy; 2026 FoodSave. Tous droits réservés.</p>
     </footer>
 

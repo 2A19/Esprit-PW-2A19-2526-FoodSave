@@ -3,85 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion - FoodSave</title>
+    <title>Connexion — FoodSave</title>
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <header>
+
+    <header class="site-header">
         <div class="header-container">
-            <a href="index.php" class="logo">
-                <img src="assets/images/logo.png" alt="FoodSave" class="logo-image">
+            <a href="home.html" class="brand">
+                <img src="assets/images/logo.png" alt="FoodSave">
+                <span>
+                    <span class="brand-food">Food</span>
+                    <span class="brand-save">Save</span>
+                </span>
             </a>
-            <nav>
-                <ul>
-                    <li><a href="index.php">Accueil</a></li>
-                </ul>
+
+            <nav class="primary-nav">
+                <a href="home.html">Accueil</a>
             </nav>
+
+            <div class="nav-actions">
+                <a href="index.php?action=register" class="btn-register">
+                    S'inscrire
+                </a>
+            </div>
         </div>
     </header>
 
     <div class="auth-page">
-        <div class="auth-container">
-            <div class="auth-card">
-                <div class="auth-card-header">
-                    <h1>Connexion</h1>
-                    <p>Accédez à votre compte FoodSave</p>
-                </div>
+        <div class="auth-card fade-in">
 
-                <?php if (isset($_SESSION['success'])): ?>
-                    <div class="alert alert-success">
-                        <span class="alert-icon">✓</span>
-                        <div>
-                            <strong>Succès !</strong> <?php echo htmlspecialchars($_SESSION['success']); ?>
-                        </div>
-                        <?php unset($_SESSION['success']); ?>
-                    </div>
-                <?php endif; ?>
-
-                <?php if (isset($errors['login'])): ?>
-                    <div class="alert alert-error">
-                        <span class="alert-icon">✕</span>
-                        <div>
-                            <strong>Erreur</strong> <?php echo htmlspecialchars($errors['login']); ?>
-                        </div>
-                    </div>
-                <?php endif; ?>
-
-                <form id="loginForm" method="POST" action="index.php?action=handleLogin">
-                    <div class="form-group">
-                        <label for="email">Adresse email</label>
-                        <input type="email" id="email" name="email" placeholder="votre@email.com" required>
-                        <?php if (isset($errors['email'])): ?>
-                            <div class="form-error">⚠ <?php echo htmlspecialchars($errors['email']); ?></div>
-                        <?php endif; ?>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Mot de passe</label>
-                        <input type="password" id="password" name="password" placeholder="••••••••" required>
-                        <?php if (isset($errors['password'])): ?>
-                            <div class="form-error">⚠ <?php echo htmlspecialchars($errors['password']); ?></div>
-                        <?php endif; ?>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">
-                        <span>Se connecter</span>
-                    </button>
-                </form>
-
-                <div class="auth-links-toggle">
-                    <p>Vous n'avez pas de compte ?
-                        <a href="index.php?action=register">S'inscrire maintenant</a>
-                    </p>
-                </div>
+            <div class="auth-card-header">
+                <h1>Connexion</h1>
+                <p>Accédez à votre compte FoodSave</p>
             </div>
+
+            <?php if (isset($_SESSION['success'])): ?>
+                <div class="alert alert-success">
+                    <span class="alert-icon">✓</span>
+                    <div>
+                        <strong>Succès !</strong>
+                        <?php echo htmlspecialchars($_SESSION['success']); ?>
+                    </div>
+                    <?php unset($_SESSION['success']); ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if (isset($errors['login'])): ?>
+                <div class="alert alert-error">
+                    <span class="alert-icon">✕</span>
+                    <div>
+                        <strong>Erreur :</strong>
+                        <?php echo htmlspecialchars($errors['login']); ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <form id="loginForm" method="POST" action="index.php?action=handleLogin">
+
+                <!-- EMAIL -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+
+                    <div class="input-wrap has-icon">
+                        <span class="input-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                        </span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Email"
+                            required
+                        >
+                    </div>
+
+                    <?php if (isset($errors['email'])): ?>
+                        <div class="form-error">
+                            ⚠ <?php echo htmlspecialchars($errors['email']); ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+
+                    <div class="input-wrap has-icon has-icon-right">
+                        <span class="input-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                        </span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Mot de passe"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="input-icon-right"
+                            onclick="
+                                const i = document.getElementById('password');
+                                i.type = i.type === 'password' ? 'text' : 'password';
+                            "
+                            aria-label="Afficher le mot de passe"
+                        >
+                            <svg width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <?php if (isset($errors['password'])): ?>
+                        <div class="form-error">
+                            ⚠ <?php echo htmlspecialchars($errors['password']); ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <div class="auth-extras">
+                    <label>
+                        <input type="checkbox" name="remember">
+                        Se souvenir de moi
+                    </label>
+
+                    <a href="#">Mot de passe oublié ?</a>
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-block btn-lg"
+                >
+                    Se connecter
+                </button>
+
+            </form>
+
+            <div class="auth-links-toggle">
+                <p>
+                    Pas encore de compte ?
+                    <a href="index.php?action=register">S'inscrire</a>
+                </p>
+            </div>
+
         </div>
     </div>
 
-    <footer>
+    <footer class="site-footer">
         <p>&copy; 2026 FoodSave. Tous droits réservés.</p>
     </footer>
 
     <script src="assets/js/validation.js"></script>
+
 </body>
 </html>
