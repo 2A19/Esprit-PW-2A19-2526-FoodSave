@@ -1,13 +1,23 @@
 <?php
 /**
- * FoodSave – Model : Dechet
- * Architecture MVC | PDO obligatoire (conforme contrainte prof)
- * Fichier : models/Dechet.php
+ * FoodSave — Model : Dechet
+ * Getters / Setters + accès PDO
  */
 
 require_once __DIR__ . '/../config/Database.php';
 
 class Dechet {
+
+    /* ── Propriétés ── */
+    private ?int    $id           = null;
+    private string  $typeAliment  = '';
+    private float   $quantite     = 0.0;
+    private string  $unite        = '';
+    private string  $dateDechet   = '';
+    private string  $raison       = '';
+    private string  $notes        = '';
+    private ?int    $categorieId  = null;
+    private ?string $createdAt    = null;
 
     private PDO $pdo;
 
@@ -15,141 +25,116 @@ class Dechet {
         $this->pdo = Database::getConnection();
     }
 
-    /* =========================================================
-       CREATE — Ajouter un déchet
-    ========================================================= */
-    public function create(array $data): bool {
-        $sql = "INSERT INTO dechets (user_id, type_aliment, quantite, unite, date_dechet, raison, notes)
-                VALUES (:user_id, :type_aliment, :quantite, :unite, :date_dechet, :raison, :notes)";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
-            ':user_id'      => $data['user_id'],
-            ':type_aliment' => $data['type_aliment'],
-            ':quantite'     => $data['quantite'],
-            ':unite'        => $data['unite'],
-            ':date_dechet'  => $data['date_dechet'],
-            ':raison'       => $data['raison'],
-            ':notes'        => $data['notes'] ?? '',
-        ]);
+    /* ── Getters ── */
+    public function getId():          ?int    { return $this->id; }
+    public function getTypeAliment(): string  { return $this->typeAliment; }
+    public function getQuantite():    float   { return $this->quantite; }
+    public function getUnite():       string  { return $this->unite; }
+    public function getDateDechet():  string  { return $this->dateDechet; }
+    public function getRaison():      string  { return $this->raison; }
+    public function getNotes():       string  { return $this->notes; }
+    public function getCategorieId(): ?int    { return $this->categorieId; }
+    public function getCreatedAt():   ?string { return $this->createdAt; }
+
+    /* ── Setters ── */
+    public function setId(int $id):                   self { $this->id          = $id;          return $this; }
+    public function setTypeAliment(string $v):        self { $this->typeAliment = trim($v);      return $this; }
+    public function setQuantite(float $v):            self { $this->quantite    = $v;            return $this; }
+    public function setUnite(string $v):              self { $this->unite       = trim($v);      return $this; }
+    public function setDateDechet(string $v):         self { $this->dateDechet  = $v;            return $this; }
+    public function setRaison(string $v):             self { $this->raison      = trim($v);      return $this; }
+    public function setNotes(string $v):              self { $this->notes       = trim($v);      return $this; }
+    public function setCategorieId(?int $v):          self { $this->categorieId = $v;            return $this; }
+
+    /* ── Hydratation depuis tableau PDO ── */
+    public function hydrate(array $row): self {
+        if (isset($row['id']))           $this->id          = (int)   $row['id'];
+        if (isset($row['type_aliment'])) $this->typeAliment = (string)$row['type_aliment'];
+        if (isset($row['quantite']))     $this->quantite    = (float) $row['quantite'];
+        if (isset($row['unite']))        $this->unite       = (string)$row['unite'];
+        if (isset($row['date_dechet'])) $this->dateDechet  = (string)$row['date_dechet'];
+        if (isset($row['raison']))       $this->raison      = (string)$row['raison'];
+        if (isset($row['notes']))        $this->notes       = (string)$row['notes'];
+        if (array_key_exists('categorie_id', $row))
+            $this->categorieId = $row['categorie_id'] !== null ? (int)$row['categorie_id'] : null;
+        if (isset($row['created_at']))   $this->createdAt   = (string)$row['created_at'];
+        return $this;
     }
 
-    /* =========================================================
-       READ ALL — Lister tous les déchets (avec pagination)
-    ========================================================= */
-    public function getAll(int $limit = 50, int $offset = 0): array {
-        $sql = "SELECT d.*, u.nom, u.prenom
+    /* ── toArray() — pour l'API ── */
+    public function toArray(): array {
+        return [
+            'id'           => $this->id,
+            'type_aliment' => $this->typeAliment,
+            'quantite'     => $this->quantite,
+            'unite'        => $this->unite,
+            'date_dechet'  => $this->dateDechet,
+            'raison'       => $this->raison,
+            'notes'        => $this->notes,
+            'categorie_id' => $this->categorieId,
+            'created_at'   => $this->createdAt,
+        ];
+    }
+
+    /* ══════════════════════════════
+       REQUÊTES (logique SQL propre)
+    ══════════════════════════════ */
+
+    public function findAll(int $limit = 500, int $offset = 0): array {
+        $sql = "SELECT d.*, c.nom AS categorie_nom, c.couleur AS categorie_couleur
                 FROM dechets d
-                JOIN users u ON u.id = d.user_id
+                LEFT JOIN categories c ON c.id = d.categorie_id
                 ORDER BY d.date_dechet DESC
-                LIMIT :limit OFFSET :offset";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(':limit',  $limit,  PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+                LIMIT :lim OFFSET :off";
+        $st = $this->pdo->prepare($sql);
+        $st->bindValue(':lim', $limit,  PDO::PARAM_INT);
+        $st->bindValue(':off', $offset, PDO::PARAM_INT);
+        $st->execute();
+        return array_map(fn($r) => (new self())->hydrate($r)->toArray() + $r, $st->fetchAll(PDO::FETCH_ASSOC));
     }
 
-    /* =========================================================
-       READ BY USER — Déchets d'un utilisateur
-    ========================================================= */
-    public function getByUser(int $userId): array {
-        $sql = "SELECT * FROM dechets WHERE user_id = :user_id ORDER BY date_dechet DESC";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':user_id' => $userId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function findById(int $id): ?self {
+        $st = $this->pdo->prepare(
+            "SELECT d.*, c.nom AS categorie_nom FROM dechets d
+             LEFT JOIN categories c ON c.id = d.categorie_id
+             WHERE d.id = :id LIMIT 1");
+        $st->execute([':id' => $id]);
+        $row = $st->fetch(PDO::FETCH_ASSOC);
+        return $row ? (new self())->hydrate($row) : null;
     }
 
-    /* =========================================================
-       READ ONE — Un déchet par ID
-    ========================================================= */
-    public function getById(int $id): array|false {
-        $sql = "SELECT * FROM dechets WHERE id = :id LIMIT 1";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':id' => $id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    /* =========================================================
-       UPDATE — Modifier un déchet
-    ========================================================= */
-    public function update(int $id, array $data): bool {
-        $sql = "UPDATE dechets SET
-                    type_aliment = :type_aliment,
-                    quantite     = :quantite,
-                    unite        = :unite,
-                    date_dechet  = :date_dechet,
-                    raison       = :raison,
-                    notes        = :notes
-                WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
-            ':type_aliment' => $data['type_aliment'],
-            ':quantite'     => $data['quantite'],
-            ':unite'        => $data['unite'],
-            ':date_dechet'  => $data['date_dechet'],
-            ':raison'       => $data['raison'],
-            ':notes'        => $data['notes'] ?? '',
-            ':id'           => $id,
+    public function save(): bool {
+        if ($this->id) {
+            $sql = "UPDATE dechets SET type_aliment=:t,quantite=:q,unite=:u,
+                    date_dechet=:d,raison=:r,notes=:n,categorie_id=:c WHERE id=:id";
+        } else {
+            $sql = "INSERT INTO dechets (type_aliment,quantite,unite,date_dechet,raison,notes,categorie_id)
+                    VALUES (:t,:q,:u,:d,:r,:n,:c)";
+        }
+        $st = $this->pdo->prepare($sql);
+        $ok = $st->execute([
+            ':t'  => $this->typeAliment,
+            ':q'  => $this->quantite,
+            ':u'  => $this->unite,
+            ':d'  => $this->dateDechet,
+            ':r'  => $this->raison,
+            ':n'  => $this->notes,
+            ':c'  => $this->categorieId,
+            ...$this->id ? [':id' => $this->id] : [],
         ]);
+        if ($ok && !$this->id) $this->id = (int)$this->pdo->lastInsertId();
+        return $ok;
     }
 
-    /* =========================================================
-       DELETE — Supprimer un déchet
-    ========================================================= */
-    public function delete(int $id): bool {
-        $sql = "DELETE FROM dechets WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([':id' => $id]);
+    public function delete(): bool {
+        if (!$this->id) return false;
+        return $this->pdo->prepare("DELETE FROM dechets WHERE id=:id")->execute([':id' => $this->id]);
     }
 
-    /* =========================================================
-       STATS — Statistiques pour le dashboard
-    ========================================================= */
-    public function getStats(int $userId): array {
-        $sql = "SELECT
-                    COUNT(*)        AS total_entrees,
-                    SUM(quantite)   AS total_quantite,
-                    AVG(quantite)   AS moyenne_quantite,
-                    MAX(date_dechet) AS derniere_date
-                FROM dechets
-                WHERE user_id = :user_id";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':user_id' => $userId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    /* =========================================================
-       SEARCH — Filtrage avancé
-    ========================================================= */
-    public function search(array $filters): array {
-        $conditions = ['1=1'];
-        $params = [];
-
-        if (!empty($filters['type'])) {
-            $conditions[] = 'type_aliment = :type';
-            $params[':type'] = $filters['type'];
-        }
-        if (!empty($filters['raison'])) {
-            $conditions[] = 'raison = :raison';
-            $params[':raison'] = $filters['raison'];
-        }
-        if (!empty($filters['date_from'])) {
-            $conditions[] = 'date_dechet >= :date_from';
-            $params[':date_from'] = $filters['date_from'];
-        }
-        if (!empty($filters['date_to'])) {
-            $conditions[] = 'date_dechet <= :date_to';
-            $params[':date_to'] = $filters['date_to'];
-        }
-        if (!empty($filters['user_id'])) {
-            $conditions[] = 'user_id = :user_id';
-            $params[':user_id'] = $filters['user_id'];
-        }
-
-        $where = implode(' AND ', $conditions);
-        $sql = "SELECT * FROM dechets WHERE {$where} ORDER BY date_dechet DESC";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function getStats(): array {
+        return $this->pdo->query(
+            "SELECT COUNT(*) total, SUM(quantite) total_kg,
+                    AVG(quantite) avg_kg, MAX(date_dechet) last_date FROM dechets"
+        )->fetch(PDO::FETCH_ASSOC);
     }
 }

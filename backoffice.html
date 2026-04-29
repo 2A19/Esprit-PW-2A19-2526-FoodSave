@@ -1,660 +1,1287 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FoodSave – Back Office Déchets</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <style>
-    :root { --sidebar-w: 260px; }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>FoodSave — CMS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --w:260px;
+  --g:#16a34a;--gl:#dcfce7;--gd:#14532d;
+  --o:#ea580c;--ol:#ffedd5;
+  --b:#2563eb;--bl:#dbeafe;
+  --p:#7c3aed;--pl:#ede9fe;
+  --r:#dc2626;--rl:#fee2e2;
+  --y:#ca8a04;--yl:#fef9c3;
+  --bg:#f8fafc;--surf:#fff;--s2:#f1f5f9;--s3:#e2e8f0;
+  --bd:#e2e8f0;--bdd:#cbd5e1;
+  --tx:#0f172a;--mu:#64748b;--fa:#94a3b8;
+  --sb:#0f172a;--sb2:#1e293b;
+  --rad:10px;--radl:14px;--radx:20px;
+  --sh:0 1px 3px rgba(0,0,0,.07);--shm:0 4px 20px rgba(0,0,0,.09);--shl:0 16px 48px rgba(0,0,0,.14);
+  --f:'Inter',sans-serif;--tr:.15s ease;
+  --topbar-h:62px;
+}
+[data-theme="dark"]{
+  --bg:#0d1117;--surf:#161b22;--s2:#21262d;--s3:#30363d;
+  --bd:#30363d;--bdd:#484f58;
+  --tx:#e6edf3;--mu:#8b949e;--fa:#6e7681;
+  --sb:#010409;--sb2:#0d1117;
+  --sh:0 1px 3px rgba(0,0,0,.3);--shm:0 4px 20px rgba(0,0,0,.4);--shl:0 16px 48px rgba(0,0,0,.5);
+}
+body{font-family:var(--f);background:var(--bg);color:var(--tx);min-height:100vh;font-size:14px;line-height:1.5;transition:background .25s,color .25s;}
+a{text-decoration:none;color:inherit;}button{font-family:inherit;cursor:pointer;border:none;background:none;}
+input,select,textarea{font-family:inherit;}
+:focus-visible{outline:2px solid var(--g);outline-offset:2px;border-radius:4px;}
 
-    /* Admin overrides */
-    .sidebar {
-      background: linear-gradient(160deg, #212121 0%, #1B2B1C 100%);
-    }
-    .sidebar-logo .logo-icon { background: #E53935; }
-    .nav-item.active::before { background: #E53935; }
-    .topbar { border-bottom-color: #E8F5E9; }
+/* ════ SCROLLBAR ════ */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--bdd)}
 
-    .admin-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #FFEBEE;
-      color: #C62828;
-      font-size: 0.75rem;
-      font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 999px;
-      letter-spacing: 0.5px;
-    }
+/* ════ LAYOUT ════ */
+.app{display:flex;min-height:100vh;}
 
-    .filter-bar {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-      background: var(--white);
-      padding: 18px 24px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-    }
+/* ════ SIDEBAR ════ */
+.sb{width:var(--w);background:var(--sb);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:300;transition:transform .28s cubic-bezier(.4,0,.2,1);}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:299;backdrop-filter:blur(2px);}
 
-    .filter-bar label { font-size: 0.82rem; font-weight: 700; color: var(--text-muted); }
+.sb-logo{display:flex;align-items:center;gap:10px;padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.07);}
+.sb-logo-ring{width:36px;height:36px;background:linear-gradient(135deg,var(--g),#22c55e);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;box-shadow:0 2px 8px rgba(22,163,74,.4);}
+.sb-logo-tx{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.3px;} .sb-logo-tx em{color:#86efac;font-style:normal;}
+.sb-badge{margin-left:auto;background:rgba(220,38,38,.9);color:#fff;font-size:9px;font-weight:700;letter-spacing:.6px;padding:2px 7px;border-radius:5px;text-transform:uppercase;}
 
-    .filter-bar select, .filter-bar input[type="date"] {
-      width: auto;
-      min-width: 160px;
-    }
+.sb-body{flex:1;overflow-y:auto;padding:8px 0;scrollbar-width:none;}
+.sb-body::-webkit-scrollbar{display:none;}
+.sb-lbl{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,.2);padding:12px 18px 4px;}
 
-    .export-btn {
-      margin-left: auto;
-    }
+.sb-it{display:flex;align-items:center;gap:9px;padding:8px 18px;color:rgba(255,255,255,.55);font-size:13.5px;font-weight:500;cursor:pointer;transition:all var(--tr);position:relative;width:100%;text-align:left;border-radius:0;user-select:none;}
+.sb-it:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.9);}
+.sb-it.on{background:rgba(255,255,255,.11);color:#fff;}
+.sb-it.on::before{content:'';position:absolute;left:0;top:16%;height:68%;width:3px;background:linear-gradient(to bottom,var(--g),#22c55e);border-radius:0 3px 3px 0;}
+.sb-ic{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;background:rgba(255,255,255,.06);flex-shrink:0;transition:all var(--tr);}
+.sb-it:hover .sb-ic{background:rgba(255,255,255,.1);}
+.sb-it.on .sb-ic{background:rgba(22,163,74,.3);}
+.sb-cnt{margin-left:auto;font-size:10px;font-weight:700;padding:1px 7px;border-radius:99px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);min-width:22px;text-align:center;}
+.sb-it.on .sb-cnt{background:var(--g);color:#fff;}
 
-    .admin-stat-bar {
-      display: flex;
-      gap: 20px;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
-    }
+.sb-sep{height:1px;background:rgba(255,255,255,.06);margin:6px 18px;}
 
-    .admin-stat {
-      flex: 1;
-      min-width: 170px;
-      background: var(--white);
-      border-radius: var(--radius);
-      padding: 20px 22px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-    }
+.sb-foot{padding:12px 18px;border-top:1px solid rgba(255,255,255,.07);}
+.sb-user{display:flex;align-items:center;gap:9px;}
+.sb-av{width:32px;height:32px;background:linear-gradient(135deg,var(--g),#22c55e);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 2px 6px rgba(22,163,74,.3);}
+.sb-uname{font-size:12.5px;font-weight:700;color:#fff;} .sb-urole{font-size:10px;color:rgba(255,255,255,.35);}
+.sb-dark{width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:14px;margin-left:auto;transition:all var(--tr);}
+.sb-dark:hover{background:rgba(255,255,255,.14);}
 
-    .admin-stat .label {
-      font-size: 0.75rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-    }
+/* ════ MAIN ════ */
+.main{margin-left:var(--w);flex:1;display:flex;flex-direction:column;min-width:0;}
 
-    .admin-stat .value {
-      font-size: 1.8rem;
-      font-weight: 900;
-      color: var(--text);
-    }
+/* ════ TOPBAR ════ */
+.tb{height:var(--topbar-h);background:var(--surf);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 24px;gap:12px;position:sticky;top:0;z-index:100;transition:background .25s;}
+.tb-crumb{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--mu);}
+.tb-crumb .sep{opacity:.3;margin:0 1px;} .tb-crumb .cur{color:var(--tx);font-weight:700;}
+.tb-sp{flex:1;}
+.tb-acts{display:flex;align-items:center;gap:7px;}
+.tb-btn{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:var(--rad);font-size:12.5px;font-weight:600;border:1px solid var(--bd);background:var(--surf);color:var(--mu);transition:all var(--tr);cursor:pointer;white-space:nowrap;}
+.tb-btn:hover{border-color:var(--bdd);color:var(--tx);background:var(--s2);}
+.tb-btn.primary{background:var(--g);color:#fff;border-color:var(--g);box-shadow:0 2px 8px rgba(22,163,74,.3);}
+.tb-btn.primary:hover{background:#15803d;box-shadow:0 4px 12px rgba(22,163,74,.4);}
+.tb-btn:active{transform:scale(.97);}
+.tb-av{width:32px;height:32px;background:linear-gradient(135deg,var(--gl),#bbf7d0);color:var(--gd);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;cursor:pointer;border:2px solid var(--g);}
+.tb-search{position:relative;display:flex;align-items:center;}
+.tb-search input{padding:6px 10px 6px 30px;border:1px solid var(--bd);border-radius:var(--rad);font-size:13px;background:var(--s2);color:var(--tx);width:180px;transition:all .2s;}
+.tb-search input:focus{outline:none;border-color:var(--g);background:var(--surf);width:220px;box-shadow:0 0 0 3px rgba(22,163,74,.1);}
+.tb-search::before{content:'⌕';position:absolute;left:9px;font-size:14px;color:var(--fa);pointer-events:none;}
 
-    .status-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      display: inline-block;
-      margin-right: 6px;
-    }
-  </style>
+/* ════ PAGE ════ */
+.pc{padding:24px;flex:1;}
+.page{display:none;}
+.page.on{display:block;animation:pageIn .22s ease;}
+@keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ════ PAGE HEADER ════ */
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;gap:14px;flex-wrap:wrap;}
+.ph-l h1{font-size:20px;font-weight:800;letter-spacing:-.4px;display:flex;align-items:center;gap:8px;}
+.ph-l p{font-size:13px;color:var(--mu);margin-top:3px;}
+.ph-r{display:flex;gap:8px;flex-wrap:wrap;}
+
+/* ════ KPI ════ */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:22px;}
+.kpi{background:var(--surf);border:1px solid var(--bd);border-radius:var(--radl);padding:16px 18px;box-shadow:var(--sh);transition:all .2s;cursor:default;position:relative;overflow:hidden;}
+.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--kpi-color,var(--g));transform:scaleX(0);transition:transform .3s ease;transform-origin:left;}
+.kpi:hover{box-shadow:var(--shm);transform:translateY(-2px);}
+.kpi:hover::after{transform:scaleX(1);}
+.kpi-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.kpi-lbl{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;}
+.kpi-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ic-g{background:var(--gl);} .ic-o{background:var(--ol);} .ic-b{background:var(--bl);}
+.ic-p{background:var(--pl);} .ic-y{background:var(--yl);}
+.kpi-v{font-size:26px;font-weight:800;color:var(--tx);line-height:1;letter-spacing:-.5px;}
+.kpi-s{font-size:11px;color:var(--fa);margin-top:4px;}
+.kpi-trend{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:99px;display:inline-flex;align-items:center;gap:3px;margin-top:5px;}
+.kpi-trend.up{background:var(--gl);color:var(--gd);}
+.kpi-trend.neutral{background:var(--s2);color:var(--mu);}
+
+/* ════ SKELETON ════ */
+.skel{background:linear-gradient(90deg,var(--s2) 25%,var(--s3) 50%,var(--s2) 75%);background-size:200% 100%;animation:skel 1.4s infinite;}
+@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-line{height:14px;border-radius:6px;margin-bottom:8px;}
+.skel-box{border-radius:var(--radl);height:100px;}
+
+/* ════ DATA CARD ════ */
+.dc{background:var(--surf);border:1px solid var(--bd);border-radius:var(--radl);box-shadow:var(--sh);overflow:hidden;margin-bottom:18px;transition:background .25s,border-color .25s;}
+.dc-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--bd);gap:10px;flex-wrap:wrap;}
+.dc-ttl{font-size:14.5px;font-weight:700;} .dc-sub{font-size:12px;color:var(--mu);margin-top:1px;}
+.dc-acts{display:flex;gap:7px;align-items:center;}
+
+/* ── Search in toolbar ── */
+.srch{position:relative;display:flex;align-items:center;}
+.srch input{padding:6px 10px 6px 30px;border:1px solid var(--bd);border-radius:var(--rad);font-size:13px;background:var(--s2);color:var(--tx);width:185px;transition:all .2s;}
+.srch input:focus{outline:none;border-color:var(--g);background:var(--surf);box-shadow:0 0 0 3px rgba(22,163,74,.1);}
+.srch::before{content:'⌕';position:absolute;left:9px;font-size:13px;color:var(--fa);pointer-events:none;}
+
+/* ── Filter bar ── */
+.ftb{display:flex;gap:9px;flex-wrap:wrap;padding:10px 20px;border-bottom:1px solid var(--bd);background:var(--s2);align-items:center;}
+.fg{display:flex;align-items:center;gap:5px;}
+.fg label{font-size:11.5px;font-weight:600;color:var(--mu);white-space:nowrap;}
+.fg select,.fg input[type="date"]{padding:5px 9px;border:1px solid var(--bd);border-radius:var(--rad);font-size:12.5px;background:var(--surf);color:var(--tx);transition:border-color var(--tr);}
+.fg select:focus,.fg input:focus{outline:none;border-color:var(--g);}
+.fsp{flex:1;}
+
+/* ════ TABLE ════ */
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead tr{background:var(--s2);}
+thead th{padding:9px 14px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);white-space:nowrap;border-bottom:1px solid var(--bd);user-select:none;}
+thead th.sortable{cursor:pointer;transition:color var(--tr);}
+thead th.sortable:hover{color:var(--tx);}
+thead th.sortable::after{content:' ⇅';opacity:.4;font-size:9px;}
+thead th.sort-asc::after{content:' ↑';opacity:1;color:var(--g);}
+thead th.sort-desc::after{content:' ↓';opacity:1;color:var(--g);}
+tbody tr{border-bottom:1px solid var(--bd);transition:background var(--tr);}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--s2);}
+td{padding:11px 14px;font-size:13.5px;vertical-align:middle;}
+
+/* swipe-to-delete sur mobile */
+.sw-row{position:relative;overflow:hidden;}
+.sw-actions{position:absolute;right:0;top:0;bottom:0;display:flex;align-items:center;gap:0;transform:translateX(100%);transition:transform .25s ease;}
+.sw-act-btn{height:100%;padding:0 18px;display:flex;align-items:center;font-size:20px;cursor:pointer;transition:background var(--tr);}
+.sw-act-btn.edit{background:#2563eb;}
+.sw-act-btn.del{background:#dc2626;}
+.sw-inner{transition:transform .25s ease;}
+
+.erow td{text-align:center;padding:48px 20px;color:var(--mu);}
+.ei{font-size:36px;margin-bottom:10px;} .eh{font-size:14.5px;font-weight:700;margin-bottom:4px;} .ep{font-size:12.5px;color:var(--fa);}
+
+/* ════ PAGINATION ════ */
+.pag{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;border-top:1px solid var(--bd);}
+.pag-info{font-size:12px;color:var(--mu);}
+.pag-btns{display:flex;gap:4px;}
+.pb{padding:4px 9px;border:1px solid var(--bd);border-radius:var(--rad);font-size:12.5px;font-weight:600;background:var(--surf);color:var(--mu);transition:all var(--tr);cursor:pointer;}
+.pb:hover{border-color:var(--g);color:var(--g);}
+.pb.on{background:var(--g);color:#fff;border-color:var(--g);box-shadow:0 2px 6px rgba(22,163,74,.3);}
+.pb:disabled{opacity:.4;pointer-events:none;}
+
+/* ════ BADGE ════ */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;font-size:11.5px;font-weight:600;white-space:nowrap;}
+.bg{background:var(--gl);color:#166534;} .bo{background:var(--ol);color:#9a3412;}
+.bb{background:var(--bl);color:#1e40af;} .bp{background:var(--pl);color:#5b21b6;}
+.by{background:var(--yl);color:#854d0e;} .bgr{background:var(--s2);color:var(--mu);}
+.dot{width:5px;height:5px;border-radius:50%;display:inline-block;}
+.dot-g{background:#16a34a;} .dot-o{background:#ea580c;} .dot-gr{background:#94a3b8;}
+
+/* ════ CARDS GRID ════ */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;padding:18px;}
+.art-card{border:1px solid var(--bd);border-radius:var(--radl);overflow:hidden;background:var(--surf);transition:all .22s;cursor:pointer;}
+.art-card:hover{box-shadow:var(--shm);transform:translateY(-3px);border-color:var(--bdd);}
+.art-thumb{height:130px;display:flex;align-items:center;justify-content:center;font-size:3.2rem;position:relative;overflow:hidden;}
+.art-body{padding:13px 15px;}
+.art-meta{display:flex;align-items:center;gap:7px;margin-bottom:7px;flex-wrap:wrap;}
+.art-cat-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;text-transform:uppercase;letter-spacing:.4px;}
+.art-date{font-size:11px;color:var(--fa);}
+.art-title{font-size:14px;font-weight:700;margin-bottom:5px;line-height:1.4;color:var(--tx);}
+.art-excerpt{font-size:12px;color:var(--mu);line-height:1.5;margin-bottom:11px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.art-foot{display:flex;align-items:center;justify-content:space-between;}
+.art-author{font-size:11.5px;color:var(--mu);}
+
+/* ════ FAQ ACCORDION ════ */
+.faq-list{padding:10px 18px 18px;}
+.faq-item{border:1px solid var(--bd);border-radius:var(--rad);margin-bottom:8px;overflow:hidden;transition:border-color var(--tr);}
+.faq-item:hover{border-color:var(--bdd);}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;font-weight:600;font-size:13.5px;gap:10px;user-select:none;transition:background var(--tr);}
+.faq-q:hover{background:var(--s2);}
+.faq-q.open{background:var(--s2);}
+.faq-chevron{flex-shrink:0;color:var(--mu);font-size:11px;transition:transform .25s ease;}
+.faq-q.open .faq-chevron{transform:rotate(180deg);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .25s ease;padding:0 16px;}
+.faq-a.open{max-height:400px;padding:10px 16px 14px;}
+.faq-a p{font-size:13px;color:var(--mu);line-height:1.75;}
+.faq-a-acts{display:flex;gap:6px;margin-top:10px;}
+
+/* ════ OVERVIEW ════ */
+.ov-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.ov-sec{background:var(--surf);border:1px solid var(--bd);border-radius:var(--radl);overflow:hidden;box-shadow:var(--sh);}
+.ov-sec-hd{padding:12px 18px;border-bottom:1px solid var(--bd);font-size:14px;font-weight:700;display:flex;align-items:center;gap:7px;}
+.ov-sec-body{padding:12px 18px;}
+.ov-li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);}
+.ov-li:last-child{border-bottom:none;}
+.ov-li-ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.ov-li-name{font-size:13px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ov-li-sub{font-size:11px;color:var(--mu);}
+
+.af-item{display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--bd);}
+.af-item:last-child{border-bottom:none;}
+.af-ic{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.af-tx{flex:1;min-width:0;}
+.af-main{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.af-sub{font-size:11px;color:var(--mu);margin-top:1px;}
+.af-time{font-size:11px;color:var(--fa);white-space:nowrap;flex-shrink:0;}
+
+/* ════ BUTTONS ════ */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:var(--rad);font-size:13px;font-weight:600;border:1px solid transparent;transition:all .15s;cursor:pointer;white-space:nowrap;user-select:none;}
+.btn:active{transform:scale(.96);}
+.bp-b{background:var(--g);color:#fff;box-shadow:0 1px 4px rgba(22,163,74,.25);}
+.bp-b:hover{background:#15803d;box-shadow:0 3px 10px rgba(22,163,74,.35);}
+.bd-b{background:var(--rl);color:var(--r);border-color:#fca5a5;}
+.bd-b:hover{background:var(--r);color:#fff;box-shadow:0 2px 8px rgba(220,38,38,.3);}
+.bo-b{background:var(--surf);color:var(--tx);border-color:var(--bd);}
+.bo-b:hover{border-color:var(--bdd);background:var(--s2);}
+.bgh-b{background:transparent;color:var(--mu);}
+.bgh-b:hover{background:var(--s2);color:var(--tx);}
+.sm{padding:5px 10px;font-size:12px;}
+.ico-b{padding:6px;border-radius:var(--rad);font-size:14px;line-height:1;}
+.ag{display:flex;gap:4px;}
+
+/* ════ MODAL ════ */
+.mo{position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(5px);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;}
+.mo.op{display:flex;}
+.modal{background:var(--surf);border-radius:var(--radx);box-shadow:var(--shl);width:100%;max-width:560px;max-height:92vh;overflow-y:auto;animation:mIn .2s cubic-bezier(.34,1.56,.64,1);border:1px solid var(--bd);}
+.modal.wide{max-width:700px;}
+.modal.sm{max-width:400px;}
+@keyframes mIn{from{transform:translateY(20px) scale(.95);opacity:0}to{transform:none;opacity:1}}
+.mhd{display:flex;align-items:center;gap:10px;padding:18px 20px 14px;border-bottom:1px solid var(--bd);}
+.mhd-ic{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.mttl{font-size:15px;font-weight:800;} .msub{font-size:11.5px;color:var(--mu);margin-top:1px;}
+.mcl{margin-left:auto;width:28px;height:28px;border-radius:7px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--mu);transition:all var(--tr);}
+.mcl:hover{background:var(--rl);color:var(--r);}
+.mbody{padding:20px;}
+.mfoot{display:flex;gap:9px;justify-content:flex-end;padding:13px 20px;border-top:1px solid var(--bd);background:var(--s2);}
+
+/* confirm */
+.cbody{text-align:center;padding:28px 22px;}
+.cic{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 14px;}
+.cic.r{background:var(--rl);}
+.cttl{font-size:17px;font-weight:800;} .cdesc{font-size:13px;color:var(--mu);margin-top:8px;line-height:1.6;}
+
+/* ════ FORMS ════ */
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.fgrp{display:flex;flex-direction:column;gap:5px;}
+.fgrp.s2{grid-column:span 2;}
+.fgrp label{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.4px;}
+.fgrp input,.fgrp select,.fgrp textarea{padding:9px 11px;border:1.5px solid var(--bd);border-radius:var(--rad);font-size:13.5px;background:var(--surf);color:var(--tx);transition:all .15s;}
+.fgrp input:focus,.fgrp select:focus,.fgrp textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(22,163,74,.1);}
+.fgrp input.err,.fgrp select.err,.fgrp textarea.err{border-color:var(--r);box-shadow:0 0 0 3px rgba(220,38,38,.1);}
+.fgrp textarea{resize:vertical;min-height:80px;line-height:1.6;}
+.emsg{font-size:11px;color:var(--r);display:none;align-items:center;gap:3px;} .emsg.show{display:flex;}
+.rich-tb{display:flex;gap:4px;padding:7px 10px;border:1.5px solid var(--bd);border-radius:var(--rad) var(--rad) 0 0;border-bottom:none;background:var(--s2);}
+.rt-b{padding:4px 9px;border-radius:5px;font-size:12px;font-weight:700;color:var(--mu);background:var(--surf);border:1px solid var(--bd);transition:all var(--tr);}
+.rt-b:hover{background:var(--tx);color:#fff;}
+.rich-a{padding:11px;border:1.5px solid var(--bd);border-radius:0 0 var(--rad) var(--rad);min-height:110px;background:var(--surf);font-size:13.5px;line-height:1.7;color:var(--tx);transition:all .15s;}
+.rich-a:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(22,163,74,.1);}
+.color-preview{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--bd);flex-shrink:0;transition:border-color var(--tr);}
+
+/* ════ TOAST STACK ════ */
+.toast-stack{position:fixed;top:18px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+.toast{background:var(--surf);border:1px solid var(--bd);border-radius:var(--radl);box-shadow:var(--shl);padding:12px 16px;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:9px;max-width:340px;pointer-events:all;transform:translateX(120%);transition:transform .3s cubic-bezier(.34,1.56,.64,1);cursor:pointer;}
+.toast.show{transform:translateX(0);}
+.toast.success{border-left:3px solid var(--g);}
+.toast.error{border-left:3px solid var(--r);}
+.toast.info{border-left:3px solid var(--b);}
+.toast.warning{border-left:3px solid var(--y);}
+.toast-close{margin-left:auto;font-size:12px;color:var(--fa);flex-shrink:0;}
+
+/* ════ TABS ════ */
+.tabs{display:flex;border-bottom:2px solid var(--bd);margin-bottom:18px;}
+.tab{padding:8px 18px;font-size:13.5px;font-weight:600;color:var(--mu);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all var(--tr);cursor:pointer;user-select:none;}
+.tab:hover{color:var(--tx);}
+.tab.on{color:var(--g);border-bottom-color:var(--g);}
+
+/* ════ KEYBOARD SHORTCUT HINT ════ */
+.kbd{font-size:10px;font-weight:700;padding:1px 5px;border:1px solid var(--bd);border-radius:4px;background:var(--s2);color:var(--mu);margin-left:4px;}
+
+/* ════ COMMAND PALETTE ════ */
+.cmd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);z-index:800;display:none;align-items:flex-start;justify-content:center;padding-top:15vh;}
+.cmd-overlay.op{display:flex;}
+.cmd-box{background:var(--surf);border:1px solid var(--bd);border-radius:var(--radx);box-shadow:var(--shl);width:100%;max-width:560px;overflow:hidden;animation:mIn .15s ease;}
+.cmd-input-wrap{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--bd);}
+.cmd-input-wrap span{font-size:18px;color:var(--mu);}
+.cmd-input-wrap input{flex:1;border:none;background:transparent;font-size:15px;color:var(--tx);outline:none;}
+.cmd-results{max-height:340px;overflow-y:auto;}
+.cmd-section{padding:8px 10px 4px;font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--fa);}
+.cmd-item{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;transition:background var(--tr);border-radius:var(--rad);margin:2px 6px;}
+.cmd-item:hover,.cmd-item.sel{background:var(--s2);}
+.cmd-item-ic{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:var(--s2);}
+.cmd-item-tx{flex:1;} .cmd-item-name{font-size:13px;font-weight:600;} .cmd-item-sub{font-size:11px;color:var(--mu);}
+.cmd-item-kbd{font-size:10px;padding:2px 7px;border:1px solid var(--bd);border-radius:5px;color:var(--fa);background:var(--s2);}
+.cmd-foot{padding:9px 14px;border-top:1px solid var(--bd);display:flex;gap:12px;font-size:11px;color:var(--fa);}
+.cmd-foot span{display:flex;align-items:center;gap:4px;}
+
+/* ════ PROGRESS BAR ════ */
+.top-progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(to right,var(--g),#22c55e,#86efac);z-index:999;width:0%;transition:width .3s ease;border-radius:0 2px 2px 0;}
+.top-progress.done{opacity:0;transition:width .3s ease,opacity .5s ease .3s;}
+
+/* ════ STAT CHART ════ */
+.mini-chart{display:flex;align-items:flex-end;gap:3px;height:40px;padding:0 0 2px;}
+.mc-bar{flex:1;border-radius:3px 3px 0 0;min-height:3px;transition:height .5s ease,background .3s;}
+.mc-bar:hover{opacity:.8;cursor:pointer;}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sb{transform:translateX(-100%);}
+  .sb.mobile-open{transform:translateX(0);}
+  .sb-overlay.show{display:block;}
+  .main{margin-left:0;}
+  .fg2{grid-template-columns:1fr;}
+  .fgrp.s2{grid-column:span 1;}
+  .ov-grid{grid-template-columns:1fr;}
+  .kpis{grid-template-columns:repeat(2,1fr);}
+  .tb-search{display:none;}
+}
+</style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-icon">⚙️</div>
-    <span><b>Food</b>Save</span>
-  </div>
-  <nav class="sidebar-nav">
-    <div class="nav-label">Administration</div>
-    <a class="nav-item active" data-page="bo-dechets">
-      <span class="icon">🗑️</span> Gestion Déchets
-    </a>
-    <a class="nav-item" href="#">
-      <span class="icon">👥</span> Utilisateurs
-    </a>
-    <a class="nav-item" href="#">
-      <span class="icon">📰</span> Articles
-    </a>
-    <a class="nav-item" href="#">
-      <span class="icon">🎉</span> Événements
-    </a>
-    <a class="nav-item" href="#">
-      <span class="icon">💬</span> Forum
-    </a>
-    <div class="nav-label" style="margin-top:12px;">Navigation</div>
-    <a class="nav-item" href="index.html">
-      <span class="icon">🏠</span> Front Office
-    </a>
-  </nav>
-  <div class="sidebar-footer">Back Office Admin<br>FoodSave © 2026</div>
-</aside>
+<!-- Progress bar -->
+<div class="top-progress" id="progress"></div>
+<!-- Toast stack -->
+<div class="toast-stack" id="toast-stack"></div>
 
-<!-- MAIN -->
+<!-- ═══ COMMAND PALETTE ═══ -->
+<div class="cmd-overlay" id="cmd-overlay" onclick="closeCmd(event)">
+  <div class="cmd-box">
+    <div class="cmd-input-wrap">
+      <span>⌕</span>
+      <input id="cmd-input" placeholder="Rechercher ou taper une commande…" oninput="filterCmd()" onkeydown="cmdKey(event)" autocomplete="off"/>
+    </div>
+    <div class="cmd-results" id="cmd-results"></div>
+    <div class="cmd-foot">
+      <span><kbd class="kbd">↑↓</kbd> Naviguer</span>
+      <span><kbd class="kbd">↵</kbd> Sélectionner</span>
+      <span><kbd class="kbd">Esc</kbd> Fermer</span>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<aside class="sb" id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-ring">🍃</div>
+    <div class="sb-logo-tx"><em>Food</em>Save</div>
+    <span class="sb-badge">CMS</span>
+  </div>
+
+  <nav class="sb-body">
+    <div class="sb-lbl">Tableau de bord</div>
+    <button class="sb-it on" data-p="overview" onclick="go('overview')">
+      <div class="sb-ic">📊</div> Vue d'ensemble
+    </button>
+
+    <div class="sb-sep"></div>
+    <div class="sb-lbl">Contenu</div>
+    <button class="sb-it" data-p="conseils" onclick="go('conseils')">
+      <div class="sb-ic">💡</div> Conseils
+      <span class="sb-cnt" id="sc-c">0</span>
+    </button>
+    <button class="sb-it" data-p="blog" onclick="go('blog')">
+      <div class="sb-ic">📝</div> Articles
+      <span class="sb-cnt" id="sc-b">0</span>
+    </button>
+    <button class="sb-it" data-p="faq" onclick="go('faq')">
+      <div class="sb-ic">❓</div> FAQ
+      <span class="sb-cnt" id="sc-f">0</span>
+    </button>
+    <button class="sb-it" data-p="evenements" onclick="go('evenements')">
+      <div class="sb-ic">🎉</div> Événements
+      <span class="sb-cnt" id="sc-e">0</span>
+    </button>
+
+    <div class="sb-sep"></div>
+    <div class="sb-lbl">Système</div>
+    <a class="sb-it" href="index.html">
+      <div class="sb-ic">🏠</div> Front Office
+    </a>
+    <button class="sb-it" onclick="openCmd()">
+      <div class="sb-ic">⌕</div> Recherche rapide
+      <span class="sb-cnt" style="font-size:9px;letter-spacing:.5px;">⌘K</span>
+    </button>
+  </nav>
+
+  <div class="sb-foot">
+    <div class="sb-av">AD</div>
+    <div><div class="sb-uname">Admin</div><div class="sb-urole">Éditeur en chef</div></div>
+    <button class="sb-dark" onclick="toggleDark()" title="Mode sombre" id="dark-btn">🌙</button>
+  </div>
+</aside>
+<div class="sb-overlay" id="sb-overlay" onclick="closeMobileSb()"></div>
+
+<!-- ═══════════ MAIN ═══════════ -->
 <div class="main">
 
-  <header class="topbar">
-    <div style="display:flex;align-items:center;gap:14px;">
-      <h1 class="topbar-title">⚙️ Back Office – Déchets</h1>
-      <span class="admin-badge">🔐 ADMIN</span>
+  <!-- TOPBAR -->
+  <header class="tb">
+    <button style="display:none;margin-right:6px;padding:6px;border-radius:var(--rad);border:1px solid var(--bd);background:var(--surf);" id="menu-btn" onclick="openMobileSb()">☰</button>
+    <div class="tb-crumb">
+      <span style="color:var(--fa);">FoodSave</span><span class="sep"> / </span>
+      <span class="cur" id="tb-cur">Vue d'ensemble</span>
     </div>
-    <div class="topbar-right">
-      <div class="avatar" style="background:#FFEBEE;color:#C62828;">AD</div>
+    <div class="tb-sp"></div>
+    <div class="tb-acts">
+      <div class="tb-search">
+        <input placeholder="Rechercher… ⌘K" onclick="openCmd()" readonly style="cursor:pointer;"/>
+      </div>
+      <button class="tb-btn" onclick="exportCurrentCSV()" title="Exporter CSV">⬇ CSV</button>
+      <button class="tb-btn primary" id="tb-add" onclick="openAdd()" style="display:none;">＋ Nouveau</button>
+      <div class="tb-av" title="Admin">AD</div>
     </div>
   </header>
 
-  <div class="page active" id="page-bo-dechets" style="display:block;">
+  <div class="pc">
 
-    <div id="bo-alert" class="alert"></div>
-
-    <!-- Stats -->
-    <div class="admin-stat-bar" id="bo-stats"></div>
-
-    <!-- Filters -->
-    <div class="filter-bar">
-      <div>
-        <label>Type</label><br>
-        <select id="filter-type" onchange="renderBoTable()">
-          <option value="">Tous</option>
-          <option>Légumes</option><option>Fruits</option><option>Pain</option>
-          <option>Viande</option><option>Poisson</option><option>Produits laitiers</option>
-        </select>
+  <!-- ══ OVERVIEW ══ -->
+  <div id="page-overview" class="page on">
+    <div class="ph"><div class="ph-l"><h1>📊 Vue d'ensemble</h1><p>Résumé du contenu éditorial FoodSave</p></div></div>
+    <div class="kpis">
+      <div class="kpi" style="--kpi-color:var(--y);" onclick="go('conseils')" style="cursor:pointer;">
+        <div class="kpi-top"><span class="kpi-lbl">Conseils</span><div class="kpi-ic ic-y">💡</div></div>
+        <div class="kpi-v" id="ov-c">0</div><div class="kpi-s">astuces publiées</div>
+        <div class="mini-chart" id="ov-chart-c"></div>
       </div>
-      <div>
-        <label>Raison</label><br>
-        <select id="filter-raison" onchange="renderBoTable()">
-          <option value="">Toutes</option>
-          <option>Mauvais stockage</option><option>Date expirée</option>
-          <option>Surproduction</option><option>Portions excessives</option>
-          <option>Esthétique</option>
-        </select>
+      <div class="kpi" style="--kpi-color:var(--b);">
+        <div class="kpi-top"><span class="kpi-lbl">Articles</span><div class="kpi-ic ic-b">📝</div></div>
+        <div class="kpi-v" id="ov-b">0</div><div class="kpi-s">articles de blog</div>
+        <div class="mini-chart" id="ov-chart-b"></div>
       </div>
-      <div>
-        <label>Du</label><br>
-        <input type="date" id="filter-from" onchange="renderBoTable()" />
+      <div class="kpi" style="--kpi-color:var(--p);">
+        <div class="kpi-top"><span class="kpi-lbl">FAQ</span><div class="kpi-ic ic-p">❓</div></div>
+        <div class="kpi-v" id="ov-f">0</div><div class="kpi-s">questions répondues</div>
       </div>
-      <div>
-        <label>Au</label><br>
-        <input type="date" id="filter-to" onchange="renderBoTable()" />
-      </div>
-      <div class="export-btn">
-        <button class="btn btn-orange" onclick="exportCSV()">📥 Exporter CSV</button>
+      <div class="kpi" style="--kpi-color:var(--g);">
+        <div class="kpi-top"><span class="kpi-lbl">Événements</span><div class="kpi-ic ic-g">🎉</div></div>
+        <div class="kpi-v" id="ov-e">0</div><div class="kpi-s">à venir</div>
       </div>
     </div>
-
-    <!-- Table -->
-    <div class="card">
-      <div class="card-header">
-        <h2>🗑️ Tous les déchets (<span id="bo-count">0</span>)</h2>
-        <button class="btn btn-primary btn-sm" onclick="openBoAddModal()">➕ Ajouter</button>
+    <div class="ov-grid">
+      <div class="ov-sec">
+        <div class="ov-sec-hd">📝 Derniers articles</div>
+        <div class="ov-sec-body" id="ov-blog"></div>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th><th>Utilisateur</th><th>Type</th><th>Quantité</th>
-              <th>Date</th><th>Raison</th><th>Notes</th><th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="bo-table-body"></tbody>
-        </table>
+      <div class="ov-sec">
+        <div class="ov-sec-hd">💡 Derniers conseils</div>
+        <div class="ov-sec-body" id="ov-conseil"></div>
       </div>
     </div>
+    <div class="dc">
+      <div class="dc-hd"><div><div class="dc-ttl">⏱ Activité récente</div></div></div>
+      <div class="ov-sec-body" id="ov-activity" style="padding:10px 18px 16px;"></div>
+    </div>
+  </div>
 
+  <!-- ══ CONSEILS ══ -->
+  <div id="page-conseils" class="page">
+    <div class="ph">
+      <div class="ph-l"><h1>💡 Conseils & Astuces</h1><p>Gérer les conseils anti-gaspillage alimentaire</p></div>
+    </div>
+    <div class="kpis" style="grid-template-columns:repeat(4,1fr);">
+      <div class="kpi" style="--kpi-color:var(--y);"><div class="kpi-top"><span class="kpi-lbl">Total</span><div class="kpi-ic ic-y">💡</div></div><div class="kpi-v" id="c-tot">0</div></div>
+      <div class="kpi" style="--kpi-color:var(--g);"><div class="kpi-top"><span class="kpi-lbl">Publiés</span><div class="kpi-ic ic-g">✅</div></div><div class="kpi-v" id="c-pub">0</div></div>
+      <div class="kpi" style="--kpi-color:var(--o);"><div class="kpi-top"><span class="kpi-lbl">Brouillons</span><div class="kpi-ic ic-o">📄</div></div><div class="kpi-v" id="c-dra">0</div></div>
+      <div class="kpi" style="--kpi-color:var(--b);"><div class="kpi-top"><span class="kpi-lbl">Catégories</span><div class="kpi-ic ic-b">🏷️</div></div><div class="kpi-v" id="c-ncat">0</div></div>
+    </div>
+    <div class="dc">
+      <div class="dc-hd">
+        <div><div class="dc-ttl">Tous les conseils <span style="color:var(--mu);font-weight:400;font-size:13px;">(<span id="c-cnt">0</span>)</span></div></div>
+        <div class="dc-acts">
+          <div class="srch"><input id="c-srch" placeholder="Rechercher…" oninput="renderConseils()"/></div>
+          <select id="c-fcat" onchange="renderConseils()" style="padding:6px 10px;border:1px solid var(--bd);border-radius:var(--rad);font-size:13px;background:var(--s2);color:var(--tx);"><option value="">Toutes catégories</option></select>
+          <select id="c-fst" onchange="renderConseils()" style="padding:6px 10px;border:1px solid var(--bd);border-radius:var(--rad);font-size:13px;background:var(--s2);color:var(--tx);"><option value="">Tous statuts</option><option value="publié">Publié</option><option value="brouillon">Brouillon</option></select>
+        </div>
+      </div>
+      <div class="tw"><table>
+        <thead><tr>
+          <th class="sortable" onclick="sortTable('conseils','titre',this)">Titre</th>
+          <th class="sortable" onclick="sortTable('conseils','cat',this)">Catégorie</th>
+          <th>Difficulté</th>
+          <th class="sortable" onclick="sortTable('conseils','statut',this)">Statut</th>
+          <th class="sortable" onclick="sortTable('conseils','date',this)">Date</th>
+          <th>Actions</th>
+        </tr></thead>
+        <tbody id="c-tb"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- ══ BLOG ══ -->
+  <div id="page-blog" class="page">
+    <div class="ph"><div class="ph-l"><h1>📝 Articles de Blog</h1><p>Gérer les articles et publications</p></div></div>
+    <div class="kpis" style="grid-template-columns:repeat(4,1fr);">
+      <div class="kpi" style="--kpi-color:var(--b);"><div class="kpi-top"><span class="kpi-lbl">Total</span><div class="kpi-ic ic-b">📝</div></div><div class="kpi-v" id="b-tot">0</div></div>
+      <div class="kpi" style="--kpi-color:var(--g);"><div class="kpi-top"><span class="kpi-lbl">Publiés</span><div class="kpi-ic ic-g">✅</div></div><div class="kpi-v" id="b-pub">0</div></div>
+      <div class="kpi" style="--kpi-color:var(--o);"><div class="kpi-top"><span class="kpi-lbl">Brouillons</span><div class="kpi-ic ic-o">📄</div></div><div class="kpi-v" id="b-dra">0</div></div>
+      <div class="kpi" style="--kpi-color:var(--y);"><div class="kpi-top"><span class="kpi-lbl">Vedette</span><div class="kpi-ic ic-y">⭐</div></div><div class="kpi-v" id="b-feat">0</div></div>
+    </div>
+    <div class="tabs">
+      <div class="tab on" onclick="setBlogView('cards',this)">🃏 Cartes</div>
+      <div class="tab" onclick="setBlogView('table',this)">📋 Tableau</div>
+    </div>
+    <div id="b-cards-view">
+      <div style="background:var(--surf);border:1px solid var(--bd);border-radius:var(--radl);overflow:visible;">
+        <div class="dc-hd">
+          <div class="dc-ttl">Articles <span style="color:var(--mu);font-weight:400;font-size:13px;">(<span id="b-cnt">0</span>)</span></div>
+          <div class="dc-acts">
+            <div class="srch"><input id="b-srch" placeholder="Rechercher…" oninput="renderBlog()"/></div>
+            <select id="b-fst" onchange="renderBlog()" style="padding:6px 10px;border:1px solid var(--bd);border-radius:var(--rad);font-size:13px;background:var(--s2);color:var(--tx);"><option value="">Tous</option><option value="publié">Publiés</option><option value="brouillon">Brouillons</option></select>
+          </div>
+        </div>
+        <div class="cards-grid" id="b-grid"></div>
+      </div>
+    </div>
+    <div id="b-table-view" style="display:none;">
+      <div class="dc"><div class="tw"><table>
+        <thead><tr><th>Titre</th><th>Auteur</th><th>Catégorie</th><th>Statut</th><th>Vedette</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody id="b-tb"></tbody>
+      </table></div></div>
+    </div>
+  </div>
+
+  <!-- ══ FAQ ══ -->
+  <div id="page-faq" class="page">
+    <div class="ph"><div class="ph-l"><h1>❓ FAQ</h1><p>Questions fréquemment posées</p></div></div>
+    <div class="kpis" style="grid-template-columns:repeat(3,1fr);">
+      <div class="kpi" style="--kpi-color:var(--p);"><div class="kpi-top"><span class="kpi-lbl">Total</span><div class="kpi-ic ic-p">❓</div></div><div class="kpi-v" id="f-tot">0</div></div>
+      <div class="kpi" style="--kpi-color:var(--g);"><div class="kpi-top"><span class="kpi-lbl">Publiées</span><div class="kpi-ic ic-g">✅</div></div><div class="kpi-v" id="f-pub">0</div></div>
+      <div class="kpi" style="--kpi-color:var(--b);"><div class="kpi-top"><span class="kpi-lbl">Catégories</span><div class="kpi-ic ic-b">🏷️</div></div><div class="kpi-v" id="f-ncat">0</div></div>
+    </div>
+    <div class="dc">
+      <div class="dc-hd">
+        <div class="dc-ttl">Questions <span style="color:var(--mu);font-weight:400;font-size:13px;">(<span id="f-cnt">0</span>)</span></div>
+        <div class="dc-acts"><div class="srch"><input id="f-srch" placeholder="Rechercher…" oninput="renderFaq()"/></div></div>
+      </div>
+      <div class="faq-list" id="f-list"></div>
+    </div>
+  </div>
+
+  <!-- ══ ÉVÉNEMENTS ══ -->
+  <div id="page-evenements" class="page">
+    <div class="ph"><div class="ph-l"><h1>🎉 Événements</h1><p>Gérer les événements et ateliers FoodSave</p></div></div>
+    <div class="kpis" style="grid-template-columns:repeat(4,1fr);">
+      <div class="kpi" style="--kpi-color:var(--g);"><div class="kpi-top"><span class="kpi-lbl">Total</span><div class="kpi-ic ic-g">🎉</div></div><div class="kpi-v" id="e-tot">0</div></div>
+      <div class="kpi" style="--kpi-color:var(--b);"><div class="kpi-top"><span class="kpi-lbl">À venir</span><div class="kpi-ic ic-b">📅</div></div><div class="kpi-v" id="e-up">0</div></div>
+      <div class="kpi" style="--kpi-color:var(--o);"><div class="kpi-top"><span class="kpi-lbl">En cours</span><div class="kpi-ic ic-o">🔄</div></div><div class="kpi-v" id="e-on">0</div></div>
+      <div class="kpi" style="--kpi-color:var(--p);"><div class="kpi-top"><span class="kpi-lbl">Terminés</span><div class="kpi-ic ic-p">✅</div></div><div class="kpi-v" id="e-done">0</div></div>
+    </div>
+    <div class="dc">
+      <div class="dc-hd">
+        <div class="dc-ttl">Tous les événements <span style="color:var(--mu);font-weight:400;font-size:13px;">(<span id="e-cnt">0</span>)</span></div>
+        <div class="dc-acts">
+          <div class="srch"><input id="e-srch" placeholder="Rechercher…" oninput="renderEvents()"/></div>
+          <select id="e-fst" onchange="renderEvents()" style="padding:6px 10px;border:1px solid var(--bd);border-radius:var(--rad);font-size:13px;background:var(--s2);color:var(--tx);"><option value="">Tous</option><option value="à venir">À venir</option><option value="en cours">En cours</option><option value="terminé">Terminé</option><option value="annulé">Annulé</option></select>
+        </div>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th>Événement</th><th>Type</th><th>Date</th><th>Lieu</th><th>Places</th><th>Statut</th><th>Actions</th></tr></thead>
+        <tbody id="e-tb"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  </div><!-- /pc -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ══ MODALS ══ -->
+<!-- CONSEIL -->
+<div class="mo" id="mod-conseil">
+  <div class="modal wide">
+    <div class="mhd"><div class="mhd-ic ic-y">💡</div><div><div class="mttl" id="mc-ttl">Nouveau conseil</div><div class="msub">Astuce anti-gaspillage</div></div><button class="mcl" onclick="cm('mod-conseil')">✕</button></div>
+    <div class="mbody"><div class="fg2">
+      <div class="fgrp s2"><label>Titre *</label><input id="mc-titre" placeholder="Ex : Conserver les légumes plus longtemps"/><span class="emsg" id="mc-titre-e">⚠ Champ obligatoire</span></div>
+      <div class="fgrp"><label>Catégorie *</label>
+        <select id="mc-cat"><option value="">— Choisir —</option><option>Conservation</option><option>Cuisine créative</option><option>Courses malines</option><option>Zéro déchet</option><option>Congélation</option><option>Portions</option></select>
+        <span class="emsg" id="mc-cat-e">⚠ Champ obligatoire</span>
+      </div>
+      <div class="fgrp"><label>Difficulté</label><select id="mc-diff"><option value="Facile">😊 Facile</option><option value="Moyen">🤔 Moyen</option><option value="Avancé">🧑‍🍳 Avancé</option></select></div>
+      <div class="fgrp"><label>Emoji / Icône</label><input id="mc-icone" placeholder="🥦" maxlength="4" style="font-size:1.4rem;"/></div>
+      <div class="fgrp"><label>Temps (min)</label><input id="mc-temps" type="number" min="1" placeholder="5"/></div>
+      <div class="fgrp"><label>Statut</label><select id="mc-st"><option value="publié">✅ Publié</option><option value="brouillon">📄 Brouillon</option></select></div>
+      <div class="fgrp s2"><label>Résumé *</label><textarea id="mc-resume" placeholder="Bref résumé affiché dans la liste…" style="min-height:60px;"></textarea><span class="emsg" id="mc-resume-e">⚠ Champ obligatoire</span></div>
+      <div class="fgrp s2">
+        <label>Contenu complet</label>
+        <div class="rich-tb"><button class="rt-b" onclick="fmt('mc-content','bold')"><b>G</b></button><button class="rt-b" onclick="fmt('mc-content','italic')"><i>I</i></button><button class="rt-b" onclick="fmt('mc-content','insertUnorderedList')">• Liste</button></div>
+        <div class="rich-a" id="mc-content" contenteditable="true"></div>
+      </div>
+      <div class="fgrp s2"><label>Tags (séparés par virgule)</label><input id="mc-tags" placeholder="légumes, conservation, frigo"/></div>
+    </div></div>
+    <div class="mfoot"><button class="btn bo-b" onclick="cm('mod-conseil')">Annuler</button><button class="btn bp-b" onclick="saveConseil()">💾 Enregistrer</button></div>
   </div>
 </div>
 
-<!-- ===== MODAL ADD (BO) ===== -->
-<div class="modal-overlay" id="modal-bo-add">
+<!-- BLOG -->
+<div class="mo" id="mod-blog">
+  <div class="modal wide">
+    <div class="mhd"><div class="mhd-ic ic-b">📝</div><div><div class="mttl" id="mb-ttl">Nouvel article</div><div class="msub">Article de blog FoodSave</div></div><button class="mcl" onclick="cm('mod-blog')">✕</button></div>
+    <div class="mbody"><div class="fg2">
+      <div class="fgrp s2"><label>Titre *</label><input id="mb-titre" placeholder="Ex : 10 astuces pour zéro gaspillage"/><span class="emsg" id="mb-titre-e">⚠ Champ obligatoire</span></div>
+      <div class="fgrp"><label>Auteur *</label><input id="mb-auteur" placeholder="Prénom Nom"/><span class="emsg" id="mb-auteur-e">⚠ Champ obligatoire</span></div>
+      <div class="fgrp"><label>Catégorie</label><select id="mb-cat"><option>Gaspillage alimentaire</option><option>Recettes anti-gaspi</option><option>Zéro déchet</option><option>Environnement</option><option>Conseils pratiques</option><option>Actualité</option></select></div>
+      <div class="fgrp"><label>Image (emoji)</label><input id="mb-img" placeholder="🥗" maxlength="4" style="font-size:1.4rem;"/></div>
+      <div class="fgrp"><label>Temps de lecture (min)</label><input id="mb-tps" type="number" min="1" placeholder="5"/></div>
+      <div class="fgrp"><label>Statut</label><select id="mb-st"><option value="publié">✅ Publié</option><option value="brouillon">📄 Brouillon</option></select></div>
+      <div class="fgrp"><label>En vedette</label><select id="mb-feat"><option value="0">Non</option><option value="1">⭐ Oui</option></select></div>
+      <div class="fgrp s2"><label>Chapeau *</label><textarea id="mb-resume" style="min-height:60px;" placeholder="Introduction accrocheuse…"></textarea><span class="emsg" id="mb-resume-e">⚠ Champ obligatoire</span></div>
+      <div class="fgrp s2">
+        <label>Contenu *</label>
+        <div class="rich-tb"><button class="rt-b" onclick="fmt('mb-content','bold')"><b>G</b></button><button class="rt-b" onclick="fmt('mb-content','italic')"><i>I</i></button><button class="rt-b" onclick="fmt('mb-content','insertUnorderedList')">• Liste</button><button class="rt-b" onclick="fmt('mb-content','insertOrderedList')">1. Numérotée</button></div>
+        <div class="rich-a" id="mb-content" contenteditable="true"></div>
+        <span class="emsg" id="mb-content-e">⚠ Champ obligatoire</span>
+      </div>
+      <div class="fgrp s2"><label>Tags</label><input id="mb-tags" placeholder="recette, zéro déchet, astuces"/></div>
+    </div></div>
+    <div class="mfoot"><button class="btn bo-b" onclick="cm('mod-blog')">Annuler</button><button class="btn bp-b" onclick="saveBlog()">💾 Enregistrer</button></div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="mo" id="mod-faq">
   <div class="modal">
-    <div class="modal-header">
-      <h3>➕ Ajouter un déchet (Admin)</h3>
-      <button class="modal-close" onclick="closeModal('modal-bo-add')">✕</button>
-    </div>
-    <form id="form-bo-add" novalidate onsubmit="return false;">
-      <div class="form-grid">
-        <div class="form-group">
-          <label for="bo-user">Utilisateur *</label>
-          <select id="bo-user">
-            <option value="">— Choisir —</option>
-          </select>
-          <span class="error-msg" id="bo-user-err"></span>
-        </div>
-        <div class="form-group">
-          <label for="bo-type">Type d'aliment *</label>
-          <select id="bo-type">
-            <option value="">— Choisir —</option>
-            <option>Légumes</option><option>Fruits</option><option>Pain</option>
-            <option>Viande</option><option>Poisson</option><option>Produits laitiers</option>
-            <option>Autre</option>
-          </select>
-          <span class="error-msg" id="bo-type-err"></span>
-        </div>
-        <div class="form-group">
-          <label for="bo-quantite">Quantité *</label>
-          <input type="text" id="bo-quantite" placeholder="Ex: 1.5" />
-          <span class="error-msg" id="bo-quantite-err"></span>
-        </div>
-        <div class="form-group">
-          <label for="bo-unite">Unité *</label>
-          <select id="bo-unite">
-            <option value="">—</option>
-            <option>kg</option><option>g</option><option>L</option><option>unité(s)</option>
-          </select>
-          <span class="error-msg" id="bo-unite-err"></span>
-        </div>
-        <div class="form-group">
-          <label for="bo-date">Date *</label>
-          <input type="date" id="bo-date" />
-          <span class="error-msg" id="bo-date-err"></span>
-        </div>
-        <div class="form-group">
-          <label for="bo-raison">Raison *</label>
-          <select id="bo-raison">
-            <option value="">—</option>
-            <option>Mauvais stockage</option><option>Date expirée</option>
-            <option>Surproduction</option><option>Portions excessives</option>
-            <option>Esthétique</option><option>Autre</option>
-          </select>
-          <span class="error-msg" id="bo-raison-err"></span>
-        </div>
-        <div class="form-group span2">
-          <label for="bo-notes">Notes</label>
-          <textarea id="bo-notes" placeholder="Détails complémentaires..."></textarea>
-        </div>
-        <div class="form-actions">
-          <button class="btn btn-outline" type="button" onclick="closeModal('modal-bo-add')">Annuler</button>
-          <button class="btn btn-primary" type="button" onclick="submitBoAdd()">💾 Enregistrer</button>
-        </div>
-      </div>
-    </form>
+    <div class="mhd"><div class="mhd-ic ic-p">❓</div><div><div class="mttl" id="mf-ttl">Nouvelle question</div><div class="msub">FAQ FoodSave</div></div><button class="mcl" onclick="cm('mod-faq')">✕</button></div>
+    <div class="mbody"><div class="fg2">
+      <div class="fgrp s2"><label>Question *</label><input id="mf-q" placeholder="Comment conserver les légumes ?"/><span class="emsg" id="mf-q-e">⚠ Obligatoire</span></div>
+      <div class="fgrp s2"><label>Réponse *</label><textarea id="mf-r" style="min-height:100px;" placeholder="Réponse détaillée…"></textarea><span class="emsg" id="mf-r-e">⚠ Obligatoire</span></div>
+      <div class="fgrp"><label>Catégorie</label><select id="mf-cat"><option>Général</option><option>Conservation</option><option>Congélation</option><option>Application</option><option>Collecte</option><option>Compostage</option></select></div>
+      <div class="fgrp"><label>Statut</label><select id="mf-st"><option value="publié">✅ Publié</option><option value="brouillon">📄 Brouillon</option></select></div>
+    </div></div>
+    <div class="mfoot"><button class="btn bo-b" onclick="cm('mod-faq')">Annuler</button><button class="btn bp-b" onclick="saveFaq()">💾 Enregistrer</button></div>
   </div>
 </div>
 
-<!-- ===== MODAL EDIT (BO) ===== -->
-<div class="modal-overlay" id="modal-bo-edit">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>✏️ Modifier (Admin)</h3>
-      <button class="modal-close" onclick="closeModal('modal-bo-edit')">✕</button>
-    </div>
-    <form id="form-bo-edit" novalidate onsubmit="return false;">
-      <div class="form-grid">
-        <div class="form-group">
-          <label for="boe-type">Type d'aliment *</label>
-          <select id="boe-type">
-            <option value="">—</option>
-            <option>Légumes</option><option>Fruits</option><option>Pain</option>
-            <option>Viande</option><option>Poisson</option><option>Produits laitiers</option>
-            <option>Autre</option>
-          </select>
-          <span class="error-msg" id="boe-type-err"></span>
-        </div>
-        <div class="form-group">
-          <label for="boe-quantite">Quantité *</label>
-          <input type="text" id="boe-quantite" />
-          <span class="error-msg" id="boe-quantite-err"></span>
-        </div>
-        <div class="form-group">
-          <label for="boe-unite">Unité *</label>
-          <select id="boe-unite">
-            <option value="">—</option>
-            <option>kg</option><option>g</option><option>L</option><option>unité(s)</option>
-          </select>
-          <span class="error-msg" id="boe-unite-err"></span>
-        </div>
-        <div class="form-group">
-          <label for="boe-date">Date *</label>
-          <input type="date" id="boe-date" />
-          <span class="error-msg" id="boe-date-err"></span>
-        </div>
-        <div class="form-group">
-          <label for="boe-raison">Raison *</label>
-          <select id="boe-raison">
-            <option value="">—</option>
-            <option>Mauvais stockage</option><option>Date expirée</option>
-            <option>Surproduction</option><option>Portions excessives</option>
-            <option>Esthétique</option><option>Autre</option>
-          </select>
-          <span class="error-msg" id="boe-raison-err"></span>
-        </div>
-        <div class="form-group span2">
-          <label for="boe-notes">Notes</label>
-          <textarea id="boe-notes"></textarea>
-        </div>
-        <div class="form-actions">
-          <button class="btn btn-outline" type="button" onclick="closeModal('modal-bo-edit')">Annuler</button>
-          <button class="btn btn-primary" type="button" onclick="submitBoEdit()">💾 Sauvegarder</button>
-        </div>
-      </div>
-    </form>
+<!-- ÉVÉNEMENT -->
+<div class="mo" id="mod-event">
+  <div class="modal wide">
+    <div class="mhd"><div class="mhd-ic ic-g">🎉</div><div><div class="mttl" id="me-ttl">Nouvel événement</div><div class="msub">Atelier, conférence ou collecte</div></div><button class="mcl" onclick="cm('mod-event')">✕</button></div>
+    <div class="mbody"><div class="fg2">
+      <div class="fgrp s2"><label>Titre *</label><input id="me-titre" placeholder="Ex : Atelier Zéro Gaspillage"/><span class="emsg" id="me-titre-e">⚠ Obligatoire</span></div>
+      <div class="fgrp"><label>Type</label><select id="me-type"><option>Atelier</option><option>Conférence</option><option>Collecte solidaire</option><option>Formation</option><option>Webinaire</option></select></div>
+      <div class="fgrp"><label>Statut</label><select id="me-st"><option value="à venir">📅 À venir</option><option value="en cours">🔄 En cours</option><option value="terminé">✅ Terminé</option><option value="annulé">❌ Annulé</option></select></div>
+      <div class="fgrp"><label>Date de début *</label><input type="datetime-local" id="me-debut"/><span class="emsg" id="me-debut-e">⚠ Obligatoire</span></div>
+      <div class="fgrp"><label>Date de fin</label><input type="datetime-local" id="me-fin"/></div>
+      <div class="fgrp s2"><label>Lieu *</label><input id="me-lieu" placeholder="Ex : Espace Culturel Tunis"/><span class="emsg" id="me-lieu-e">⚠ Obligatoire</span></div>
+      <div class="fgrp"><label>Places disponibles</label><input type="number" id="me-places" min="0" placeholder="50"/></div>
+      <div class="fgrp"><label>Prix TND (0 = gratuit)</label><input type="number" id="me-prix" min="0" step="0.5" placeholder="0"/></div>
+      <div class="fgrp"><label>Emoji</label><input id="me-icone" placeholder="🎉" maxlength="4" style="font-size:1.4rem;"/></div>
+      <div class="fgrp"><label>Intervenants</label><input id="me-inter" placeholder="Nom, Organisation…"/></div>
+      <div class="fgrp s2"><label>Description *</label><textarea id="me-desc" placeholder="Description de l'événement…"></textarea><span class="emsg" id="me-desc-e">⚠ Obligatoire</span></div>
+    </div></div>
+    <div class="mfoot"><button class="btn bo-b" onclick="cm('mod-event')">Annuler</button><button class="btn bp-b" onclick="saveEvent()">💾 Enregistrer</button></div>
   </div>
 </div>
 
-<!-- DELETE -->
-<div class="modal-overlay confirm-modal" id="modal-bo-delete">
-  <div class="modal" style="max-width:420px;">
-    <div class="modal-header">
-      <h3>⚠️ Supprimer</h3>
-      <button class="modal-close" onclick="closeModal('modal-bo-delete')">✕</button>
+<!-- DELETE CONFIRM -->
+<div class="mo" id="mod-del">
+  <div class="modal sm">
+    <div class="cbody">
+      <div class="cic r">🗑️</div>
+      <div class="cttl">Supprimer ?</div>
+      <div class="cdesc"><strong id="del-nm" style="color:var(--tx);"></strong><br><span style="color:var(--r);font-size:12px;">Action irréversible.</span></div>
     </div>
-    <div class="modal-body">
-      <div class="confirm-icon">🗑️</div>
-      <h4>Confirmer la suppression ?</h4>
-      <p><strong id="bo-delete-name"></strong></p>
-      <p style="margin-top:8px;color:#E53935;">Action irréversible.</p>
-    </div>
-    <div class="modal-footer" style="margin-top:24px;">
-      <button class="btn btn-outline" onclick="closeModal('modal-bo-delete')">Annuler</button>
-      <button class="btn btn-danger" onclick="confirmBoDelete()">🗑️ Supprimer</button>
-    </div>
+    <div class="mfoot"><button class="btn bo-b" onclick="cm('mod-del')">Annuler</button><button class="btn bd-b" onclick="doDel()">🗑️ Supprimer</button></div>
   </div>
 </div>
 
 <script>
-/* ===== BO DATA ===== */
-const API_DECHETS_URL = 'api/dechets.php';
+/* ═══ DONNÉES ═══ */
+const K={c:'fs_conseils',b:'fs_blog',f:'fs_faq',e:'fs_events'};
+let S={conseils:[],blog:[],faq:[],events:[]};
+let cur='overview',editId=null,delTarget={},blogView='cards';
+let sortState={};
 
-let boData = [];
-let boUsers = [];
-let boEditId = null, boDeleteId = null;
-
-function mapApiToBo(record) {
-  return {
-    id: Number(record.id),
-    user: [record.prenom, record.nom].filter(Boolean).join(' ') || `Utilisateur #${record.user_id || record.id}`,
-    user_id: Number(record.user_id || 0),
-    type: String(record.type_aliment || ''),
-    quantite: Number(record.quantite || 0),
-    unite: String(record.unite || ''),
-    date: String(record.date_dechet || ''),
-    raison: String(record.raison || ''),
-    notes: String(record.notes || ''),
-  };
+function initData(){
+  S.conseils=ld(K.c,[
+    {id:1,titre:'Conserver les légumes sans réfrigérateur',cat:'Conservation',diff:'Facile',icone:'🥦',temps:5,resume:'Les légumes racines se conservent des semaines sans frigo dans le bon environnement.',contenu:'<p>Placez les carottes dans du sable légèrement humide dans une cave fraîche...</p>',statut:'publié',tags:'légumes,conservation,cave',date:'2026-04-10'},
+    {id:2,titre:'Congeler les herbes aromatiques',cat:'Congélation',diff:'Facile',icone:'🌿',temps:10,resume:'Évitez de jeter vos herbes fraîches en les congelant dans des bacs à glaçons avec de l\'huile.',contenu:'<p>Hachez finement et mélangez à de l\'huile d\'olive avant de congeler...</p>',statut:'publié',tags:'herbes,congélation',date:'2026-04-12'},
+    {id:3,titre:'Préparer un bouillon maison avec les épluchures',cat:'Cuisine créative',diff:'Moyen',icone:'🍲',temps:30,resume:'Valorisez épluchures et os pour des bouillons savoureux et économiques.',contenu:'<p>Gardez vos épluchures dans un sac au congélateur...</p>',statut:'publié',tags:'bouillon,épluchures',date:'2026-04-15'},
+    {id:4,titre:'Planifier sa liste de courses intelligemment',cat:'Courses malines',diff:'Facile',icone:'🛒',temps:15,resume:'Un menu hebdomadaire planifié réduit le gaspillage de 40% selon les études.',contenu:'<p>Commencez par l\'inventaire de votre frigo et de vos placards...</p>',statut:'brouillon',tags:'courses,planification',date:'2026-04-18'},
+  ]);
+  S.blog=ld(K.b,[
+    {id:1,titre:'10 astuces pour atteindre le zéro gaspillage cette semaine',auteur:'Sarah Benlamine',cat:'Conseils pratiques',img:'🌱',tps:6,resume:'Des gestes simples et efficaces pour réduire votre gaspillage alimentaire dès aujourd\'hui.',contenu:'<p>Le gaspillage alimentaire représente 1/3 de la production mondiale...</p>',statut:'publié',feat:true,tags:'astuces,gaspillage',date:'2026-04-08'},
+    {id:2,titre:'Les légumes "moches" : une révolution culinaire en Tunisie',auteur:'Mehdi Trabelsi',cat:'Recettes anti-gaspi',img:'🥕',tps:4,resume:'Les fruits et légumes imparfaits sont tout aussi savoureux. Voici comment les cuisiner avec créativité.',contenu:'<p>Des millions de tonnes de légumes jetés uniquement pour des raisons esthétiques...</p>',statut:'publié',feat:false,tags:'légumes,cuisine créative',date:'2026-04-05'},
+    {id:3,titre:'Interview : l\'épicerie zéro déchet de Menzah',auteur:'Yousra Mansouri',cat:'Actualité',img:'🏪',tps:8,resume:'Rencontre avec la fondatrice d\'une épicerie militante contre le gaspillage alimentaire à Tunis.',contenu:'<p>Dans le quartier Menzah, une boutique pas comme les autres...</p>',statut:'brouillon',feat:false,tags:'interview,tunis,épicerie',date:'2026-04-02'},
+  ]);
+  S.faq=ld(K.f,[
+    {id:1,q:'Comment fonctionne l\'application FoodSave ?',r:'FoodSave vous permet d\'enregistrer vos déchets alimentaires quotidiens, d\'analyser vos habitudes et de recevoir des conseils personnalisés pour réduire votre gaspillage progressivement.',cat:'Général',statut:'publié',ordre:1},
+    {id:2,q:'Peut-on congeler du pain rassis ?',r:'Oui ! Tranchez le pain avant de le congeler en portions. Vous pourrez ensuite passer les tranches directement au grille-pain sans décongélation préalable pour un résultat parfait.',cat:'Congélation',statut:'publié',ordre:2},
+    {id:3,q:'Combien de temps conserver des restes au réfrigérateur ?',r:'En règle générale, les plats cuisinés se conservent 3 à 4 jours au réfrigérateur à une température inférieure à 4°C. Au-delà, il vaut mieux les congeler.',cat:'Conservation',statut:'publié',ordre:3},
+    {id:4,q:'Comment participer aux collectes solidaires FoodSave ?',r:'Rendez-vous dans la section Collectes de l\'application pour consulter les événements planifiés près de chez vous et vous inscrire.',cat:'Collecte',statut:'brouillon',ordre:4},
+  ]);
+  S.events=ld(K.e,[
+    {id:1,titre:'Atelier Zéro Gaspillage — Spécial Ramadan',type:'Atelier',debut:'2026-05-10T09:00',fin:'2026-05-10T12:00',lieu:'Centre Culturel El Aouina, Tunis',places:30,prix:0,icone:'🌙',desc:'Atelier pratique pour cuisiner intelligemment pendant le Ramadan et éviter le gaspillage festif.',inter:'Chef Karim Ben Ali',statut:'à venir'},
+    {id:2,titre:'Conférence : L\'avenir de l\'alimentation durable',type:'Conférence',debut:'2026-04-25T14:00',fin:'2026-04-25T17:00',lieu:'Hôtel Africa, Tunis',places:150,prix:15,icone:'🌍',desc:'Table ronde avec des experts en nutrition durable et développement responsable.',inter:'Dr. Amira Chaabane, Prof. Hedi Slim',statut:'à venir'},
+    {id:3,titre:'Collecte solidaire — Quartier Menzah',type:'Collecte solidaire',debut:'2026-04-20T08:00',fin:'2026-04-20T13:00',lieu:'Marché Menzah 5',places:null,prix:0,icone:'🤝',desc:'Récupération d\'invendus du marché pour redistribution aux associations caritatives locales.',inter:'Équipe FoodSave',statut:'terminé'},
+  ]);
 }
 
-async function loadBoData() {
-  const url = new URL(API_DECHETS_URL, window.location.href);
-  url.searchParams.set('scope', 'all');
+function ld(key,def){try{const v=localStorage.getItem(key);return v?JSON.parse(v):def;}catch{return def;}}
+function sv2(key,data){try{localStorage.setItem(key,JSON.stringify(data));}catch{}}
+function nid(arr){return arr.length?Math.max(...arr.map(x=>x.id))+1:1;}
 
-  const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-  if (!res.ok) throw new Error('Erreur chargement API');
+/* ═══ PROGRESS BAR ═══ */
+function showProgress(){const p=document.getElementById('progress');p.style.width='0%';p.classList.remove('done');setTimeout(()=>p.style.width='70%',50);}
+function doneProgress(){const p=document.getElementById('progress');p.style.width='100%';setTimeout(()=>p.classList.add('done'),300);}
 
-  const payload = await res.json();
-  if (!payload.success || !Array.isArray(payload.data)) {
-    throw new Error('Format de reponse API invalide');
+/* ═══ NAVIGATION ═══ */
+const LABELS={overview:'Vue d\'ensemble',conseils:'Conseils',blog:'Articles',faq:'FAQ',evenements:'Événements'};
+const ADDP=['conseils','blog','faq','evenements'];
+
+function go(page){
+  showProgress();
+  cur=page;
+  document.querySelectorAll('.sb-it').forEach(b=>b.classList.remove('on'));
+  const btn=document.querySelector(`.sb-it[data-p="${page}"]`);if(btn)btn.classList.add('on');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  setTimeout(()=>{
+    const el=document.getElementById('page-'+page);if(el)el.classList.add('on');
+    document.getElementById('tb-cur').textContent=LABELS[page]||page;
+    document.getElementById('tb-add').style.display=ADDP.includes(page)?'flex':'none';
+    if(page==='overview')   renderOverview();
+    if(page==='conseils')   renderConseils();
+    if(page==='blog')       renderBlog();
+    if(page==='faq')        renderFaq();
+    if(page==='evenements') renderEvents();
+    doneProgress();
+  },80);
+}
+function openAdd(){
+  if(cur==='conseils')   openConseil(null);
+  if(cur==='blog')       openBlog(null);
+  if(cur==='faq')        openFaq(null);
+  if(cur==='evenements') openEvent(null);
+}
+
+/* ═══ DARK MODE ═══ */
+function toggleDark(){
+  const d=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',d?'light':'dark');
+  document.getElementById('dark-btn').textContent=d?'🌙':'☀️';
+  localStorage.setItem('fs_theme',d?'light':'dark');
+  toast(d?'Mode clair activé ☀️':'Mode sombre activé 🌙','info');
+}
+
+/* ═══ MOBILE SIDEBAR ═══ */
+function openMobileSb(){document.getElementById('sidebar').classList.add('mobile-open');document.getElementById('sb-overlay').classList.add('show');}
+function closeMobileSb(){document.getElementById('sidebar').classList.remove('mobile-open');document.getElementById('sb-overlay').classList.remove('show');}
+
+/* ═══ SWIPE TO NAVIGATE (mobile) ═══ */
+let swipeStartX=0,swipeStartY=0;
+document.addEventListener('touchstart',e=>{swipeStartX=e.touches[0].clientX;swipeStartY=e.touches[0].clientY;},{passive:true});
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-swipeStartX;
+  const dy=e.changedTouches[0].clientY-swipeStartY;
+  if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>60){
+    if(dx>0&&swipeStartX<30) openMobileSb();
+    if(dx<0) closeMobileSb();
   }
+},{passive:true});
 
-  boData = payload.data.map(mapApiToBo);
+/* ═══ SWIPE TO DELETE (rows) ═══ */
+function addSwipe(row,onEdit,onDel){
+  let sx=0;
+  row.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;},{passive:true});
+  row.addEventListener('touchmove',e=>{
+    const dx=e.touches[0].clientX-sx;
+    if(dx<-20){
+      const inner=row.querySelector('.sw-inner');
+      const acts=row.querySelector('.sw-actions');
+      if(inner&&acts){const w=Math.min(Math.abs(dx),130);inner.style.transform=`translateX(-${w}px)`;acts.style.transform=`translateX(${100-(w/130)*100}%)`;}
+    }
+  },{passive:true});
+  row.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-sx;
+    const inner=row.querySelector('.sw-inner');
+    const acts=row.querySelector('.sw-actions');
+    if(inner)inner.style.transform='';
+    if(acts)acts.style.transform='';
+  },{passive:true});
 }
 
-async function loadBoUsers() {
-  const url = new URL(API_DECHETS_URL, window.location.href);
-  url.searchParams.set('resource', 'users');
+/* ═══ COMMAND PALETTE ═══ */
+const COMMANDS=[
+  {ic:'💡',name:'Nouveau conseil',sub:'Créer un conseil',action:()=>{go('conseils');setTimeout(()=>openConseil(null),200);}},
+  {ic:'📝',name:'Nouvel article',sub:'Créer un article de blog',action:()=>{go('blog');setTimeout(()=>openBlog(null),200);}},
+  {ic:'❓',name:'Nouvelle FAQ',sub:'Ajouter une question',action:()=>{go('faq');setTimeout(()=>openFaq(null),200);}},
+  {ic:'🎉',name:'Nouvel événement',sub:'Créer un événement',action:()=>{go('evenements');setTimeout(()=>openEvent(null),200);}},
+  {ic:'📊',name:'Vue d\'ensemble',sub:'Aller au dashboard',action:()=>go('overview')},
+  {ic:'💡',name:'Conseils',sub:'Aller à la liste des conseils',action:()=>go('conseils')},
+  {ic:'📝',name:'Articles de blog',sub:'Aller aux articles',action:()=>go('blog')},
+  {ic:'❓',name:'FAQ',sub:'Aller à la FAQ',action:()=>go('faq')},
+  {ic:'🎉',name:'Événements',sub:'Aller aux événements',action:()=>go('evenements')},
+  {ic:'🌙',name:'Mode sombre / clair',sub:'Basculer le thème',action:()=>toggleDark()},
+  {ic:'⬇',name:'Exporter CSV',sub:'Exporter les données actuelles',action:()=>exportCurrentCSV()},
+  {ic:'🏠',name:'Front Office',sub:'Aller au site principal',action:()=>{window.location.href='index.html';}},
+];
+let cmdIdx=0,filteredCmds=[];
 
-  const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-  if (!res.ok) throw new Error('Erreur chargement utilisateurs');
+function openCmd(){
+  document.getElementById('cmd-overlay').classList.add('op');
+  document.getElementById('cmd-input').value='';
+  filterCmd();
+  setTimeout(()=>document.getElementById('cmd-input').focus(),50);
+}
+function closeCmd(e){if(!e||e.target===document.getElementById('cmd-overlay'))document.getElementById('cmd-overlay').classList.remove('op');}
 
-  const payload = await res.json();
-  if (!payload.success || !Array.isArray(payload.data)) {
-    throw new Error('Format de reponse utilisateurs invalide');
-  }
-
-  boUsers = payload.data.map((u) => ({
-    id: Number(u.id),
-    nom: String(u.nom || ''),
-    prenom: String(u.prenom || ''),
-  }));
-
-  const select = document.getElementById('bo-user');
-  if (!select) return;
-
-  select.innerHTML = '<option value="">— Choisir —</option>' + boUsers
-    .map((u) => `<option value="${u.id}">${esc(`${u.prenom} ${u.nom}`.trim())}</option>`)
-    .join('');
+function filterCmd(){
+  const q=document.getElementById('cmd-input').value.toLowerCase();
+  filteredCmds=COMMANDS.filter(c=>c.name.toLowerCase().includes(q)||c.sub.toLowerCase().includes(q));
+  cmdIdx=0;
+  const res=document.getElementById('cmd-results');
+  if(!filteredCmds.length){res.innerHTML='<div style="padding:24px;text-align:center;color:var(--fa);">Aucun résultat</div>';return;}
+  res.innerHTML='<div class="cmd-section">Actions & Navigation</div>'+filteredCmds.map((c,i)=>`
+    <div class="cmd-item ${i===0?'sel':''}" onclick="runCmd(${i})" onmouseover="cmdIdx=${i};highlightCmd()">
+      <div class="cmd-item-ic">${c.ic}</div>
+      <div class="cmd-item-tx"><div class="cmd-item-name">${esc(c.name)}</div><div class="cmd-item-sub">${esc(c.sub)}</div></div>
+    </div>`).join('');
 }
 
-async function refreshBoData() {
-  await loadBoData();
-  renderBoTable();
-  renderBoStats();
+function highlightCmd(){
+  document.querySelectorAll('.cmd-item').forEach((el,i)=>el.classList.toggle('sel',i===cmdIdx));
 }
 
-/* ===== RENDER ===== */
-function getFiltered() {
-  const ft = document.getElementById('filter-type').value;
-  const fr = document.getElementById('filter-raison').value;
-  const ff = document.getElementById('filter-from').value;
-  const ft2 = document.getElementById('filter-to').value;
-  return boData.filter(d =>
-    (!ft || d.type === ft) &&
-    (!fr || d.raison === fr) &&
-    (!ff || d.date >= ff) &&
-    (!ft2 || d.date <= ft2)
-  );
+function cmdKey(e){
+  if(e.key==='Escape'){closeCmd();return;}
+  if(e.key==='ArrowDown'){cmdIdx=Math.min(cmdIdx+1,filteredCmds.length-1);highlightCmd();e.preventDefault();}
+  if(e.key==='ArrowUp'){cmdIdx=Math.max(cmdIdx-1,0);highlightCmd();e.preventDefault();}
+  if(e.key==='Enter'){runCmd(cmdIdx);e.preventDefault();}
 }
 
-function renderBoTable() {
-  const data = getFiltered();
-  document.getElementById('bo-count').textContent = data.length;
-  const tbody = document.getElementById('bo-table-body');
-  if (!data.length) {
-    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="icon">🔍</div><h3>Aucun résultat</h3></div></td></tr>`;
-    return;
-  }
-  tbody.innerHTML = data.map(d => `
-    <tr>
-      <td><span class="badge badge-gray">#${d.id}</span></td>
-      <td><strong>${esc(d.user)}</strong></td>
-      <td>${esc(d.type)}</td>
-      <td>${d.quantite} ${esc(d.unite)}</td>
-      <td>${fDate(d.date)}</td>
-      <td><span class="badge badge-orange">${esc(d.raison)}</span></td>
-      <td style="font-size:0.82rem;color:var(--text-muted)">${esc(d.notes)||'—'}</td>
-      <td>
-        <div style="display:flex;gap:6px;">
-          <button class="btn btn-sm btn-outline" onclick="openBoEdit(${d.id})">✏️</button>
-          <button class="btn btn-sm btn-danger" onclick="openBoDel(${d.id})">🗑️</button>
-        </div>
-      </td>
-    </tr>`).join('');
+function runCmd(i){
+  document.getElementById('cmd-overlay').classList.remove('op');
+  if(filteredCmds[i])filteredCmds[i].action();
 }
 
-function renderBoStats() {
-  const total = boData.reduce((s,d)=>s+d.quantite,0);
-  const users = new Set(boData.map(d=>d.user)).size;
-  document.getElementById('bo-stats').innerHTML = `
-    <div class="admin-stat"><div class="label">Total enregistrements</div><div class="value">${boData.length}</div></div>
-    <div class="admin-stat"><div class="label">Total gaspillé</div><div class="value">${total.toFixed(1)} kg</div></div>
-    <div class="admin-stat"><div class="label">Utilisateurs actifs</div><div class="value">${users}</div></div>
-    <div class="admin-stat"><div class="label">Moy. par entrée</div><div class="value">${(total/boData.length||0).toFixed(2)} kg</div></div>`;
-}
-
-/* ===== VALIDATION ===== */
-function boValidate(prefix, fields) {
-  let ok = true;
-  fields.forEach(f => {
-    const el = document.getElementById(f.id);
-    const err = document.getElementById(f.err);
-    const v = el.value.trim();
-    let msg = '';
-    if (!v && f.req) msg = 'Champ obligatoire.';
-    else if (f.num && v && isNaN(parseFloat(v))) msg = 'Nombre invalide.';
-    else if (f.num && v && parseFloat(v) <= 0) msg = 'Doit être > 0.';
-    else if (f.date && v && new Date(v) > new Date()) msg = 'Date future non autorisée.';
-    if (msg) { el.classList.add('error'); err.textContent = msg; err.classList.add('show'); ok = false; }
-    else { el.classList.remove('error'); err.classList.remove('show'); }
+/* ═══ SORT ═══ */
+function sortTable(entity,field,th){
+  const key=entity+field;
+  sortState[key]=sortState[key]==='asc'?'desc':'asc';
+  document.querySelectorAll('thead th').forEach(h=>{h.classList.remove('sort-asc','sort-desc');});
+  th.classList.add(sortState[key]==='asc'?'sort-asc':'sort-desc');
+  S[entity].sort((a,b)=>{
+    const va=String(a[field]||'').toLowerCase(), vb=String(b[field]||'').toLowerCase();
+    return sortState[key]==='asc'?va.localeCompare(vb):vb.localeCompare(va);
   });
-  return ok;
+  if(entity==='conseils')renderConseils();
+  if(entity==='blog')renderBlog();
 }
 
-const boAddFields = [
-  {id:'bo-user',req:true,err:'bo-user-err'},{id:'bo-type',req:true,err:'bo-type-err'},
-  {id:'bo-quantite',req:true,num:true,err:'bo-quantite-err'},{id:'bo-unite',req:true,err:'bo-unite-err'},
-  {id:'bo-date',req:true,date:true,err:'bo-date-err'},{id:'bo-raison',req:true,err:'bo-raison-err'}
-];
+/* ═══ OVERVIEW ═══ */
+const CLR=['#16a34a','#ea580c','#2563eb','#7c3aed','#ca8a04','#0891b2'];
+const colFor=c=>({Conservation:'#16a34a','Cuisine créative':'#ea580c','Courses malines':'#2563eb','Zéro déchet':'#7c3aed',Congélation:'#0891b2',Portions:'#ca8a04','Gaspillage alimentaire':'#dc2626','Recettes anti-gaspi':'#16a34a',Environnement:'#059669','Conseils pratiques':'#2563eb',Actualité:'#7c3aed',Atelier:'#16a34a',Conférence:'#2563eb','Collecte solidaire':'#ea580c',Formation:'#7c3aed',Webinaire:'#0891b2',Général:'#64748b',Application:'#2563eb',Collecte:'#ea580c',Compostage:'#16a34a'}[c]||'#64748b');
 
-const boEditFields = [
-  {id:'boe-type',req:true,err:'boe-type-err'},{id:'boe-quantite',req:true,num:true,err:'boe-quantite-err'},
-  {id:'boe-unite',req:true,err:'boe-unite-err'},{id:'boe-date',req:true,date:true,err:'boe-date-err'},
-  {id:'boe-raison',req:true,err:'boe-raison-err'}
-];
+function renderOverview(){
+  setText('ov-c',S.conseils.filter(x=>x.statut==='publié').length);
+  setText('ov-b',S.blog.filter(x=>x.statut==='publié').length);
+  setText('ov-f',S.faq.filter(x=>x.statut==='publié').length);
+  setText('ov-e',S.events.filter(x=>x.statut==='à venir').length);
 
-/* ===== CRUD ===== */
-function openBoAddModal() { openModal('modal-bo-add'); }
+  // Mini charts
+  const cats=[...new Set(S.conseils.map(x=>x.cat))];
+  const maxC=Math.max(...cats.map(c=>S.conseils.filter(x=>x.cat===c).length),1);
+  document.getElementById('ov-chart-c').innerHTML=cats.slice(0,6).map((c,i)=>`
+    <div class="mc-bar" style="height:${(S.conseils.filter(x=>x.cat===c).length/maxC)*36}px;background:${CLR[i%CLR.length]};" title="${c}"></div>`).join('');
 
-async function submitBoAdd() {
-  if (!boValidate('bo', boAddFields)) return;
+  const bcats=[...new Set(S.blog.map(x=>x.cat))];
+  const maxB=Math.max(...bcats.map(c=>S.blog.filter(x=>x.cat===c).length),1);
+  document.getElementById('ov-chart-b').innerHTML=bcats.slice(0,6).map((c,i)=>`
+    <div class="mc-bar" style="height:${(S.blog.filter(x=>x.cat===c).length/maxB)*36}px;background:${CLR[i%CLR.length]};" title="${c}"></div>`).join('');
 
-  try {
-    const selectedUserId = Number(document.getElementById('bo-user').value || 0);
-    if (selectedUserId <= 0) {
-      throw new Error('Utilisateur invalide.');
-    }
+  document.getElementById('ov-blog').innerHTML=[...S.blog].slice(0,3).map(a=>`
+    <div class="ov-li">
+      <div class="ov-li-ic" style="background:${colFor(a.cat)}18;">${a.img||'📝'}</div>
+      <div style="flex:1;min-width:0;"><div class="ov-li-name">${esc(a.titre)}</div><div class="ov-li-sub">${esc(a.auteur)} · ${fd(a.date)}</div></div>
+      <span class="badge ${a.statut==='publié'?'bg':'bgr'}"><span class="dot ${a.statut==='publié'?'dot-g':'dot-gr'}"></span>${a.statut}</span>
+    </div>`).join('')||'<div style="padding:14px;color:var(--fa);font-size:13px;text-align:center;">Aucun article</div>';
 
-    const res = await fetch(API_DECHETS_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({
-        user_id: selectedUserId,
-        type_aliment: document.getElementById('bo-type').value,
-        quantite: parseFloat(document.getElementById('bo-quantite').value),
-        unite: document.getElementById('bo-unite').value,
-        date_dechet: document.getElementById('bo-date').value,
-        raison: document.getElementById('bo-raison').value,
-        notes: document.getElementById('bo-notes').value.trim(),
-      }),
-    });
+  document.getElementById('ov-conseil').innerHTML=[...S.conseils].slice(0,3).map(c=>`
+    <div class="ov-li">
+      <div class="ov-li-ic" style="background:${colFor(c.cat)}18;">${c.icone||'💡'}</div>
+      <div style="flex:1;min-width:0;"><div class="ov-li-name">${esc(c.titre)}</div><div class="ov-li-sub">${esc(c.cat)} · ${c.diff}</div></div>
+      <span class="badge ${c.statut==='publié'?'bg':'bgr'}"><span class="dot ${c.statut==='publié'?'dot-g':'dot-gr'}"></span>${c.statut}</span>
+    </div>`).join('')||'<div style="padding:14px;color:var(--fa);font-size:13px;text-align:center;">Aucun conseil</div>';
 
-    const json = await res.json();
-    if (!res.ok || !json.success) {
-      throw new Error(json.message || 'Erreur API');
-    }
+  const all=[
+    ...S.conseils.map(x=>({ic:'💡',name:x.titre,sub:'Conseil · '+x.cat,time:x.date,col:'#ca8a04'})),
+    ...S.blog.map(x=>({ic:'📝',name:x.titre,sub:'Article · '+x.auteur,time:x.date,col:'#2563eb'})),
+    ...S.faq.map(x=>({ic:'❓',name:x.q.substring(0,50),sub:'FAQ · '+x.cat,time:'',col:'#7c3aed'})),
+    ...S.events.map(x=>({ic:x.icone||'🎉',name:x.titre,sub:'Événement · '+x.type,time:x.debut?.split('T')[0]||'',col:'#16a34a'})),
+  ].sort((a,b)=>b.time>a.time?1:-1).slice(0,6);
 
-    closeModal('modal-bo-add');
-    document.getElementById('form-bo-add').reset();
-    await refreshBoData();
-    showBoAlert('✅ Déchet ajouté avec succès.', 'success');
-  } catch (err) {
-    showBoAlert(`❌ ${err.message || 'Erreur lors de l’ajout.'}`, 'error');
+  document.getElementById('ov-activity').innerHTML=all.length?all.map(a=>`
+    <div class="af-item">
+      <div class="af-ic" style="background:${a.col}18;">${a.ic}</div>
+      <div class="af-tx"><div class="af-main">${esc(a.name)}</div><div class="af-sub">${esc(a.sub)}</div></div>
+      ${a.time?`<div class="af-time">${fd(a.time)}</div>`:''}
+    </div>`).join(''):'<div style="padding:20px;text-align:center;color:var(--fa);">Aucune activité</div>';
+
+  updateBadges();
+}
+
+function updateBadges(){
+  setText('sc-c',S.conseils.length);setText('sc-b',S.blog.length);
+  setText('sc-f',S.faq.length);setText('sc-e',S.events.length);
+}
+
+/* ═══ CONSEILS ═══ */
+function renderConseils(){
+  const q=gv('c-srch').toLowerCase(),fc=gv('c-fcat'),fs=gv('c-fst');
+  const data=S.conseils.filter(x=>(!q||x.titre.toLowerCase().includes(q))&&(!fc||x.cat===fc)&&(!fs||x.statut===fs));
+  setText('c-tot',S.conseils.length);setText('c-pub',S.conseils.filter(x=>x.statut==='publié').length);
+  setText('c-dra',S.conseils.filter(x=>x.statut==='brouillon').length);
+  setText('c-ncat',[...new Set(S.conseils.map(x=>x.cat))].length);
+  setText('c-cnt',data.length);
+  const cats=[...new Set(S.conseils.map(x=>x.cat))];
+  const sel=document.getElementById('c-fcat');const cv=sel.value;
+  sel.innerHTML='<option value="">Toutes catégories</option>'+cats.map(c=>`<option ${c===cv?'selected':''}>${esc(c)}</option>`).join('');
+  const tbody=document.getElementById('c-tb');
+  if(!data.length){tbody.innerHTML=erow(6,'💡','Aucun conseil','Cliquez sur ＋ Nouveau pour commencer.');return;}
+  tbody.innerHTML=data.map(c=>`
+    <tr class="sw-row">
+      <td class="sw-inner"><div style="display:flex;align-items:center;gap:9px;">
+        <div style="width:32px;height:32px;border-radius:8px;background:${colFor(c.cat)}18;display:flex;align-items:center;justify-content:center;font-size:15px;">${esc(c.icone||'💡')}</div>
+        <div><div style="font-weight:600;font-size:13.5px;">${esc(c.titre)}</div><div style="font-size:11px;color:var(--fa);">${esc(c.tags||'')}</div></div>
+      </div></td>
+      <td class="sw-inner"><span class="badge" style="background:${colFor(c.cat)}18;color:${colFor(c.cat)};">${esc(c.cat)}</span></td>
+      <td class="sw-inner"><span style="font-size:12.5px;">${esc(c.diff||'Facile')}</span></td>
+      <td class="sw-inner"><span class="badge ${c.statut==='publié'?'bg':'bgr'}"><span class="dot ${c.statut==='publié'?'dot-g':'dot-gr'}"></span>${c.statut}</span></td>
+      <td class="sw-inner" style="color:var(--mu);font-size:12.5px;">${fd(c.date)}</td>
+      <td class="sw-inner"><div class="ag">
+        <button class="btn ico-b bo-b" onclick="openConseil(${c.id})" title="Modifier (double-clic)">✏️</button>
+        <button class="btn ico-b bd-b" onclick="openDel('conseils',${c.id},'${esc(c.titre)}')">🗑️</button>
+      </div></td>
+      <div class="sw-actions">
+        <div class="sw-act-btn edit" onclick="openConseil(${c.id})">✏️</div>
+        <div class="sw-act-btn del" onclick="openDel('conseils',${c.id},'${esc(c.titre)}')">🗑️</div>
+      </div>
+    </tr>`).join('');
+  // Swipe
+  document.querySelectorAll('#c-tb tr.sw-row').forEach((row,i)=>{
+    addSwipe(row,()=>openConseil(data[i].id),()=>openDel('conseils',data[i].id,data[i].titre));
+    row.addEventListener('dblclick',()=>openConseil(data[i].id));
+  });
+}
+
+/* ═══ BLOG ═══ */
+function setBlogView(v,el){
+  blogView=v;
+  document.querySelectorAll('#page-blog .tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');
+  document.getElementById('b-cards-view').style.display=v==='cards'?'block':'none';
+  document.getElementById('b-table-view').style.display=v==='table'?'block':'none';
+  renderBlog();
+}
+
+function renderBlog(){
+  const q=gv('b-srch').toLowerCase(),fs=gv('b-fst');
+  const data=S.blog.filter(x=>(!q||x.titre.toLowerCase().includes(q)||x.auteur.toLowerCase().includes(q))&&(!fs||x.statut===fs));
+  setText('b-tot',S.blog.length);setText('b-pub',S.blog.filter(x=>x.statut==='publié').length);
+  setText('b-dra',S.blog.filter(x=>x.statut==='brouillon').length);
+  setText('b-feat',S.blog.filter(x=>x.feat).length);
+  setText('b-cnt',data.length);
+  if(blogView==='cards'){
+    document.getElementById('b-grid').innerHTML=data.length?data.map(a=>`
+      <div class="art-card" ondblclick="openBlog(${a.id})">
+        <div class="art-thumb" style="background:${colFor(a.cat)}14;">
+          <span style="font-size:3.2rem;">${a.img&&a.img.length<=4?esc(a.img):'📝'}</span>
+          ${a.feat?`<span style="position:absolute;top:8px;right:8px;background:#ca8a04;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;">⭐ Vedette</span>`:''}
+          <span style="position:absolute;top:8px;left:8px;" class="badge ${a.statut==='publié'?'bg':'bgr'}"><span class="dot ${a.statut==='publié'?'dot-g':'dot-gr'}"></span>${a.statut}</span>
+        </div>
+        <div class="art-body">
+          <div class="art-meta">
+            <span class="art-cat-tag" style="background:${colFor(a.cat)}18;color:${colFor(a.cat)};">${esc(a.cat)}</span>
+            <span class="art-date">📖 ${a.tps||5} min · ${fd(a.date)}</span>
+          </div>
+          <div class="art-title">${esc(a.titre)}</div>
+          <div class="art-excerpt">${esc(a.resume)}</div>
+          <div class="art-foot">
+            <div class="art-author">✍️ <strong>${esc(a.auteur)}</strong></div>
+            <div class="ag">
+              <button class="btn ico-b bo-b sm" onclick="openBlog(${a.id})">✏️</button>
+              <button class="btn ico-b bd-b sm" onclick="openDel('blog',${a.id},'${esc(a.titre)}')">🗑️</button>
+            </div>
+          </div>
+        </div>
+      </div>`).join('')
+    :`<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--mu);"><div class="ei">📝</div><div class="eh">Aucun article trouvé</div></div>`;
+  } else {
+    document.getElementById('b-tb').innerHTML=data.length?data.map(a=>`
+      <tr ondblclick="openBlog(${a.id})">
+        <td><div style="font-weight:600;">${esc(a.titre)}</div><div style="font-size:11.5px;color:var(--mu);">${esc(a.resume).substring(0,55)}…</div></td>
+        <td>${esc(a.auteur)}</td>
+        <td><span class="badge" style="background:${colFor(a.cat)}18;color:${colFor(a.cat)};">${esc(a.cat)}</span></td>
+        <td><span class="badge ${a.statut==='publié'?'bg':'bgr'}"><span class="dot ${a.statut==='publié'?'dot-g':'dot-gr'}"></span>${a.statut}</span></td>
+        <td style="text-align:center;">${a.feat?'⭐':'—'}</td>
+        <td style="color:var(--mu);font-size:12.5px;">${fd(a.date)}</td>
+        <td><div class="ag"><button class="btn ico-b bo-b" onclick="openBlog(${a.id})">✏️</button><button class="btn ico-b bd-b" onclick="openDel('blog',${a.id},'${esc(a.titre)}')">🗑️</button></div></td>
+      </tr>`).join(''):erow(7,'📝','Aucun article','');
   }
 }
 
-function openBoEdit(id) {
-  const d = boData.find(x=>x.id===id); if(!d) return;
-  boEditId = id;
-  document.getElementById('boe-type').value = d.type;
-  document.getElementById('boe-quantite').value = d.quantite;
-  document.getElementById('boe-unite').value = d.unite;
-  document.getElementById('boe-date').value = d.date;
-  document.getElementById('boe-raison').value = d.raison;
-  document.getElementById('boe-notes').value = d.notes;
-  openModal('modal-bo-edit');
+/* ═══ FAQ ═══ */
+function renderFaq(){
+  const q=gv('f-srch').toLowerCase();
+  const data=S.faq.filter(x=>!q||x.q.toLowerCase().includes(q)||x.r.toLowerCase().includes(q));
+  setText('f-tot',S.faq.length);setText('f-pub',S.faq.filter(x=>x.statut==='publié').length);
+  setText('f-ncat',[...new Set(S.faq.map(x=>x.cat))].length);
+  setText('f-cnt',data.length);
+  document.getElementById('f-list').innerHTML=data.length?data.map(f=>`
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span style="flex:1;">${esc(f.q)}</span>
+        <span class="badge" style="background:${colFor(f.cat)}18;color:${colFor(f.cat)};font-size:10px;margin-right:6px;">${esc(f.cat)}</span>
+        <span class="badge ${f.statut==='publié'?'bg':'bgr'}"><span class="dot ${f.statut==='publié'?'dot-g':'dot-gr'}"></span>${f.statut}</span>
+        <span class="faq-chevron" style="margin-left:8px;">▼</span>
+      </div>
+      <div class="faq-a">
+        <p>${esc(f.r)}</p>
+        <div class="faq-a-acts">
+          <button class="btn bo-b sm" onclick="openFaq(${f.id})">✏️ Modifier</button>
+          <button class="btn bd-b sm" onclick="openDel('faq',${f.id},'${esc(f.q).substring(0,40)}…')">🗑️ Supprimer</button>
+        </div>
+      </div>
+    </div>`).join('')
+  :`<div style="text-align:center;padding:48px;color:var(--mu);"><div class="ei">❓</div><div class="eh">Aucune question</div></div>`;
+}
+function toggleFaq(el){
+  el.classList.toggle('open');
+  const a=el.nextElementSibling;a.classList.toggle('open');
 }
 
-async function submitBoEdit() {
-  if (!boValidate('boe', boEditFields)) return;
+/* ═══ ÉVÉNEMENTS ═══ */
+const EV={
+  'à venir':{cls:'bb',ic:'📅'},
+  'en cours':{cls:'bo',ic:'🔄'},
+  'terminé':{cls:'bg',ic:'✅'},
+  'annulé':{cls:'bgr',ic:'❌'},
+};
 
-  try {
-    const res = await fetch(API_DECHETS_URL, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({
-        id: boEditId,
-        type_aliment: document.getElementById('boe-type').value,
-        quantite: parseFloat(document.getElementById('boe-quantite').value),
-        unite: document.getElementById('boe-unite').value,
-        date_dechet: document.getElementById('boe-date').value,
-        raison: document.getElementById('boe-raison').value,
-        notes: document.getElementById('boe-notes').value.trim(),
-      }),
-    });
+function renderEvents(){
+  const q=gv('e-srch').toLowerCase(),fs=gv('e-fst');
+  const data=S.events.filter(x=>(!q||x.titre.toLowerCase().includes(q)||x.lieu.toLowerCase().includes(q))&&(!fs||x.statut===fs));
+  setText('e-tot',S.events.length);setText('e-up',S.events.filter(x=>x.statut==='à venir').length);
+  setText('e-on',S.events.filter(x=>x.statut==='en cours').length);
+  setText('e-done',S.events.filter(x=>x.statut==='terminé').length);
+  setText('e-cnt',data.length);
+  document.getElementById('e-tb').innerHTML=data.length?data.map(e=>{
+    const s=EV[e.statut]||{cls:'bgr',ic:'?'};
+    return`<tr ondblclick="openEvent(${e.id})">
+      <td><div style="display:flex;align-items:center;gap:9px;">
+        <div style="width:32px;height:32px;border-radius:8px;background:${colFor(e.type)}18;display:flex;align-items:center;justify-content:center;font-size:15px;">${esc(e.icone||'🎉')}</div>
+        <div><div style="font-weight:600;">${esc(e.titre)}</div><div style="font-size:11.5px;color:var(--mu);">${esc(e.inter||'')}</div></div>
+      </div></td>
+      <td><span class="badge" style="background:${colFor(e.type)}18;color:${colFor(e.type)};">${esc(e.type)}</span></td>
+      <td style="font-size:12.5px;color:var(--mu);">${fdt(e.debut)}</td>
+      <td style="font-size:12.5px;">${esc(e.lieu)}</td>
+      <td style="text-align:center;color:var(--mu);">${e.places!=null?e.places:'∞'}</td>
+      <td><span class="badge ${s.cls}">${s.ic} ${e.statut}</span></td>
+      <td><div class="ag">
+        <button class="btn ico-b bo-b" onclick="openEvent(${e.id})">✏️</button>
+        <button class="btn ico-b bd-b" onclick="openDel('events',${e.id},'${esc(e.titre)}')">🗑️</button>
+      </div></td>
+    </tr>`;
+  }).join(''):erow(7,'🎉','Aucun événement','');
+}
 
-    const json = await res.json();
-    if (!res.ok || !json.success) {
-      throw new Error(json.message || 'Erreur API');
-    }
+/* ═══ OPEN MODALS ═══ */
+function openConseil(id){
+  editId=id;const c=id?S.conseils.find(x=>x.id===id):{};
+  sv2El('mc-titre',c.titre||'');sv2El('mc-cat',c.cat||'');sv2El('mc-diff',c.diff||'Facile');
+  sv2El('mc-icone',c.icone||'');sv2El('mc-temps',c.temps||'');sv2El('mc-resume',c.resume||'');
+  sv2El('mc-tags',c.tags||'');sv2El('mc-st',c.statut||'publié');
+  document.getElementById('mc-content').innerHTML=c.contenu||'';
+  setText('mc-ttl',id?'✏️ Modifier le conseil':'➕ Nouveau conseil');
+  clearE(['mc-titre-e','mc-cat-e','mc-resume-e']);om('mod-conseil');
+}
+function openBlog(id){
+  editId=id;const a=id?S.blog.find(x=>x.id===id):{};
+  sv2El('mb-titre',a.titre||'');sv2El('mb-auteur',a.auteur||'');sv2El('mb-cat',a.cat||'');
+  sv2El('mb-img',a.img||'');sv2El('mb-tps',a.tps||'');sv2El('mb-resume',a.resume||'');
+  sv2El('mb-tags',a.tags||'');sv2El('mb-st',a.statut||'publié');sv2El('mb-feat',a.feat?'1':'0');
+  document.getElementById('mb-content').innerHTML=a.contenu||'';
+  setText('mb-ttl',id?'✏️ Modifier l\'article':'➕ Nouvel article');
+  clearE(['mb-titre-e','mb-auteur-e','mb-resume-e','mb-content-e']);om('mod-blog');
+}
+function openFaq(id){
+  editId=id;const f=id?S.faq.find(x=>x.id===id):{};
+  sv2El('mf-q',f.q||'');sv2El('mf-r',f.r||'');sv2El('mf-cat',f.cat||'Général');sv2El('mf-st',f.statut||'publié');
+  setText('mf-ttl',id?'✏️ Modifier la question':'➕ Nouvelle question');
+  clearE(['mf-q-e','mf-r-e']);om('mod-faq');
+}
+function openEvent(id){
+  editId=id;const e=id?S.events.find(x=>x.id===id):{};
+  sv2El('me-titre',e.titre||'');sv2El('me-type',e.type||'Atelier');sv2El('me-st',e.statut||'à venir');
+  sv2El('me-debut',e.debut||'');sv2El('me-fin',e.fin||'');sv2El('me-lieu',e.lieu||'');
+  sv2El('me-places',e.places!=null?e.places:'');sv2El('me-prix',e.prix||0);
+  sv2El('me-icone',e.icone||'');sv2El('me-desc',e.desc||'');sv2El('me-inter',e.inter||'');
+  setText('me-ttl',id?'✏️ Modifier l\'événement':'➕ Nouvel événement');
+  clearE(['me-titre-e','me-debut-e','me-lieu-e','me-desc-e']);om('mod-event');
+}
 
-    closeModal('modal-bo-edit');
-    await refreshBoData();
-    showBoAlert('✅ Déchet modifié avec succès.', 'success');
-  } catch (err) {
-    showBoAlert(`❌ ${err.message || 'Erreur lors de la mise à jour.'}`, 'error');
+/* ═══ SAVE ═══ */
+function saveConseil(){
+  let ok=true;
+  if(!gv('mc-titre')){showE('mc-titre-e');ok=false;}
+  if(!gv('mc-cat')){showE('mc-cat-e');ok=false;}
+  if(!gv('mc-resume')){showE('mc-resume-e');ok=false;}
+  if(!ok)return;
+  const obj={id:editId||nid(S.conseils),titre:gv('mc-titre'),cat:gv('mc-cat'),diff:gv('mc-diff'),icone:gv('mc-icone'),temps:parseInt(gv('mc-temps'))||5,resume:gv('mc-resume'),contenu:document.getElementById('mc-content').innerHTML,statut:gv('mc-st'),tags:gv('mc-tags'),date:today()};
+  upsert(S.conseils,obj);sv2(K.c,S.conseils);cm('mod-conseil');renderConseils();updateBadges();
+  toast(editId?'✅ Conseil modifié avec succès':'✅ Nouveau conseil créé','success');
+}
+function saveBlog(){
+  let ok=true;
+  if(!gv('mb-titre')){showE('mb-titre-e');ok=false;}
+  if(!gv('mb-auteur')){showE('mb-auteur-e');ok=false;}
+  if(!gv('mb-resume')){showE('mb-resume-e');ok=false;}
+  if(!document.getElementById('mb-content').innerText.trim()){showE('mb-content-e');ok=false;}
+  if(!ok)return;
+  const obj={id:editId||nid(S.blog),titre:gv('mb-titre'),auteur:gv('mb-auteur'),cat:gv('mb-cat'),img:gv('mb-img')||'📝',tps:parseInt(gv('mb-tps'))||5,resume:gv('mb-resume'),contenu:document.getElementById('mb-content').innerHTML,statut:gv('mb-st'),feat:gv('mb-feat')==='1',tags:gv('mb-tags'),date:today()};
+  upsert(S.blog,obj);sv2(K.b,S.blog);cm('mod-blog');renderBlog();updateBadges();
+  toast(editId?'✅ Article modifié':'✅ Nouvel article créé','success');
+}
+function saveFaq(){
+  let ok=true;
+  if(!gv('mf-q')){showE('mf-q-e');ok=false;}
+  if(!gv('mf-r')){showE('mf-r-e');ok=false;}
+  if(!ok)return;
+  const obj={id:editId||nid(S.faq),q:gv('mf-q'),r:gv('mf-r'),cat:gv('mf-cat'),statut:gv('mf-st'),ordre:0};
+  upsert(S.faq,obj);sv2(K.f,S.faq);cm('mod-faq');renderFaq();updateBadges();
+  toast(editId?'✅ Question modifiée':'✅ Question créée','success');
+}
+function saveEvent(){
+  let ok=true;
+  if(!gv('me-titre')){showE('me-titre-e');ok=false;}
+  if(!gv('me-debut')){showE('me-debut-e');ok=false;}
+  if(!gv('me-lieu')){showE('me-lieu-e');ok=false;}
+  if(!gv('me-desc')){showE('me-desc-e');ok=false;}
+  if(!ok)return;
+  const pl=parseFloat(gv('me-places'));
+  const obj={id:editId||nid(S.events),titre:gv('me-titre'),type:gv('me-type'),statut:gv('me-st'),debut:gv('me-debut'),fin:gv('me-fin'),lieu:gv('me-lieu'),places:isNaN(pl)?null:pl,prix:parseFloat(gv('me-prix'))||0,icone:gv('me-icone')||'🎉',desc:gv('me-desc'),inter:gv('me-inter')};
+  upsert(S.events,obj);sv2(K.e,S.events);cm('mod-event');renderEvents();updateBadges();
+  toast(editId?'✅ Événement modifié':'✅ Événement créé','success');
+}
+
+/* ═══ DELETE ═══ */
+function openDel(type,id,name){delTarget={type,id};document.getElementById('del-nm').textContent=name;om('mod-del');}
+function doDel(){
+  const {type,id}=delTarget;
+  S[type]=S[type].filter(x=>x.id!==id);
+  sv2({conseils:K.c,blog:K.b,faq:K.f,events:K.e}[type],S[type]);
+  cm('mod-del');toast('🗑️ Élément supprimé','info');
+  if(type==='conseils')renderConseils();
+  if(type==='blog')renderBlog();
+  if(type==='faq')renderFaq();
+  if(type==='events')renderEvents();
+  updateBadges();
+}
+
+/* ═══ CSV EXPORT ═══ */
+function exportCurrentCSV(){
+  let rows,name;
+  if(cur==='conseils'){rows=[['ID','Titre','Catégorie','Difficulté','Statut','Date']];S.conseils.forEach(c=>rows.push([c.id,c.titre,c.cat,c.diff,c.statut,c.date]));name='conseils.csv';}
+  else if(cur==='blog'){rows=[['ID','Titre','Auteur','Catégorie','Statut','Vedette','Date']];S.blog.forEach(a=>rows.push([a.id,a.titre,a.auteur,a.cat,a.statut,a.feat?'Oui':'Non',a.date]));name='articles.csv';}
+  else if(cur==='faq'){rows=[['ID','Question','Catégorie','Statut']];S.faq.forEach(f=>rows.push([f.id,f.q,f.cat,f.statut]));name='faq.csv';}
+  else if(cur==='evenements'){rows=[['ID','Titre','Type','Date','Lieu','Places','Statut']];S.events.forEach(e=>rows.push([e.id,e.titre,e.type,e.debut,e.lieu,e.places||'∞',e.statut]));name='evenements.csv';}
+  else{rows=[['Section','Nombre'],['Conseils',S.conseils.length],['Articles',S.blog.length],['FAQ',S.faq.length],['Événements',S.events.length]];name='overview.csv';}
+  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download=name;a.click();
+  toast(`⬇ Export ${name} prêt`,'info');
+}
+
+/* ═══ KEYBOARD SHORTCUTS ═══ */
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();openCmd();}
+  if(e.key==='Escape'){
+    document.querySelectorAll('.mo.op').forEach(m=>m.classList.remove('op'));
+    document.getElementById('cmd-overlay').classList.remove('op');
+    closeMobileSb();
   }
+  if((e.metaKey||e.ctrlKey)&&e.key==='n'&&!document.querySelector('.mo.op')){e.preventDefault();openAdd();}
+  if((e.metaKey||e.ctrlKey)&&e.shiftKey&&e.key==='D'){e.preventDefault();toggleDark();}
+});
+
+/* ═══ MODALS ═══ */
+function om(id){document.getElementById(id).classList.add('op');}
+function cm(id){document.getElementById(id).classList.remove('op');}
+
+/* ═══ RICH TEXT ═══ */
+function fmt(id,cmd){document.getElementById(id).focus();document.execCommand(cmd,false,null);}
+
+/* ═══ TOAST ═══ */
+const toasts=[];
+function toast(msg,type='success'){
+  const stack=document.getElementById('toast-stack');
+  const el=document.createElement('div');
+  el.className=`toast ${type}`;
+  el.innerHTML=`<span>${msg}</span><span class="toast-close">✕</span>`;
+  el.querySelector('.toast-close').onclick=()=>dismissToast(el);
+  el.onclick=()=>dismissToast(el);
+  stack.appendChild(el);
+  setTimeout(()=>el.classList.add('show'),20);
+  const tid=setTimeout(()=>dismissToast(el),3800);
+  el._tid=tid;
+}
+function dismissToast(el){
+  clearTimeout(el._tid);
+  el.classList.remove('show');
+  setTimeout(()=>el.remove(),350);
 }
 
-function openBoDel(id) {
-  boDeleteId = id;
-  const d = boData.find(x=>x.id===id);
-  document.getElementById('bo-delete-name').textContent = `${d.type} – ${d.quantite} ${d.unite} – ${d.user}`;
-  openModal('modal-bo-delete');
-}
+/* ═══ UTILS ═══ */
+function gv(id){const el=document.getElementById(id);return el?el.value.trim():'';}
+function sv2El(id,val){const el=document.getElementById(id);if(el)el.value=val;}
+function setText(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function fd(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'});}catch{return d;}}
+function fdt(d){if(!d)return'—';try{return new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}catch{return d;}}
+function today(){return new Date().toISOString().split('T')[0];}
+function showE(id){const el=document.getElementById(id);if(el)el.classList.add('show');}
+function clearE(ids){ids.forEach(id=>{const e=document.getElementById(id);if(e)e.classList.remove('show');});}
+function erow(cols,ic,h,p){return`<tr class="erow"><td colspan="${cols}"><div class="ei">${ic}</div><div class="eh">${h}</div>${p?`<div class="ep">${p}</div>`:''}</td></tr>`;}
+function upsert(arr,obj){const i=arr.findIndex(x=>x.id===obj.id);i>=0?arr.splice(i,1,obj):arr.push(obj);}
 
-async function confirmBoDelete() {
-  if (!boDeleteId) return;
+/* ═══ INIT ═══ */
+document.addEventListener('DOMContentLoaded',()=>{
+  // Theme
+  const t=localStorage.getItem('fs_theme')||'light';
+  document.documentElement.setAttribute('data-theme',t);
+  document.getElementById('dark-btn').textContent=t==='dark'?'☀️':'🌙';
 
-  try {
-    const res = await fetch(API_DECHETS_URL, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({ id: boDeleteId }),
-    });
+  // Init data
+  initData();
 
-    const json = await res.json();
-    if (!res.ok || !json.success) {
-      throw new Error(json.message || 'Erreur API');
-    }
+  // Close modals on backdrop
+  document.querySelectorAll('.mo').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('op');}));
 
-    closeModal('modal-bo-delete');
-    await refreshBoData();
-    showBoAlert('🗑️ Déchet supprimé.', 'success');
-  } catch (err) {
-    showBoAlert(`❌ ${err.message || 'Erreur lors de la suppression.'}`, 'error');
-  } finally {
-    boDeleteId = null;
-  }
-}
+  // Mobile menu button visibility
+  if(window.innerWidth<=768)document.getElementById('menu-btn').style.display='flex';
+  window.addEventListener('resize',()=>{document.getElementById('menu-btn').style.display=window.innerWidth<=768?'flex':'none';});
 
-/* ===== EXPORT CSV ===== */
-function exportCSV() {
-  const data = getFiltered();
-  const rows = [['ID','Utilisateur','Type','Quantite','Unite','Date','Raison','Notes']];
-  data.forEach(d => rows.push([d.id, d.user, d.type, d.quantite, d.unite, d.date, d.raison, d.notes]));
-  const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
-  const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-  a.download = 'dechets_foodsave.csv';
-  a.click();
-}
+  // Welcome toast
+  setTimeout(()=>toast('👋 Bienvenue dans le CMS FoodSave !','info'),600);
 
-/* ===== UTILS ===== */
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-function showBoAlert(msg, type) {
-  const el = document.getElementById('bo-alert');
-  el.className = `alert alert-${type} show`;
-  el.innerHTML = msg;
-  setTimeout(() => el.classList.remove('show'), 3500);
-}
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function fDate(d) { return new Date(d+'T00:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'}); }
-
-document.addEventListener('DOMContentLoaded', async () => {
-  const today = new Date().toISOString().split('T')[0];
-  ['bo-date','boe-date'].forEach(id => { const el=document.getElementById(id); if(el) el.setAttribute('max',today); });
-  try {
-    await loadBoUsers();
-    await refreshBoData();
-  } catch (err) {
-    console.error(err);
-    renderBoTable();
-    renderBoStats();
-  }
+  go('overview');
 });
 </script>
 </body>
