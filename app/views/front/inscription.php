@@ -1,44 +1,45 @@
 <?php
-// ============================================================
-//  app/views/front/inscription.php — Formulaire d'inscription
-// ============================================================
 session_start();
-require_once __DIR__ . '/../../../config/database.php';
-require_once __DIR__ . '/../../models/EvenementModel.php';
-require_once __DIR__ . '/../../models/ParticipantModel.php';
+require_once __DIR__ . '/../../controller/EvenementController.php';
+require_once __DIR__ . '/../../controller/ParticipantController.php';
 
-$evMdl  = new EvenementModel();
-$pModel = new ParticipantModel();
-$id     = (int)($_GET['id'] ?? 0);
-$ev     = $evMdl->findById($id);
-if (!$ev) { header('Location: evenements.php'); exit; }
+$evenementController = new EvenementController();
+$participantController = new ParticipantController();
+
+$id = (int) ($_GET['id'] ?? 0);
+$ev = $evenementController->findById($id);
+
+if (!$ev) {
+    header('Location: evenements.php');
+    exit;
+}
 
 $errors = [];
-$p      = [];
+$p = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $p = [
-        'nom'          => trim($_POST['nom']       ?? ''),
-        'prenom'       => trim($_POST['prenom']    ?? ''),
-        'email'        => strtolower(trim($_POST['email'] ?? '')),
-        'telephone'    => trim($_POST['telephone'] ?? ''),
+        'nom' => trim($_POST['nom'] ?? ''),
+        'prenom' => trim($_POST['prenom'] ?? ''),
+        'email' => strtolower(trim($_POST['email'] ?? '')),
+        'telephone' => trim($_POST['telephone'] ?? ''),
         'evenement_id' => $id,
-        'statut'       => 'pending',
+        'statut' => 'pending',
     ];
 
-    // Validation PHP — PAS HTML5
-    $errors = ParticipantModel::validate($p);
+    $errors = $participantController->validate($p);
 
     if (empty($errors['email']) && $p['email'] !== '') {
-        if ($pModel->emailExists($p['email'], $id)) {
+        if ($participantController->emailExists($p['email'], $id)) {
             $errors['email'] = 'Vous etes deja inscrit(e) a cet evenement.';
         }
     }
 
     if (empty($errors)) {
-        $pModel->create($p);
-        $_SESSION['flash'] = ['type'=>'success','msg'=>'Inscription reussie ! Vous recevrez une confirmation bientot.'];
-        header('Location: ev_detail.php?id='.$id); exit;
+        $participantController->create($p);
+        $_SESSION['flash'] = ['type' => 'success', 'msg' => 'Inscription reussie ! Vous recevrez une confirmation bientot.'];
+        header('Location: ev_detail.php?id=' . $id);
+        exit;
     }
 }
 ?>
@@ -51,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <link rel="stylesheet" href="../../../public/css/style.css">
 </head>
 <body style="background:var(--g100);display:flex;flex-direction:column;min-height:100vh">
-
 <nav class="front-nav">
   <div class="fn-inner">
     <a href="accueil.php" class="fn-brand"><div class="bi">🌿</div><span><strong>Food</strong><em>Save</em></span></a>
@@ -65,15 +65,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <section class="f-section" style="flex:1">
   <div class="f-container" style="max-width:660px">
-
-    <!-- Recap evenement -->
     <div class="card" style="margin-bottom:18px;border-left:4px solid var(--green)">
       <div class="card-body" style="padding:13px 17px;display:flex;gap:13px;align-items:center">
         <div style="font-size:2rem">📅</div>
         <div>
           <div style="font-weight:800;font-size:.97rem"><?= htmlspecialchars($ev['titre']) ?></div>
           <div style="font-size:.78rem;color:var(--g500);margin-top:2px">
-            📅 <?= date('d/m/Y',strtotime($ev['date_event'])) ?> a <?= substr($ev['heure'],0,5) ?>
+            📅 <?= date('d/m/Y', strtotime($ev['date_event'])) ?> a <?= substr($ev['heure'], 0, 5) ?>
             &nbsp;·&nbsp; 📍 <?= htmlspecialchars($ev['lieu']) ?>
           </div>
         </div>
@@ -83,8 +81,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="card">
       <div class="card-header"><span class="card-title">✍ Formulaire d'inscription</span></div>
       <div class="card-body">
-
-        <!-- Affichage erreurs PHP si JS désactivé -->
         <?php if (!empty($errors)): ?>
         <div class="alert alert-danger">
           Veuillez corriger les erreurs ci-dessous.
@@ -93,7 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <form method="POST" action="inscription.php?id=<?= $id ?>" id="ins-form" novalidate>
-
           <div class="form-row">
             <div class="form-group">
               <label for="prenom">Prenom *</label>
@@ -143,7 +138,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <a href="ev_detail.php?id=<?= $id ?>" class="btn btn-outline">Annuler</a>
             <button type="submit" class="btn btn-primary">Confirmer l'inscription</button>
           </div>
-
         </form>
       </div>
     </div>
@@ -154,6 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="ff-brand"><div style="width:28px;height:28px;background:var(--green);border-radius:6px;display:flex;align-items:center;justify-content:center">🌿</div><strong>Food</strong><em>Save</em></div>
   <p>© 2026 FoodSave — Equipe NextWave</p>
 </footer>
+
 <div class="toast-wrap" id="toasts"></div>
 <script src="../../../public/js/validation.js"></script>
 </body>

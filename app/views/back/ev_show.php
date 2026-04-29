@@ -1,24 +1,27 @@
 <?php
-// ============================================================
-//  app/views/back/ev_show.php — Detail d'un evenement
-// ============================================================
 session_start();
-require_once __DIR__ . '/../../../config/database.php';
-require_once __DIR__ . '/../../models/EvenementModel.php';
-require_once __DIR__ . '/../../models/ParticipantModel.php';
+require_once __DIR__ . '/../../controller/EvenementController.php';
+require_once __DIR__ . '/../../controller/ParticipantController.php';
 
-$model  = new EvenementModel();
-$pModel = new ParticipantModel();
-$id     = (int)($_GET['id'] ?? 0);
-$ev     = $model->findById($id);
-if (!$ev) { header('Location: evenements.php'); exit; }
+$controller = new EvenementController();
+$participantController = new ParticipantController();
 
-$participants   = $pModel->findByEvent($id);
-$nb             = $model->countParticipants($id);
-$pct            = $ev['capacite'] > 0 ? min(100, round($nb / $ev['capacite'] * 100)) : 0;
-$slabels        = ['upcoming'=>'A venir','ongoing'=>'En cours','past'=>'Termine'];
-$sbadge         = ['upcoming'=>'b-green','ongoing'=>'b-orange','past'=>'b-gray'];
-$flash          = $_SESSION['flash'] ?? null;
+$id = (int) ($_GET['id'] ?? 0);
+$ev = $controller->findById($id);
+
+if (!$ev) {
+    header('Location: evenements.php');
+    exit;
+}
+
+$participants = $participantController->findByEvent($id);
+$nb = $controller->countParticipants($id);
+$pct = $ev['capacite'] > 0 ? min(100, round($nb / $ev['capacite'] * 100)) : 0;
+
+$slabels = ['upcoming' => 'A venir', 'ongoing' => 'En cours', 'past' => 'Termine'];
+$sbadge = ['upcoming' => 'b-green', 'ongoing' => 'b-orange', 'past' => 'b-gray'];
+
+$flash = $_SESSION['flash'] ?? null;
 unset($_SESSION['flash']);
 ?>
 <!DOCTYPE html>
@@ -30,13 +33,13 @@ unset($_SESSION['flash']);
 <link rel="stylesheet" href="../../../public/css/style.css">
 </head>
 <body class="back-wrap">
-
 <aside class="sidebar" id="sb">
   <div class="sb-brand"><div class="sb-icon">🌿</div><div class="sb-name"><span>Food</span><em>Save</em><small>Admin</small></div></div>
   <nav class="sb-nav">
     <div class="nav-lbl">Gestion</div>
     <a href="evenements.php" class="nav-a active">📅 Evenements</a>
     <a href="participants.php" class="nav-a">👥 Participants</a>
+    <a href="statistiques.php" class="nav-a">📊 Statistiques</a>
     <div class="nav-lbl" style="margin-top:10px">Acces rapide</div>
     <a href="../front/accueil.php" class="nav-a">🌐 Voir le site</a>
   </nav>
@@ -49,12 +52,14 @@ unset($_SESSION['flash']);
   <header class="topbar">
     <button class="ic-btn" onclick="document.getElementById('sb').classList.toggle('open')">☰</button>
     <div class="tb-title">🌿 FoodSave — BackOffice</div>
-    <a href="../front/accueil.php" class="btn btn-outline btn-sm">🌐 Front</a>
+    <div style="display:flex;gap:8px;align-items:center">
+      <a href="export_pdf.php?type=evenement&id=<?= $ev['id'] ?>" class="btn btn-sm" style="background:linear-gradient(135deg,#e53935,#c62828);color:#fff;box-shadow:0 3px 10px rgba(229,57,53,.3)">📄 Export PDF</a>
+      <a href="../front/accueil.php" class="btn btn-outline btn-sm">🌐 Front</a>
+    </div>
   </header>
   <div class="content">
-
     <?php if ($flash): ?>
-    <div class="alert alert-<?= $flash['type']==='success'?'success':'danger' ?>">
+    <div class="alert alert-<?= $flash['type'] === 'success' ? 'success' : 'danger' ?>">
       <?= htmlspecialchars($flash['msg']) ?>
       <button class="alert-close" onclick="this.parentElement.remove()">✕</button>
     </div>
@@ -73,14 +78,14 @@ unset($_SESSION['flash']);
         <div class="card-header"><span class="card-title">📋 Informations</span></div>
         <div class="card-body">
           <table style="width:100%;font-size:.86rem;border-collapse:collapse">
-            <?php foreach([
-              ['Categorie',    '<span class="badge b-blue">'.htmlspecialchars($ev['categorie']).'</span>'],
-              ['Statut',       '<span class="badge '.($sbadge[$ev['statut']]??'b-gray').'">'.($slabels[$ev['statut']]??$ev['statut']).'</span>'],
-              ['Date',         date('d/m/Y',strtotime($ev['date_event'])).' a '.htmlspecialchars(substr($ev['heure'],0,5))],
-              ['Lieu',         htmlspecialchars($ev['lieu'])],
+            <?php foreach ([
+              ['Categorie', '<span class="badge b-blue">' . htmlspecialchars($ev['categorie']) . '</span>'],
+              ['Statut', '<span class="badge ' . ($sbadge[$ev['statut']] ?? 'b-gray') . '">' . ($slabels[$ev['statut']] ?? $ev['statut']) . '</span>'],
+              ['Date', date('d/m/Y', strtotime($ev['date_event'])) . ' a ' . htmlspecialchars(substr($ev['heure'], 0, 5))],
+              ['Lieu', htmlspecialchars($ev['lieu'])],
               ['Organisateur', htmlspecialchars($ev['organisateur'])],
-              ['Cree le',      date('d/m/Y H:i',strtotime($ev['created_at']))],
-            ] as list($l,$v)): ?>
+              ['Cree le', date('d/m/Y H:i', strtotime($ev['created_at']))],
+            ] as [$l, $v]): ?>
             <tr>
               <td style="color:var(--g500);padding:6px 0;width:40%;font-weight:600"><?= $l ?></td>
               <td><?= $v ?></td>
@@ -89,6 +94,7 @@ unset($_SESSION['flash']);
           </table>
         </div>
       </div>
+
       <div class="card">
         <div class="card-header"><span class="card-title">👥 Inscriptions</span></div>
         <div class="card-body">
@@ -125,24 +131,23 @@ unset($_SESSION['flash']);
               <?php foreach ($participants as $p): ?>
               <tr>
                 <td style="color:var(--g500);font-size:.78rem"><?= $p['id'] ?></td>
-                <td><strong><?= htmlspecialchars($p['prenom'].' '.$p['nom']) ?></strong></td>
+                <td><strong><?= htmlspecialchars($p['prenom'] . ' ' . $p['nom']) ?></strong></td>
                 <td><?= htmlspecialchars($p['email']) ?></td>
-                <td><?= htmlspecialchars($p['telephone']?:'—') ?></td>
+                <td><?= htmlspecialchars($p['telephone'] ?: '—') ?></td>
                 <td>
-                  <?php if ($p['statut']==='confirmed'): ?>
+                  <?php if ($p['statut'] === 'confirmed'): ?>
                     <span class="badge b-green">Confirme</span>
-                  <?php elseif ($p['statut']==='pending'): ?>
+                  <?php elseif ($p['statut'] === 'pending'): ?>
                     <span class="badge b-orange">En attente</span>
                   <?php else: ?>
                     <span class="badge b-gray">Annule</span>
                   <?php endif; ?>
                 </td>
-                <td style="font-size:.78rem;color:var(--g500)"><?= date('d/m/Y',strtotime($p['date_inscription'])) ?></td>
+                <td style="font-size:.78rem;color:var(--g500)"><?= date('d/m/Y', strtotime($p['date_inscription'])) ?></td>
                 <td>
                   <div style="display:flex;gap:4px">
                     <a href="p_form.php?id=<?= $p['id'] ?>" class="btn btn-outline btn-sm">✏</a>
-                    <form method="POST" action="participants.php" style="display:inline"
-                          onsubmit="return confirmDel('Supprimer ce participant ?')">
+                    <form method="POST" action="participants.php" style="display:inline" onsubmit="return confirmDel('Supprimer ce participant ?')">
                       <input type="hidden" name="action" value="delete">
                       <input type="hidden" name="id" value="<?= $p['id'] ?>">
                       <input type="hidden" name="redirect" value="ev_show.php?id=<?= $ev['id'] ?>">
@@ -158,7 +163,6 @@ unset($_SESSION['flash']);
         </div>
       </div>
     </div>
-
   </div>
 </div>
 

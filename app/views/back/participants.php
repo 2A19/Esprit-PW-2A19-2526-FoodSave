@@ -1,50 +1,31 @@
 <?php
-// ============================================================
-//  app/views/back/participants.php — BackOffice CRUD Participants
-// ============================================================
 session_start();
-require_once __DIR__ . '/../../../config/database.php';
-require_once __DIR__ . '/../../models/ParticipantModel.php';
-require_once __DIR__ . '/../../models/EvenementModel.php';
+require_once __DIR__ . '/../../controller/ParticipantController.php';
 
-$model  = new ParticipantModel();
-$evMdl  = new EvenementModel();
-$flash  = $_SESSION['flash'] ?? null;
+$controller = new ParticipantController();
+$flash = $_SESSION['flash'] ?? null;
 unset($_SESSION['flash']);
 
-// DELETE
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action']??'') === 'delete') {
-    $model->delete((int)$_POST['id']);
-    $_SESSION['flash'] = ['type'=>'success','msg'=>'Participant supprime.'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
+    $controller->delete((int) $_POST['id']);
+    $_SESSION['flash'] = ['type' => 'success', 'msg' => 'Participant supprime.'];
     $redirect = $_POST['redirect'] ?? 'participants.php';
-    // Securite : accepter seulement les redirections locales connues
-    $allowed = ['participants.php','ev_show.php'];
+    $allowed = ['participants.php', 'ev_show.php'];
     $base = basename(parse_url($redirect, PHP_URL_PATH));
-    if (!in_array($base, $allowed)) $redirect = 'participants.php';
-    header('Location: ' . $redirect); exit;
+    if (!in_array($base, $allowed, true)) {
+        $redirect = 'participants.php';
+    }
+    header('Location: ' . $redirect);
+    exit;
 }
 
-$search   = trim($_GET['search'] ?? '');
-$statut   = $_GET['statut'] ?? '';
-$evFilter = (int)($_GET['ev'] ?? 0);
+$search = trim($_GET['search'] ?? '');
+$statut = $_GET['statut'] ?? '';
+$evFilter = (int) ($_GET['ev'] ?? 0);
 
-if ($search !== '') {
-    $rows = $model->search($search);
-} elseif ($evFilter > 0) {
-    $rows = $model->findByEvent($evFilter);
-} else {
-    $rows = $model->findAll();
-}
-
-if ($statut !== '') {
-    $filtered = [];
-    foreach ($rows as $r) { if ($r['statut'] === $statut) $filtered[] = $r; }
-    $rows = $filtered;
-}
-
-$stats      = $model->getStats();
-$evenements = $evMdl->findAll();
-$currentUrl = 'participants.php';
+$rows = $controller->listParticipants($search, $statut, $evFilter);
+$stats = $controller->getStats();
+$evenements = $controller->getEventList();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -55,13 +36,13 @@ $currentUrl = 'participants.php';
 <link rel="stylesheet" href="../../../public/css/style.css">
 </head>
 <body class="back-wrap">
-
 <aside class="sidebar" id="sb">
   <div class="sb-brand"><div class="sb-icon">🌿</div><div class="sb-name"><span>Food</span><em>Save</em><small>Admin</small></div></div>
   <nav class="sb-nav">
     <div class="nav-lbl">Gestion</div>
     <a href="evenements.php" class="nav-a">📅 Evenements</a>
     <a href="participants.php" class="nav-a active">👥 Participants</a>
+    <a href="statistiques.php" class="nav-a">📊 Statistiques</a>
     <div class="nav-lbl" style="margin-top:10px">Acces rapide</div>
     <a href="../front/accueil.php" class="nav-a">🌐 Voir le site</a>
   </nav>
@@ -74,12 +55,15 @@ $currentUrl = 'participants.php';
   <header class="topbar">
     <button class="ic-btn" onclick="document.getElementById('sb').classList.toggle('open')">☰</button>
     <div class="tb-title">🌿 FoodSave — BackOffice</div>
-    <a href="../front/accueil.php" class="btn btn-outline btn-sm">🌐 Front</a>
+    <div style="display:flex;gap:8px;align-items:center">
+      <a href="export_pdf.php?type=participants<?= $search ? '&search='.urlencode($search) : '' ?><?= $statut ? '&statut='.urlencode($statut) : '' ?><?= $evFilter ? '&ev='.$evFilter : '' ?>" class="btn btn-sm" style="background:linear-gradient(135deg,#e53935,#c62828);color:#fff;box-shadow:0 3px 10px rgba(229,57,53,.3)">📄 Export PDF</a>
+      <a href="statistiques.php" class="btn btn-outline btn-sm">📊 Stats</a>
+      <a href="../front/accueil.php" class="btn btn-outline btn-sm">🌐 Front</a>
+    </div>
   </header>
   <div class="content">
-
     <?php if ($flash): ?>
-    <div class="alert alert-<?= $flash['type']==='success'?'success':'danger' ?>">
+    <div class="alert alert-<?= $flash['type'] === 'success' ? 'success' : 'danger' ?>">
       <?= htmlspecialchars($flash['msg']) ?>
       <button class="alert-close" onclick="this.parentElement.remove()">✕</button>
     </div>
@@ -102,14 +86,14 @@ $currentUrl = 'participants.php';
         <input class="s-input" type="text" name="search" placeholder="🔍 Rechercher..." value="<?= htmlspecialchars($search) ?>">
         <select name="statut">
           <option value="">Tous statuts</option>
-          <option value="confirmed" <?= $statut==='confirmed'?'selected':'' ?>>Confirmes</option>
-          <option value="pending"   <?= $statut==='pending'  ?'selected':'' ?>>En attente</option>
-          <option value="cancelled" <?= $statut==='cancelled'?'selected':'' ?>>Annules</option>
+          <option value="confirmed" <?= $statut === 'confirmed' ? 'selected' : '' ?>>Confirmes</option>
+          <option value="pending" <?= $statut === 'pending' ? 'selected' : '' ?>>En attente</option>
+          <option value="cancelled" <?= $statut === 'cancelled' ? 'selected' : '' ?>>Annules</option>
         </select>
         <select name="ev">
           <option value="">Tous evenements</option>
           <?php foreach ($evenements as $e): ?>
-          <option value="<?= $e['id'] ?>" <?= $evFilter==(int)$e['id']?'selected':'' ?>><?= htmlspecialchars($e['titre']) ?></option>
+          <option value="<?= $e['id'] ?>" <?= $evFilter === (int) $e['id'] ? 'selected' : '' ?>><?= htmlspecialchars($e['titre']) ?></option>
           <?php endforeach; ?>
         </select>
         <button type="submit" class="btn btn-outline btn-sm">Filtrer</button>
@@ -131,28 +115,27 @@ $currentUrl = 'participants.php';
                 <td style="color:var(--g500);font-size:.78rem"><?= $r['id'] ?></td>
                 <td>
                   <div style="display:flex;align-items:center;gap:8px">
-                    <div class="av"><?= strtoupper(substr($r['prenom'],0,1).substr($r['nom'],0,1)) ?></div>
-                    <strong><?= htmlspecialchars($r['prenom'].' '.$r['nom']) ?></strong>
+                    <div class="av"><?= strtoupper(substr($r['prenom'], 0, 1) . substr($r['nom'], 0, 1)) ?></div>
+                    <strong><?= htmlspecialchars($r['prenom'] . ' ' . $r['nom']) ?></strong>
                   </div>
                 </td>
                 <td><?= htmlspecialchars($r['email']) ?></td>
-                <td><?= htmlspecialchars($r['telephone']?:'—') ?></td>
-                <td><span class="badge b-blue" style="font-size:.68rem"><?= htmlspecialchars($r['ev_titre']??'—') ?></span></td>
+                <td><?= htmlspecialchars($r['telephone'] ?: '—') ?></td>
+                <td><span class="badge b-blue" style="font-size:.68rem"><?= htmlspecialchars($r['ev_titre'] ?? '—') ?></span></td>
                 <td>
-                  <?php if ($r['statut']==='confirmed'): ?>
+                  <?php if ($r['statut'] === 'confirmed'): ?>
                     <span class="badge b-green">Confirme</span>
-                  <?php elseif ($r['statut']==='pending'): ?>
+                  <?php elseif ($r['statut'] === 'pending'): ?>
                     <span class="badge b-orange">En attente</span>
                   <?php else: ?>
                     <span class="badge b-gray">Annule</span>
                   <?php endif; ?>
                 </td>
-                <td style="font-size:.78rem;color:var(--g500)"><?= date('d/m/Y',strtotime($r['date_inscription'])) ?></td>
+                <td style="font-size:.78rem;color:var(--g500)"><?= date('d/m/Y', strtotime($r['date_inscription'])) ?></td>
                 <td>
                   <div style="display:flex;gap:4px">
                     <a href="p_form.php?id=<?= $r['id'] ?>" class="btn btn-outline btn-sm">✏</a>
-                    <form method="POST" style="display:inline"
-                          onsubmit="return confirmDel('Supprimer ce participant ?')">
+                    <form method="POST" style="display:inline" onsubmit="return confirmDel('Supprimer ce participant ?')">
                       <input type="hidden" name="action" value="delete">
                       <input type="hidden" name="id" value="<?= $r['id'] ?>">
                       <button type="submit" class="btn btn-danger btn-sm">🗑</button>
@@ -167,7 +150,6 @@ $currentUrl = 'participants.php';
         </div>
       </div>
     </div>
-
   </div>
 </div>
 

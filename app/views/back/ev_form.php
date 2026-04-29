@@ -1,53 +1,52 @@
 <?php
-// ============================================================
-//  app/views/back/ev_form.php — Creer / Modifier un evenement
-// ============================================================
 session_start();
-require_once __DIR__ . '/../../../config/database.php';
-require_once __DIR__ . '/../../models/EvenementModel.php';
+require_once __DIR__ . '/../../controller/EvenementController.php';
 
-$model  = new EvenementModel();
-$id     = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$controller = new EvenementController();
+$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 $isEdit = $id > 0;
 $errors = [];
-$ev     = [];
+$ev = [];
 
-// ── TRAITEMENT POST ──────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ev = [
-        'titre'        => trim($_POST['titre']        ?? ''),
-        'categorie'    => trim($_POST['categorie']    ?? ''),
-        'statut'       => $_POST['statut']            ?? 'upcoming',
-        'date_event'   => $_POST['date_event']        ?? '',
-        'heure'        => $_POST['heure']             ?? '',
-        'lieu'         => trim($_POST['lieu']         ?? ''),
+        'titre' => trim($_POST['titre'] ?? ''),
+        'categorie' => trim($_POST['categorie'] ?? ''),
+        'statut' => $_POST['statut'] ?? 'upcoming',
+        'date_event' => $_POST['date_event'] ?? '',
+        'heure' => $_POST['heure'] ?? '',
+        'lieu' => trim($_POST['lieu'] ?? ''),
         'organisateur' => trim($_POST['organisateur'] ?? ''),
-        'capacite'     => $_POST['capacite']          ?? '',
-        'description'  => trim($_POST['description']  ?? ''),
+        'capacite' => $_POST['capacite'] ?? '',
+        'description' => trim($_POST['description'] ?? ''),
     ];
-    $pid = (int)($_POST['id'] ?? 0);
 
-    // Validation PHP — PAS HTML5
-    $errors = EvenementModel::validate($ev);
+    $pid = (int) ($_POST['id'] ?? 0);
+    $errors = $controller->validate($ev);
 
     if (empty($errors)) {
         if ($pid > 0) {
-            $model->update($pid, $ev);
-            $_SESSION['flash'] = ['type'=>'success','msg'=>'Evenement modifie avec succes !'];
+            $controller->update($pid, $ev);
+            $_SESSION['flash'] = ['type' => 'success', 'msg' => 'Evenement modifie avec succes !'];
         } else {
-            $model->create($ev);
-            $_SESSION['flash'] = ['type'=>'success','msg'=>'Evenement cree avec succes !'];
+            $controller->create($ev);
+            $_SESSION['flash'] = ['type' => 'success', 'msg' => 'Evenement cree avec succes !'];
         }
-        header('Location: evenements.php'); exit;
+
+        header('Location: evenements.php');
+        exit;
     }
 } elseif ($isEdit) {
-    $ev = $model->findById($id);
-    if (!$ev) { header('Location: evenements.php'); exit; }
-    // Trim HH:MM:SS to HH:MM for the form field
-    if (!empty($ev['heure'])) $ev['heure'] = substr($ev['heure'], 0, 5);
-}
+    $ev = $controller->findById($id);
+    if (!$ev) {
+        header('Location: evenements.php');
+        exit;
+    }
 
-$currentUrl = 'ev_form.php';
+    if (!empty($ev['heure'])) {
+        $ev['heure'] = substr($ev['heure'], 0, 5);
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -58,8 +57,6 @@ $currentUrl = 'ev_form.php';
 <link rel="stylesheet" href="../../../public/css/style.css">
 </head>
 <body class="back-wrap">
-
-<!-- SIDEBAR -->
 <aside class="sidebar" id="sb">
   <div class="sb-brand"><div class="sb-icon">🌿</div><div class="sb-name"><span>Food</span><em>Save</em><small>Admin</small></div></div>
   <nav class="sb-nav">
@@ -111,7 +108,7 @@ $currentUrl = 'ev_form.php';
               <select id="categorie" name="categorie" data-validate="required">
                 <option value="">-- Selectionner --</option>
                 <?php foreach (['Atelier','Conference','Hackathon','Social','Formation','Autre'] as $c): ?>
-                <option value="<?= $c ?>" <?= ($ev['categorie']??'')===$c?'selected':'' ?>><?= $c ?></option>
+                <option value="<?= $c ?>" <?= ($ev['categorie'] ?? '') === $c ? 'selected' : '' ?>><?= $c ?></option>
                 <?php endforeach; ?>
               </select>
               <?php if (isset($errors['categorie'])): ?><span class="field-err"><?= $errors['categorie'] ?></span><?php endif; ?>
@@ -120,9 +117,9 @@ $currentUrl = 'ev_form.php';
             <div class="form-group">
               <label for="statut">Statut *</label>
               <select id="statut" name="statut" data-validate="required">
-                <option value="upcoming" <?= ($ev['statut']??'upcoming')==='upcoming'?'selected':'' ?>>A venir</option>
-                <option value="ongoing"  <?= ($ev['statut']??'')==='ongoing' ?'selected':'' ?>>En cours</option>
-                <option value="past"     <?= ($ev['statut']??'')==='past'    ?'selected':'' ?>>Termine</option>
+                <option value="upcoming" <?= ($ev['statut'] ?? 'upcoming') === 'upcoming' ? 'selected' : '' ?>>A venir</option>
+                <option value="ongoing" <?= ($ev['statut'] ?? '') === 'ongoing' ? 'selected' : '' ?>>En cours</option>
+                <option value="past" <?= ($ev['statut'] ?? '') === 'past' ? 'selected' : '' ?>>Termine</option>
               </select>
               <?php if (isset($errors['statut'])): ?><span class="field-err"><?= $errors['statut'] ?></span><?php endif; ?>
               <div class="js-err" id="e-statut"></div>
@@ -142,7 +139,7 @@ $currentUrl = 'ev_form.php';
             <div class="form-group">
               <label for="heure">Heure * <small style="color:var(--g500)">(HH:MM)</small></label>
               <input type="text" id="heure" name="heure"
-                     value="<?= htmlspecialchars(isset($ev['heure']) ? substr($ev['heure'],0,5) : '') ?>"
+                     value="<?= htmlspecialchars($ev['heure'] ?? '') ?>"
                      placeholder="10:00"
                      data-validate="required|time">
               <?php if (isset($errors['heure'])): ?><span class="field-err"><?= $errors['heure'] ?></span><?php endif; ?>
@@ -191,18 +188,40 @@ $currentUrl = 'ev_form.php';
 
           <div class="form-actions">
             <a href="evenements.php" class="btn btn-outline">Annuler</a>
-            <button type="submit" class="btn btn-primary">
-              <?= $isEdit ? '💾 Enregistrer' : '＋ Creer l\'evenement' ?>
-            </button>
+            <button type="submit" class="btn btn-primary"><?= $isEdit ? '💾 Enregistrer' : '＋ Creer l\'evenement' ?></button>
           </div>
         </form>
       </div>
     </div>
-
   </div>
 </div>
 
 <div class="toast-wrap" id="toasts"></div>
 <script src="../../../public/js/validation.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const statut = document.getElementById('statut');
+    const dateEvent = document.getElementById('date_event');
+
+    function today() {
+        const d = new Date();
+        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+
+    function syncDateField() {
+        if (statut.value === 'ongoing') {
+            dateEvent.value = today();
+            dateEvent.readOnly = true;
+            dateEvent.setAttribute('data-validate', 'date');
+        } else {
+            dateEvent.readOnly = false;
+            dateEvent.setAttribute('data-validate', 'required|date');
+        }
+    }
+
+    statut.addEventListener('change', syncDateField);
+    syncDateField();
+});
+</script>
 </body>
 </html>
