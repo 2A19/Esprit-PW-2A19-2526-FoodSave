@@ -41,7 +41,8 @@ try {
 
         // Posts Admin
         case 'posts':
-            $posts = $postController->listAllForAdmin();
+            $selectedCategory = $_GET['category'] ?? '';
+            $posts = $postController->listAllForAdmin($selectedCategory);
             $title = 'Gérer les Posts';
             $content = __DIR__ . '/View/back/posts/list.php';
             break;
@@ -67,7 +68,8 @@ try {
                 $errors = $result['errors'];
             }
             
-            $posts = $postController->listAllForAdmin();
+            $selectedCategory = $_GET['category'] ?? '';
+            $posts = $postController->listAllForAdmin($selectedCategory);
             $title = 'Gérer les Posts';
             $content = __DIR__ . '/View/back/posts/list.php';
             break;
@@ -83,7 +85,8 @@ try {
                 $errors = $result['errors'];
             }
             
-            $posts = $postController->listAllForAdmin();
+            $selectedCategory = $_GET['category'] ?? '';
+            $posts = $postController->listAllForAdmin($selectedCategory);
             $title = 'Gérer les Posts';
             $content = __DIR__ . '/View/back/posts/list.php';
             break;
@@ -103,7 +106,8 @@ try {
                 $errors[] = 'Erreur lors de la suppression';
             }
             
-            $posts = $postController->listAllForAdmin();
+            $selectedCategory = $_GET['category'] ?? '';
+            $posts = $postController->listAllForAdmin($selectedCategory);
             $title = 'Gérer les Posts';
             $content = __DIR__ . '/View/back/posts/list.php';
             break;
@@ -182,7 +186,8 @@ try {
     }
 } catch (Exception $e) {
     $errors[] = $e->getMessage();
-    $posts = $postController->listAllForAdmin();
+    $selectedCategory = $_GET['category'] ?? '';
+    $posts = $postController->listAllForAdmin($selectedCategory);
     $content = __DIR__ . '/View/back/posts/list.php';
 }
 

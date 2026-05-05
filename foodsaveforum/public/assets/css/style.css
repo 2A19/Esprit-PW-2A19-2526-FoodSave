@@ -147,16 +147,16 @@ a {
     font-size: 0.84rem;
 }
 
-.btn-primary { background: var(--green-700); color: var(--white); }
-.btn-primary:hover { background: var(--green-900); }
+.btn-primary { background: #096a09; color: var(--white); }
+.btn-primary:hover { background: #054e05; }
 .btn-secondary { background: #6f7d71; color: var(--white); }
 .btn-secondary:hover { background: #5c695f; }
-.btn-warning { background: var(--orange-500); color: var(--white); }
-.btn-warning:hover { background: #df8c09; }
-.btn-danger { background: var(--danger); color: var(--white); }
-.btn-danger:hover { background: #be2b2b; }
-.btn-info { background: var(--info); color: var(--white); }
-.btn-info:hover { background: #276cb4; }
+.btn-warning { background: #FFCF39; color: #000; }
+.btn-warning:hover { background: #FFEE8C; }
+.btn-danger { background: #FFCF39; color: #000; }
+.btn-danger:hover { background: #FFEE8C; }
+.btn-info { background: #096a09; color: var(--white); }
+.btn-info:hover { background: #054e05; }
 .btn-success { background: var(--success); color: var(--white); }
 .btn-success:hover { background: #257a3f; }
 
@@ -570,6 +570,50 @@ a {
     color: var(--text-700);
 }
 
+.rich-content {
+    display: grid;
+    gap: 10px;
+    line-height: 1.55;
+}
+
+.embedded-media {
+    border: 1px solid #e2ebe3;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f7fbf8;
+}
+
+.embedded-video {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+}
+
+.embedded-video iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.embedded-gif img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 420px;
+    object-fit: contain;
+}
+
+.audio-player-wrap {
+    margin-top: 10px;
+}
+
+.audio-player-wrap audio {
+    width: 100%;
+    max-width: 460px;
+}
+
 .post-actions,
 .comment-actions,
 .form-actions,
@@ -582,6 +626,146 @@ a {
 
 .post-actions {
     padding: 12px 16px 16px;
+}
+
+.posts-calendar {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.calendar-header h2 {
+    color: var(--green-900);
+}
+
+.calendar-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.calendar-month-label {
+    min-width: 150px;
+    text-align: center;
+    font-weight: 700;
+    color: var(--text-700);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.calendar-weekday {
+    text-align: center;
+    font-weight: 700;
+    color: var(--green-900);
+    padding: 8px 0;
+    background: #f3faf4;
+    border: 1px solid #e2eee4;
+    border-radius: 8px;
+}
+
+.calendar-day {
+    min-height: 120px;
+    background: #fff;
+    border: 1px solid #e5efe7;
+    border-radius: 10px;
+    padding: 8px;
+}
+
+.calendar-day.empty {
+    background: #f9fbf9;
+    border-style: dashed;
+}
+
+.day-number {
+    font-weight: 700;
+    color: var(--text-700);
+    margin-bottom: 4px;
+}
+
+.day-post-count {
+    display: inline-block;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--green-700);
+    border-radius: 999px;
+    padding: 3px 8px;
+    margin-bottom: 6px;
+}
+
+.day-post-list {
+    display: grid;
+    gap: 4px;
+}
+
+.day-post-item {
+    font-size: 0.78rem;
+    color: var(--text-700);
+    text-decoration: none;
+    background: #f4f9f5;
+    border: 1px solid #e0ece2;
+    border-radius: 6px;
+    padding: 4px 6px;
+}
+
+.day-post-item:hover {
+    color: var(--green-700);
+    background: #ebf5ed;
+}
+
+.day-post-more {
+    font-size: 0.72rem;
+    color: var(--text-500);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.page-link {
+    text-decoration: none;
+    color: var(--text-700);
+    background: #f5f9f6;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-weight: 600;
+    min-width: 38px;
+    text-align: center;
+}
+
+.page-link:hover {
+    background: #ebf5ed;
+    color: var(--green-700);
+}
+
+.page-link.active {
+    background: var(--green-700);
+    color: #fff;
+    border-color: var(--green-700);
+}
+
+.page-link.disabled {
+    opacity: 0.45;
+    pointer-events: none;
 }
 
 .category-badge,
@@ -752,6 +936,67 @@ a {
     background: #fbfdfb;
 }
 
+/* ========================================
+   Likes and Dislikes Reactions
+   ======================================== */
+
+.post-reactions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 12px 0;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+}
+
+.reactions-group {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-reaction {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-700);
+    transition: all 0.3s ease;
+}
+
+.btn-reaction:hover {
+    background: #f0f5f2;
+    border-color: var(--green-600);
+    color: var(--green-700);
+}
+
+.btn-reaction.active {
+    background: var(--green-100);
+    border-color: var(--green-600);
+    color: var(--green-700);
+}
+
+.btn-like {
+    position: relative;
+}
+
+.btn-dislike {
+    position: relative;
+}
+
+.reaction-count {
+    min-width: 20px;
+    text-align: center;
+    font-weight: 600;
+}
+
+
 .admin-table tbody tr.row-banned {
     background: #fff3f3;
 }
@@ -880,4 +1125,146 @@ a {
     .filter-form {
         flex-direction: column;
     }
+
+    .calendar-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .calendar-weekday {
+        display: none;
+    }
+}
+
+/* ============================================================
+   VOICE RECORDER COMPONENT
+   ============================================================ */
+
+.voice-recorder {
+    background: var(--white);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 20px;
+    transition: border-color 0.2s;
+}
+
+.voice-recorder:has(.recorder-active:not([style*="display:none"])) {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px rgba(215,53,53,0.1);
+}
+
+/* --- Idle state: record button --- */
+.btn-record {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--green-700), var(--green-600));
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 22px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+}
+.btn-record:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-record:active { transform: translateY(0); }
+.mic-icon { font-size: 1.2rem; }
+
+/* --- Active recording state --- */
+.recording-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: var(--danger);
+}
+
+.rec-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--danger);
+    animation: blink 1s step-start infinite;
+    flex-shrink: 0;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+.rec-timer {
+    font-variant-numeric: tabular-nums;
+    font-size: 1.1rem;
+    letter-spacing: 0.04em;
+}
+
+.rec-label {
+    font-size: 0.88rem;
+    color: var(--text-500);
+    font-weight: 400;
+}
+
+.recorder-waveform {
+    margin-bottom: 12px;
+    background: var(--green-100);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.waveform-canvas {
+    display: block;
+    width: 100%;
+    height: 40px;
+}
+
+.btn-stop-record {
+    background: var(--danger);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.btn-stop-record:hover { opacity: 0.85; }
+
+/* --- Preview state --- */
+.recorder-preview audio {
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+
+.recorder-preview-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-discard-record {
+    background: transparent;
+    color: var(--danger);
+    border: 1.5px solid var(--danger);
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.btn-discard-record:hover {
+    background: var(--danger);
+    color: #fff;
+}
+
+/* Audio player in posts/comments */
+.audio-player-wrap {
+    margin-top: 14px;
+    background: var(--green-100);
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+.audio-player-wrap audio {
+    width: 100%;
+    outline: none;
 }

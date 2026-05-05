@@ -3,15 +3,17 @@ if (!class_exists('CommentaireModel')) {
 class CommentaireModel {
     private ?int $id_commentaire;
     private ?string $contenu;
+    private ?string $audio_path;
     private ?DateTime $date_publication;
     private ?int $id_post;
     private ?int $id_utilisateur;
     private ?string $statue;
 
     // Constructor
-    public function __construct(?int $id_commentaire, ?string $contenu, ?DateTime $date_publication, ?int $id_post, ?int $id_utilisateur, ?string $statue) {
+    public function __construct(?int $id_commentaire, ?string $contenu, ?string $audio_path, ?DateTime $date_publication, ?int $id_post, ?int $id_utilisateur, ?string $statue) {
         $this->id_commentaire = $id_commentaire;
         $this->contenu = $contenu;
+        $this->audio_path = $audio_path;
         $this->date_publication = $date_publication;
         $this->id_post = $id_post;
         $this->id_utilisateur = $id_utilisateur;
@@ -47,6 +49,14 @@ class CommentaireModel {
 
     public function setContenu(?string $contenu): void {
         $this->contenu = $contenu;
+    }
+
+    public function getAudioPath(): ?string {
+        return $this->audio_path;
+    }
+
+    public function setAudioPath(?string $audio_path): void {
+        $this->audio_path = $audio_path;
     }
 
     public function getDatePublication(): ?DateTime {

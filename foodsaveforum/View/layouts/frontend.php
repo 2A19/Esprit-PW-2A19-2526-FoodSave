@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($title) ? $title : 'FoodSave Forum'; ?></title>
-    <link rel="stylesheet" href="/foodsaveforum/public/assets/css/style.css?v=1.2">
+    <link rel="stylesheet" href="/foodsaveforum/public/assets/css/style.css?v=2.0">
 </head>
 <body class="front-office">
     <header class="header">
@@ -19,6 +19,7 @@
                     <li><a href="index.php?action=posts">Accueil</a></li>
                     <li><a href="index.php?action=posts">Catégories</a></li>
                     <li><a href="index.php?action=posts">Sujets récents</a></li>
+                    <li><a href="index.php?action=posts-calendar">Calendrier</a></li>
                     <li><a href="index.php?action=create-post">Créer un post</a></li>
                     <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']): ?>
                         <li><a href="admin.php?action=dashboard">Administration</a></li>
@@ -57,6 +58,6 @@
         </div>
     </footer>
 
-    <script src="/foodsaveforum/public/assets/js/script.js"></script>
+    <script src="/foodsaveforum/public/assets/js/script.js?v=2.0"></script>
 </body>
 </html>

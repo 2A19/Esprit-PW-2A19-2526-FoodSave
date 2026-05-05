@@ -1,22 +1,41 @@
 <div class="edit-comment-container">
     <h2>✏️ Modifier un commentaire</h2>
 
-    <form method="POST" action="index.php?action=update-comment" class="form-comment">
+    <form method="POST" action="index.php?action=update-comment" class="form-comment" enctype="multipart/form-data">
         <input type="hidden" name="id_commentaire" value="<?php echo $commentaire['id_commentaire']; ?>">
         <input type="hidden" name="id_post" value="<?php echo $commentaire['id_post']; ?>">
 
         <div class="form-group">
-            <label for="contenu">Commentaire *</label>
+            <label for="contenu">Commentaire</label>
             <textarea 
                 id="contenu" 
                 name="contenu" 
                 class="form-control" 
                 rows="6" 
-                required
                 minlength="3"
-                data-validate="required|minlength:3"
             ><?php echo htmlspecialchars($commentaire['contenu']); ?></textarea>
-            <small>Minimum 3 caractères</small>
+            <small>Optionnel si vous ajoutez un message vocal.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="audio_message">Message vocal (audio)</label>
+            <?php if (!empty($commentaire['audio_path'])): ?>
+                <div class="audio-player-wrap">
+                    <audio controls preload="none">
+                        <source src="<?php echo htmlspecialchars($commentaire['audio_path']); ?>">
+                        Votre navigateur ne supporte pas le lecteur audio.
+                    </audio>
+                </div>
+            <?php endif; ?>
+            <input
+                type="file"
+                id="audio_message"
+                name="audio_message"
+                class="form-control"
+                accept="audio/*"
+                capture="user"
+            >
+            <small>Laisser vide pour conserver l'audio actuel.</small>
         </div>
 
         <div class="form-actions">

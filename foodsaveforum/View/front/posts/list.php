@@ -1,4 +1,9 @@
 <?php
+$displayPosts = $paginatedPosts ?? $posts;
+$currentPage = isset($currentPage) ? (int) $currentPage : 1;
+$totalPages = isset($totalPages) ? (int) $totalPages : 1;
+$selectedCategory = $selectedCategory ?? ($_GET['category'] ?? '');
+
 $membersCount = count(array_unique(array_map(function ($post) {
     return $post['id_utilisateur'];
 }, $posts)));
@@ -107,23 +112,23 @@ foreach ($posts as $post) {
             <input type="hidden" name="action" value="posts">
             <select name="category" id="category">
                 <option value="">-- Toutes les catégories --</option>
-                <option value="Recettes">🍳 Recettes</option>
-                <option value="Astuces">💡 Astuces</option>
-                <option value="Questions">❓ Questions</option>
-                <option value="Conseils">📋 Conseils</option>
-                <option value="Autre">🔖 Autre</option>
+                <option value="Recettes" <?php echo $selectedCategory === 'Recettes' ? 'selected' : ''; ?>>🍳 Recettes</option>
+                <option value="Astuces" <?php echo $selectedCategory === 'Astuces' ? 'selected' : ''; ?>>💡 Astuces</option>
+                <option value="Questions" <?php echo $selectedCategory === 'Questions' ? 'selected' : ''; ?>>❓ Questions</option>
+                <option value="Conseils" <?php echo $selectedCategory === 'Conseils' ? 'selected' : ''; ?>>📋 Conseils</option>
+                <option value="Autre" <?php echo $selectedCategory === 'Autre' ? 'selected' : ''; ?>>🔖 Autre</option>
             </select>
             <button type="submit" class="btn btn-secondary">Filtrer</button>
         </form>
     </div>
 
-    <?php if (empty($posts)): ?>
+    <?php if (empty($displayPosts)): ?>
         <div class="empty-state">
             <p>Aucun post trouvé. Soyez le premier à créer un post! 🚀</p>
         </div>
     <?php else: ?>
-        <div class="posts-list">
-            <?php foreach ($posts as $post): ?>
+        <div class="posts-list" id="posts-list">
+            <?php foreach ($displayPosts as $post): ?>
                 <div class="post-card entity-card">
                     <div class="post-header">
                         <h3>
@@ -145,6 +150,23 @@ foreach ($posts as $post) {
                         <p><?php echo htmlspecialchars(substr($post['contenu'], 0, 200)) . '...'; ?></p>
                     </div>
 
+                    <div class="post-reactions">
+                        <div class="reactions-group">
+                            <button class="btn-reaction btn-like <?php echo ($post['user_reaction'] ?? null) === 'like' ? 'active' : ''; ?>" 
+                                    data-post-id="<?php echo $post['id_post']; ?>" 
+                                    data-type="like"
+                                    title="J'aime">
+                                👍 <span class="reaction-count"><?php echo $post['likes_stats']['likes']; ?></span>
+                            </button>
+                            <button class="btn-reaction btn-dislike <?php echo ($post['user_reaction'] ?? null) === 'dislike' ? 'active' : ''; ?>" 
+                                    data-post-id="<?php echo $post['id_post']; ?>" 
+                                    data-type="dislike"
+                                    title="Je n'aime pas">
+                                👎 <span class="reaction-count"><?php echo $post['likes_stats']['dislikes']; ?></span>
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="post-actions">
                         <a href="index.php?action=view-post&id=<?php echo $post['id_post']; ?>" class="btn btn-info">
                             💬 Voir la discussion
@@ -159,5 +181,60 @@ foreach ($posts as $post) {
                 </div>
             <?php endforeach; ?>
         </div>
+        <?php if ($totalPages > 1): ?>
+            <div class="pagination">
+                <?php
+                $categoryParam = $selectedCategory !== '' ? '&category=' . urlencode($selectedCategory) : '';
+                $previousPage = max(1, $currentPage - 1);
+                $nextPage = min($totalPages, $currentPage + 1);
+                ?>
+                <a class="page-link <?php echo $currentPage <= 1 ? 'disabled' : ''; ?>" href="index.php?action=posts<?php echo $categoryParam; ?>&page=<?php echo $previousPage; ?>">← Précédent</a>
+                <?php for ($page = 1; $page <= $totalPages; $page++): ?>
+                    <a class="page-link <?php echo $page === $currentPage ? 'active' : ''; ?>" href="index.php?action=posts<?php echo $categoryParam; ?>&page=<?php echo $page; ?>">
+                        <?php echo $page; ?>
+                    </a>
+                <?php endfor; ?>
+                <a class="page-link <?php echo $currentPage >= $totalPages ? 'disabled' : ''; ?>" href="index.php?action=posts<?php echo $categoryParam; ?>&page=<?php echo $nextPage; ?>">Suivant →</a>
+            </div>
+        <?php endif; ?>
+        <div class="empty-state" id="search-empty-state" style="display: none; margin-top: 14px;">
+            <p>Aucun post ne correspond à votre recherche.</p>
+        </div>
     <?php endif; ?>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.querySelector('.search-input');
+    const postsList = document.getElementById('posts-list');
+
+    if (!searchInput || !postsList) {
+        return;
+    }
+
+    const postCards = Array.from(postsList.querySelectorAll('.post-card'));
+    const emptyState = document.getElementById('search-empty-state');
+
+    const runFilter = function () {
+        const query = searchInput.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        postCards.forEach(function (card) {
+            const titleElement = card.querySelector('.post-header h3 a');
+            const title = titleElement ? titleElement.textContent.toLowerCase() : '';
+            const matches = query === '' || title.includes(query);
+
+            card.style.display = matches ? '' : 'none';
+            if (matches) {
+                visibleCount++;
+            }
+        });
+
+        if (emptyState) {
+            emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+    };
+
+    searchInput.addEventListener('input', runFilter);
+});
+</script>

@@ -1,7 +1,7 @@
 <div class="create-post-container">
     <h2>✍️ Créer un nouveau Post</h2>
 
-    <form method="POST" action="index.php?action=store-post" class="form-post">
+    <form method="POST" action="index.php?action=store-post" class="form-post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="titre">Titre du Post *</label>
             <input 
@@ -30,18 +30,46 @@
         </div>
 
         <div class="form-group">
-            <label for="contenu">Contenu du Post *</label>
+            <label for="contenu">Contenu du Post</label>
             <textarea 
                 id="contenu" 
                 name="contenu" 
                 class="form-control" 
                 rows="8" 
                 placeholder="Écrivez votre message ici..."
-                required
                 minlength="10"
-                data-validate="required|minlength:10"
             ></textarea>
-            <small>Minimum 10 caractères</small>
+            <small>Optionnel si vous ajoutez un message vocal.</small>
+        </div>
+
+        <div class="form-group">
+            <label>🎙️ Message vocal</label>
+            <div class="voice-recorder" id="voice-recorder-post">
+                <div class="recorder-idle">
+                    <button type="button" class="btn-record" data-recorder="voice-recorder-post" title="Démarrer l'enregistrement">
+                        <span class="mic-icon">🎤</span>
+                        <span class="btn-record-label">Enregistrer un message vocal</span>
+                    </button>
+                </div>
+                <div class="recorder-active" style="display:none;">
+                    <div class="recording-indicator">
+                        <span class="rec-dot"></span>
+                        <span class="rec-timer">0:00</span>
+                        <span class="rec-label">Enregistrement en cours…</span>
+                    </div>
+                    <div class="recorder-waveform"><canvas class="waveform-canvas" width="260" height="40"></canvas></div>
+                    <button type="button" class="btn-stop-record" data-recorder="voice-recorder-post">⏹ Arrêter</button>
+                </div>
+                <div class="recorder-preview" style="display:none;">
+                    <audio class="recorder-audio-preview" controls></audio>
+                    <div class="recorder-preview-actions">
+                        <button type="button" class="btn-discard-record" data-recorder="voice-recorder-post">🗑 Recommencer</button>
+                    </div>
+                </div>
+                <!-- Hidden file input populated by JS -->
+                <input type="file" id="audio_message" name="audio_message" class="recorder-hidden-input" accept="audio/*" style="display:none;">
+            </div>
+            <small>Enregistrez directement depuis votre navigateur (max 10MB).</small>
         </div>
 
         <div class="form-actions">

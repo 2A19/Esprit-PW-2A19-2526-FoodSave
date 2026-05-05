@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS posts (
     id_post INT AUTO_INCREMENT PRIMARY KEY,
     titre VARCHAR(255) NOT NULL,
     contenu TEXT NOT NULL,
+    audio_path VARCHAR(255) NULL,
     date_creation DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     id_utilisateur INT NOT NULL,
     categorie VARCHAR(100),
@@ -44,6 +45,7 @@ CREATE TABLE IF NOT EXISTS posts (
 CREATE TABLE IF NOT EXISTS commentaires (
     id_commentaire INT AUTO_INCREMENT PRIMARY KEY,
     contenu TEXT NOT NULL,
+    audio_path VARCHAR(255) NULL,
     date_publication DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     id_post INT NOT NULL,
     id_utilisateur INT NOT NULL,
@@ -56,6 +58,26 @@ CREATE TABLE IF NOT EXISTS commentaires (
     INDEX idx_statue (statue),
     INDEX idx_date_publication (date_publication),
     INDEX idx_id_utilisateur (id_utilisateur)
+    
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ========================================
+-- Table: post_likes (likes et dislikes)
+-- ========================================
+CREATE TABLE IF NOT EXISTS post_likes (
+    id_like INT AUTO_INCREMENT PRIMARY KEY,
+    id_post INT NOT NULL,
+    id_utilisateur INT NOT NULL,
+    type_reaction VARCHAR(10) NOT NULL COMMENT 'like ou dislike',
+    date_creation DATETIME DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (id_post) REFERENCES posts(id_post) ON DELETE CASCADE,
+    FOREIGN KEY (id_utilisateur) REFERENCES utilisateurs(id_utilisateur) ON DELETE CASCADE,
+    
+    UNIQUE KEY unique_user_post_reaction (id_post, id_utilisateur),
+    INDEX idx_id_post (id_post),
+    INDEX idx_id_utilisateur (id_utilisateur),
+    INDEX idx_type_reaction (type_reaction)
     
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

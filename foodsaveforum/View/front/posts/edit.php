@@ -1,7 +1,7 @@
 <div class="edit-post-container">
     <h2>✏️ Modifier le Post</h2>
 
-    <form method="POST" action="index.php?action=update-post" class="form-post">
+    <form method="POST" action="index.php?action=update-post" class="form-post" enctype="multipart/form-data">
         <input type="hidden" name="id_post" value="<?php echo $post['id_post']; ?>">
 
         <div class="form-group">
@@ -31,17 +31,36 @@
         </div>
 
         <div class="form-group">
-            <label for="contenu">Contenu du Post *</label>
+            <label for="contenu">Contenu du Post</label>
             <textarea 
                 id="contenu" 
                 name="contenu" 
                 class="form-control" 
                 rows="8" 
-                required
                 minlength="10"
-                data-validate="required|minlength:10"
             ><?php echo htmlspecialchars($post['contenu']); ?></textarea>
-            <small>Minimum 10 caractères</small>
+            <small>Optionnel si vous ajoutez un message vocal.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="audio_message">Message vocal (audio)</label>
+            <?php if (!empty($post['audio_path'])): ?>
+                <div class="audio-player-wrap">
+                    <audio controls preload="none">
+                        <source src="<?php echo htmlspecialchars($post['audio_path']); ?>">
+                        Votre navigateur ne supporte pas le lecteur audio.
+                    </audio>
+                </div>
+            <?php endif; ?>
+            <input
+                type="file"
+                id="audio_message"
+                name="audio_message"
+                class="form-control"
+                accept="audio/*"
+                capture="user"
+            >
+            <small>Laisser vide pour conserver l'audio actuel.</small>
         </div>
 
         <div class="form-actions">

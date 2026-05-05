@@ -6,11 +6,14 @@ $_SESSION['user_id'] = $_SESSION['user_id'] ?? 1;
 $_SESSION['username'] = $_SESSION['username'] ?? 'User #' . $_SESSION['user_id'];
 $_SESSION['is_admin'] = $_SESSION['is_admin'] ?? true; // For demo purposes
 
+require_once __DIR__ . '/Model/Database.php';
+require_once __DIR__ . '/Model/CommentaireModel.php';
 require_once __DIR__ . '/Controller/PostController.php';
 require_once __DIR__ . '/Controller/CommentaireController.php';
 
 $postController = new PostController();
 $commentaireController = new CommentaireController();
+$perPage = 6;
 
 $action = $_GET['action'] ?? 'posts';
 $title = 'FoodSave Forum';
@@ -20,15 +23,44 @@ $message = '';
 $data = [];
 
 try {
+    $loadFrontPostsPage = function ($category = '', $page = 1) use ($postController, $perPage) {
+        $page = max(1, (int) $page);
+        $category = trim((string) $category);
+
+        if ($category !== '') {
+            $posts = $postController->getByCategory($category);
+        } else {
+            $posts = $postController->listAll();
+        }
+
+        $posts = $postController->enrichPostsWithLikes($posts, $_SESSION['user_id']);
+
+        $totalPosts = count($posts);
+        $totalPages = max(1, (int) ceil($totalPosts / $perPage));
+        $currentPage = min($page, $totalPages);
+        $offset = ($currentPage - 1) * $perPage;
+        $paginatedPosts = array_slice($posts, $offset, $perPage);
+
+        return [
+            'posts' => $posts,
+            'paginatedPosts' => $paginatedPosts,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
+            'selectedCategory' => $category
+        ];
+    };
+
     switch ($action) {
         // Posts FrontOffice
         case 'posts':
             $category = $_GET['category'] ?? '';
-            if ($category) {
-                $posts = $postController->getByCategory($category);
-            } else {
-                $posts = $postController->listAll();
-            }
+            $page = $_GET['page'] ?? 1;
+            $postPageData = $loadFrontPostsPage($category, $page);
+            $posts = $postPageData['posts'];
+            $paginatedPosts = $postPageData['paginatedPosts'];
+            $currentPage = $postPageData['currentPage'];
+            $totalPages = $postPageData['totalPages'];
+            $selectedCategory = $postPageData['selectedCategory'];
             $title = 'Forum FoodSave';
             $content = __DIR__ . '/View/front/posts/list.php';
             break;
@@ -38,13 +70,20 @@ try {
             $content = __DIR__ . '/View/front/posts/create.php';
             break;
 
+        case 'posts-calendar':
+            $calendarPosts = $postController->listCalendarPosts();
+            $title = 'Calendrier des Posts';
+            $content = __DIR__ . '/View/front/posts/calendar.php';
+            break;
+
         case 'store-post':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $result = $postController->create(
                     $_POST['titre'] ?? '',
                     $_POST['contenu'] ?? '',
                     $_POST['categorie'] ?? '',
-                    $_SESSION['user_id']
+                    $_SESSION['user_id'],
+                    $_FILES['audio_message'] ?? null
                 );
                 
                 if ($result['success']) {
@@ -55,7 +94,12 @@ try {
                     $errors = $result['errors'];
                 }
             }
-            $posts = $postController->listAll();
+            $postPageData = $loadFrontPostsPage('', 1);
+            $posts = $postPageData['posts'];
+            $paginatedPosts = $postPageData['paginatedPosts'];
+            $currentPage = $postPageData['currentPage'];
+            $totalPages = $postPageData['totalPages'];
+            $selectedCategory = $postPageData['selectedCategory'];
             $content = __DIR__ . '/View/front/posts/list.php';
             break;
 
@@ -65,6 +109,9 @@ try {
             if (!$data) {
                 throw new Exception('Post non trouvé');
             }
+            // Ajouter les stats de likes au post
+            $data['post']['likes_stats'] = $postController->getLikeStats($id);
+            $data['post']['user_reaction'] = $postController->getUserLikeOnPost($id, $_SESSION['user_id']);
             $title = 'Voir le Post';
             $content = __DIR__ . '/View/front/posts/view.php';
             break;
@@ -89,7 +136,8 @@ try {
                     $_POST['titre'] ?? '',
                     $_POST['contenu'] ?? '',
                     $_POST['categorie'] ?? '',
-                    $_SESSION['user_id']
+                    $_SESSION['user_id'],
+                    $_FILES['audio_message'] ?? null
                 );
                 
                 if ($result['success']) {
@@ -117,7 +165,14 @@ try {
             } else {
                 $errors = $result['errors'];
             }
-            $posts = $postController->listAll();
+            $category = $_GET['category'] ?? '';
+            $page = $_GET['page'] ?? 1;
+            $postPageData = $loadFrontPostsPage($category, $page);
+            $posts = $postPageData['posts'];
+            $paginatedPosts = $postPageData['paginatedPosts'];
+            $currentPage = $postPageData['currentPage'];
+            $totalPages = $postPageData['totalPages'];
+            $selectedCategory = $postPageData['selectedCategory'];
             $content = __DIR__ . '/View/front/posts/list.php';
             break;
 
@@ -127,7 +182,8 @@ try {
                 $result = $commentaireController->create(
                     $_POST['contenu'] ?? '',
                     $_POST['id_post'] ?? '',
-                    $_SESSION['user_id']
+                    $_SESSION['user_id'],
+                    $_FILES['audio_message'] ?? null
                 );
                 
                 if ($result['success']) {
@@ -167,7 +223,8 @@ try {
                 $result = $commentaireController->update(
                     $_POST['id_commentaire'] ?? '',
                     $_POST['contenu'] ?? '',
-                    $_SESSION['user_id']
+                    $_SESSION['user_id'],
+                    $_FILES['audio_message'] ?? null
                 );
                 
                 if ($result['success']) {
@@ -187,10 +244,7 @@ try {
         case 'delete-comment':
             $id = $_GET['id'] ?? null;
             // Get the post ID before deletion
-            $commentaireTable = new CommentaireModel(
-                (new Database())->connect()
-            );
-            $commentaire = $commentaireTable->getById($id);
+            $commentaire = $commentaireController->showCommentaire($id);
             $id_post = $commentaire['id_post'] ?? null;
 
             $result = $commentaireController->delete($id, $_SESSION['user_id']);
@@ -204,6 +258,50 @@ try {
             } else {
                 $errors = $result['errors'];
             }
+            $postPageData = $loadFrontPostsPage('', 1);
+            $posts = $postPageData['posts'];
+            $paginatedPosts = $postPageData['paginatedPosts'];
+            $currentPage = $postPageData['currentPage'];
+            $totalPages = $postPageData['totalPages'];
+            $selectedCategory = $postPageData['selectedCategory'];
+            $content = __DIR__ . '/View/front/posts/list.php';
+            break;
+
+        // Likes et Dislikes
+        case 'like-post':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $id_post = $_POST['id_post'] ?? null;
+                $type = $_POST['type'] ?? 'like'; // 'like' ou 'dislike'
+                
+                if (!$id_post) {
+                    $errors[] = 'Post non trouvé';
+                } else {
+                    $result = $postController->toggleLike($id_post, $_SESSION['user_id'], $type);
+                    
+                    if ($result['success']) {
+                        // Retourner les stats de likes en JSON pour AJAX
+                        $stats = $postController->getLikeStats($id_post);
+                        $userReaction = $postController->getUserLikeOnPost($id_post, $_SESSION['user_id']);
+                        
+                        header('Content-Type: application/json');
+                        echo json_encode([
+                            'success' => true,
+                            'message' => $result['message'],
+                            'action' => $result['action'],
+                            'stats' => $stats,
+                            'user_reaction' => $userReaction
+                        ]);
+                        exit;
+                    } else {
+                        header('Content-Type: application/json');
+                        echo json_encode([
+                            'success' => false,
+                            'errors' => $result['errors']
+                        ]);
+                        exit;
+                    }
+                }
+            }
             $posts = $postController->listAll();
             $content = __DIR__ . '/View/front/posts/list.php';
             break;
@@ -214,7 +312,12 @@ try {
     }
 } catch (Exception $e) {
     $errors[] = $e->getMessage();
-    $posts = $postController->listAll();
+    $postPageData = $loadFrontPostsPage('', 1);
+    $posts = $postPageData['posts'];
+    $paginatedPosts = $postPageData['paginatedPosts'];
+    $currentPage = $postPageData['currentPage'];
+    $totalPages = $postPageData['totalPages'];
+    $selectedCategory = $postPageData['selectedCategory'];
     $content = __DIR__ . '/View/front/posts/list.php';
 }
 

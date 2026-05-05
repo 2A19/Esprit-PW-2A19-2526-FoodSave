@@ -4,16 +4,18 @@ class PostModel {
     private ?int $id_post;
     private ?string $titre;
     private ?string $contenu;
+    private ?string $audio_path;
     private ?DateTime $date_creation;
     private ?int $id_utilisateur;
     private ?string $categorie;
     private ?string $statue;
 
     // Constructor
-    public function __construct(?int $id_post, ?string $titre, ?string $contenu, ?DateTime $date_creation, ?int $id_utilisateur, ?string $categorie, ?string $statue) {
+    public function __construct(?int $id_post, ?string $titre, ?string $contenu, ?string $audio_path, ?DateTime $date_creation, ?int $id_utilisateur, ?string $categorie, ?string $statue) {
         $this->id_post = $id_post;
         $this->titre = $titre;
         $this->contenu = $contenu;
+        $this->audio_path = $audio_path;
         $this->date_creation = $date_creation;
         $this->id_utilisateur = $id_utilisateur;
         $this->categorie = $categorie;
@@ -27,6 +29,7 @@ class PostModel {
         echo "<td>{$this->id_post}</td>";
         echo "<td>{$this->titre}</td>";
         echo "<td>{$this->contenu}</td>";
+        echo "<td>{$this->audio_path}</td>";
         echo "<td>" . ($this->date_creation ? $this->date_creation->format('Y-m-d H:i:s') : '') . "</td>";
         echo "<td>{$this->id_utilisateur}</td>";
         echo "<td>{$this->categorie}</td>";
@@ -58,6 +61,14 @@ class PostModel {
 
     public function setContenu(?string $contenu): void {
         $this->contenu = $contenu;
+    }
+
+    public function getAudioPath(): ?string {
+        return $this->audio_path;
+    }
+
+    public function setAudioPath(?string $audio_path): void {
+        $this->audio_path = $audio_path;
     }
 
     public function getDateCreation(): ?DateTime {
