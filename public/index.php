@@ -1,7 +1,15 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+// Charger le traducteur
+require_once 'C:/xampp/htdocs/FoodSave/app/core/Translator.php';
+$translator = Translator::getInstance();
+$lang = $translator->getCurrentLang();
 
 require_once 'C:/xampp/htdocs/FoodSave/app/controllers/ArticleController.php';
 require_once 'C:/xampp/htdocs/FoodSave/app/controllers/AvisController.php';
@@ -27,6 +35,9 @@ switch($action) {
         break;
     case 'recettes':
         $articleController->recettes();
+        break;
+    case 'rechercher':
+        $articleController->rechercher();
         break;
     
     // ========== BACK OFFICE - ARTICLES (CRUD) ==========
@@ -61,32 +72,90 @@ switch($action) {
         break;
     
     // ========== BACK OFFICE - AVIS ==========
-case 'adminAvis':
-    $avisController->adminAvis();
+    case 'adminAvis':
+        $avisController->adminAvis();
+        break;
+    case 'approveAvis':
+        $avisController->approve();
+        break;
+    case 'rejectAvis':
+        $avisController->reject();
+        break;
+    case 'deleteAvis':
+        $avisController->delete();
+        break;
+    case 'editAvisForm':
+        $avisController->editForm();
+        break;
+    case 'editAvis':
+        $avisController->edit();
+        break;
+    
+    // ========== FRONT OFFICE - MODIFICATION AVIS PAR USER ==========
+    case 'editUserAvis':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $avisController->editUser();
+        } else {
+            $avisController->editUserForm();
+        }
+        break;
+    
+    // ========== NOTIFICATIONS ==========
+    case 'clearNotification':
+        if (isset($_GET['key']) && isset($_SESSION['notifications'][$_GET['key']])) {
+            unset($_SESSION['notifications'][$_GET['key']]);
+        }
+        header('Location: index.php?action=adminAvis');
+        break;
+    
+    case 'clearAllNotifications':
+        if (isset($_SESSION['notifications'])) {
+            $_SESSION['notifications'] = [];
+        }
+        header('Location: index.php?action=adminAvis');
+        break;
+    
+    case 'markNotificationsRead':
+        if (isset($_SESSION['notifications'])) {
+            foreach ($_SESSION['notifications'] as $key => $notif) {
+                $_SESSION['notifications'][$key]['lu'] = true;
+            }
+        }
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true]);
+        break;
+    
+    case 'checkNotifications':
+        require_once 'C:/xampp/htdocs/FoodSave/public/check_notifications.php';
+        break;
+    
+    // ========== STATISTIQUES ==========
+    case 'statsEvolution':
+        require_once 'C:/xampp/htdocs/FoodSave/app/controllers/StatistiqueController.php';
+        $statController = new StatistiqueController();
+        $statController->evolutionArticles();
+        break;
+    
+    // ========== NEWSLETTER ==========
+    case 'newsletterSubscribe':
+        $articleController->newsletterSubscribe();
+        break;
+    
+    case 'adminNewsletter':
+        $articleController->adminNewsletter();
+        break;
+    
+    case 'sendNewsletter':
+        $articleController->sendNewsletter();
+        break;
+        // ========== CHATBOT IA ==========
+case 'chatbot':
+    $articleController->chatbot();
     break;
-case 'approveAvis':
-    $avisController->approve();
-    break;
-case 'rejectAvis':
-    $avisController->reject();
-    break;
-case 'deleteAvis':
-    $avisController->delete();
-    break;
-case 'editAvisForm':
-    $avisController->editForm();
-    break;
-case 'editAvis':
-    $avisController->edit();
-    break;
-
-// ========== FRONT OFFICE - MODIFICATION AVIS PAR USER ==========
-case 'editUserAvis':
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $avisController->editUser();
-    } else {
-        $avisController->editUserForm();
-    }
-    break;
+    
+    // ========== PAGE PAR DÉFAUT ==========
+    default:
+        $articleController->blog();
+        break;
 }
 ?>
