@@ -47,6 +47,24 @@
             <p>Gérez vos aliments et réduisez le gaspillage avec FoodSave.</p>
         </div>
 
+        <div class="panel" style="margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+                <div>
+                    <h2 style="margin: 0 0 6px 0; font-size: 1.1rem;">Connexion par empreinte (Windows Hello)</h2>
+                    <p style="margin: 0; color: var(--color-text-muted); font-size: 0.9rem;">
+                        Créez une passkey locale sur ce PC pour vous connecter ensuite avec votre empreinte.
+                    </p>
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button type="button" id="btnCreatePasskeyDashboard" class="btn btn-primary">
+                        Créer une passkey maintenant
+                    </button>
+                    <a href="index.php?action=profile" class="btn btn-outline">Gérer mes passkeys</a>
+                </div>
+            </div>
+            <div id="dashboardPasskeyAlert" style="display: none; margin-top: 12px; padding: 10px 12px; border-radius: 6px; font-size: 0.88rem;"></div>
+        </div>
+
         <div class="dashboard-grid">
             <div class="dashboard-card slide-in">
                 <div class="stat-icon green" style="margin-bottom: 14px;">
@@ -109,5 +127,48 @@
     </footer>
 
     <script src="assets/js/validation.js"></script>
+    <script src="assets/js/webauthn.js"></script>
+    <script>
+    (function () {
+        const btn = document.getElementById('btnCreatePasskeyDashboard');
+        const alertBox = document.getElementById('dashboardPasskeyAlert');
+        const supported = window.FoodSaveWebAuthn && FoodSaveWebAuthn.isSupported();
+        if (!btn || !alertBox) return;
+
+        function showAlert(message, kind) {
+            alertBox.textContent = message;
+            alertBox.style.display = '';
+            if (kind === 'success') {
+                alertBox.style.background = 'var(--color-green-50)';
+                alertBox.style.color = 'var(--color-green-800)';
+            } else {
+                alertBox.style.background = '#fef2f2';
+                alertBox.style.color = '#991b1b';
+            }
+        }
+
+        if (!supported) {
+            btn.disabled = true;
+            showAlert('WebAuthn non disponible sur ce navigateur/appareil.', 'error');
+            return;
+        }
+
+        btn.addEventListener('click', async function () {
+            btn.disabled = true;
+            const original = btn.textContent;
+            btn.textContent = 'Validation Windows Hello...';
+            try {
+                const label = 'PC ' + (new Date()).toLocaleDateString('fr-FR');
+                await FoodSaveWebAuthn.registerPasskey(label);
+                showAlert('Passkey créée. Vous pouvez maintenant vous connecter avec empreinte.', 'success');
+                btn.textContent = 'Passkey créée';
+            } catch (err) {
+                showAlert(err && err.message ? err.message : 'Impossible de créer la passkey.', 'error');
+                btn.disabled = false;
+                btn.textContent = original;
+            }
+        });
+    })();
+    </script>
 </body>
 </html>

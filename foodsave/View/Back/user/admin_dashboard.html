@@ -237,25 +237,42 @@
                     <div class="table-head">
                         <div>
                             <h2 style="font-size: 1.05rem;">Utilisateurs récents</h2>
-                            <p style="color: var(--color-text-muted); font-size: 0.85rem; margin-top: 2px;">Les 5 derniers utilisateurs inscrits</p>
+                            <p style="color: var(--color-text-muted); font-size: 0.85rem; margin-top: 2px;">Les utilisateurs inscrits avec recherche et tri</p>
                         </div>
-                        <a href="admin.php?action=users" class="btn btn-outline btn-sm">Voir tout</a>
+                        <a href="admin.php?action=users" class="btn btn-outline btn-sm">Voir tous les utilisateurs</a>
                     </div>
+
+                    <!-- SEARCH BAR -->
+                    <div style="padding: 14px 0; display: flex; gap: 10px; border-bottom: 1px solid var(--color-border);">
+                        <input type="text" id="dashboardSearchInput" placeholder="Rechercher..." style="flex: 1; padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; font-size: 0.9rem;">
+                        <select id="dashboardStatusFilter" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; font-size: 0.9rem;">
+                            <option value="">Tous</option>
+                            <option value="actif">Actifs</option>
+                            <option value="inactif">Inactifs</option>
+                        </select>
+                    </div>
+
                     <?php if (count($users) > 0): ?>
                     <div class="table-scroll">
-                        <table>
+                        <table id="dashboardUsersTable">
                             <thead>
                                 <tr>
-                                    <th>Utilisateur</th>
+                                    <th style="cursor: pointer; user-select: none;" data-sort="name">
+                                        Utilisateur <span class="sort-indicator" style="font-size: 0.75rem; opacity: 0.5;">⇅</span>
+                                    </th>
                                     <th>Email</th>
-                                    <th>Rôle</th>
-                                    <th>Statut</th>
+                                    <th style="cursor: pointer; user-select: none;" data-sort="role">
+                                        Rôle <span class="sort-indicator" style="font-size: 0.75rem; opacity: 0.5;">⇅</span>
+                                    </th>
+                                    <th style="cursor: pointer; user-select: none;" data-sort="statut">
+                                        Statut <span class="sort-indicator" style="font-size: 0.75rem; opacity: 0.5;">⇅</span>
+                                    </th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <?php foreach (array_slice($users, 0, 5) as $u): ?>
-                                <tr>
+                            <tbody id="dashboardUsersBody">
+                                <?php foreach ($users as $u): ?>
+                                <tr class="dashboard-user-row" data-name="<?php echo htmlspecialchars(strtolower($u['prenom'] . ' ' . $u['nom'])); ?>" data-email="<?php echo htmlspecialchars(strtolower($u['email'])); ?>" data-role="<?php echo $u['role']; ?>" data-statut="<?php echo $u['statut']; ?>">
                                     <td>
                                         <span class="user-name"><?php echo htmlspecialchars($u['prenom'] . ' ' . $u['nom']); ?></span>
                                     </td>
@@ -298,6 +315,115 @@
         </div>
     </div>
 
+    <script>
+    // Recherche et filtrage du dashboard
+    let dashboardSort = { column: null, direction: 'asc' };
+
+    const dashboardSearchInput = document.getElementById('dashboardSearchInput');
+    const dashboardStatusFilter = document.getElementById('dashboardStatusFilter');
+    const dashboardUsersTable = document.getElementById('dashboardUsersTable');
+    const dashboardUsersBody = document.getElementById('dashboardUsersBody');
+
+    function filterAndSortDashboard() {
+        const searchTerm = dashboardSearchInput.value.toLowerCase();
+        const statusFilter = dashboardStatusFilter.value;
+        
+        let rows = Array.from(dashboardUsersBody.querySelectorAll('tr.dashboard-user-row'));
+
+        // Filtrer
+        rows = rows.filter(row => {
+            const name = row.dataset.name || '';
+            const email = row.dataset.email || '';
+            const statut = row.dataset.statut || '';
+
+            const matchSearch = name.includes(searchTerm) || email.includes(searchTerm);
+            const matchStatus = !statusFilter || statut === statusFilter;
+
+            return matchSearch && matchStatus;
+        });
+
+        // Trier
+        if (dashboardSort.column) {
+            rows.sort((a, b) => {
+                let aVal, bVal;
+
+                switch(dashboardSort.column) {
+                    case 'name':
+                        aVal = a.dataset.name;
+                        bVal = b.dataset.name;
+                        break;
+                    case 'role':
+                        aVal = a.dataset.role;
+                        bVal = b.dataset.role;
+                        break;
+                    case 'statut':
+                        aVal = a.dataset.statut;
+                        bVal = b.dataset.statut;
+                        break;
+                    default:
+                        return 0;
+                }
+
+                if (dashboardSort.direction === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                } else {
+                    return aVal < bVal ? 1 : -1;
+                }
+            });
+        }
+
+        // Afficher/masquer les lignes
+        dashboardUsersBody.innerHTML = '';
+        rows.forEach(row => dashboardUsersBody.appendChild(row));
+
+        // Afficher message si aucun résultat
+        if (rows.length === 0) {
+            const noResultsRow = document.createElement('tr');
+            noResultsRow.innerHTML = '<td colspan="5" style="text-align: center; padding: 32px; color: var(--color-text-muted);">Aucun utilisateur ne correspond à vos critères.</td>';
+            dashboardUsersBody.appendChild(noResultsRow);
+        }
+    }
+
+    // Événements
+    dashboardSearchInput.addEventListener('input', filterAndSortDashboard);
+    dashboardStatusFilter.addEventListener('change', filterAndSortDashboard);
+
+    // Tri par clic sur les en-têtes
+    dashboardUsersTable.querySelectorAll('th[data-sort]').forEach(th => {
+        th.addEventListener('click', () => {
+            const column = th.dataset.sort;
+
+            if (dashboardSort.column === column) {
+                dashboardSort.direction = dashboardSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                dashboardSort.column = column;
+                dashboardSort.direction = 'asc';
+            }
+
+            updateDashboardSortIndicators();
+            filterAndSortDashboard();
+        });
+    });
+
+    // Mettre à jour les indicateurs de tri
+    function updateDashboardSortIndicators() {
+        dashboardUsersTable.querySelectorAll('th[data-sort] .sort-indicator').forEach(indicator => {
+            indicator.textContent = '⇅';
+            indicator.style.opacity = '0.5';
+            indicator.style.fontWeight = 'normal';
+        });
+
+        if (dashboardSort.column) {
+            const activeHeader = dashboardUsersTable.querySelector(`th[data-sort="${dashboardSort.column}"]`);
+            if (activeHeader) {
+                const indicator = activeHeader.querySelector('.sort-indicator');
+                indicator.textContent = dashboardSort.direction === 'asc' ? '▲' : '▼';
+                indicator.style.opacity = '1';
+                indicator.style.fontWeight = 'bold';
+            }
+        }
+    }
+    </script>
     <script src="assets/js/validation.js"></script>
 </body>
 </html>

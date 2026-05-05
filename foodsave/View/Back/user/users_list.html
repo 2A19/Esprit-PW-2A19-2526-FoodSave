@@ -148,23 +148,92 @@
                             <p style="color: var(--color-text-muted); font-size: 0.85rem; margin-top: 2px;">Gérez tous les utilisateurs de la plateforme</p>
                         </div>
                     </div>
+
+                    <!-- SEARCH AND FILTER -->
+                    <div style="padding: 14px 0; display: flex; gap: 12px; align-items: center; border-bottom: 1px solid var(--color-border);">
+                        <div style="flex: 1; display: flex; gap: 8px;">
+                            <input type="text" id="searchInput" placeholder="Rechercher par nom, email..." style="flex: 1; padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; font-size: 0.9rem;" aria-label="Recherche">
+                            <select id="filterStatus" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; font-size: 0.9rem;">
+                                <option value="">Tous les statuts</option>
+                                <option value="actif">Actifs</option>
+                                <option value="inactif">Inactifs</option>
+                                <option value="banni">Bannis</option>
+                            </select>
+                            <select id="filterRole" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; font-size: 0.9rem;">
+                                <option value="">Tous les rôles</option>
+                                <option value="user">Utilisateur</option>
+                                <option value="admin">Administrateur</option>
+                            </select>
+                        </div>
+                        <button id="resetBtn" class="btn btn-outline btn-sm" style="white-space: nowrap;">Réinitialiser</button>
+                    </div>
+
+                    <!-- RESULTS COUNT -->
+                    <div style="padding: 10px 0; font-size: 0.85rem; color: var(--color-text-muted);">
+                        <span id="resultCount"><?php echo count($users); ?></span> résultats
+                    </div>
+                    <div id="statusChartCard" style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap; padding: 8px 0 14px; border-bottom: 1px solid var(--color-border);">
+                        <div id="statusDonut" style="--donut-bg: conic-gradient(#16a34a 0deg 0deg, #f97316 0deg 0deg, #475569 0deg 360deg); width: 110px; height: 110px; border-radius: 50%; background: var(--donut-bg); position: relative; flex-shrink: 0;">
+                            <div style="position: absolute; inset: 16px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; text-align: center;">
+                                <div>
+                                    <div style="font-size: 0.72rem; color: var(--color-text-muted);">Total</div>
+                                    <div id="statusDonutTotal" style="font-size: 1rem; font-weight: 700;"><?php echo $total; ?></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: grid; gap: 6px;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">
+                                <span style="width: 10px; height: 10px; border-radius: 50%; background: #16a34a; display: inline-block;"></span>
+                                Actifs: <strong id="statActif"><?php echo $actifs; ?></strong>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">
+                                <span style="width: 10px; height: 10px; border-radius: 50%; background: #f97316; display: inline-block;"></span>
+                                Inactifs: <strong id="statInactif"><?php echo $inactifs; ?></strong>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">
+                                <span style="width: 10px; height: 10px; border-radius: 50%; background: #475569; display: inline-block;"></span>
+                                Bannis: <strong id="statBanni"><?php echo $bannis; ?></strong>
+                            </div>
+                        </div>
+                    </div>
+
                     <?php if (count($users) > 0): ?>
                     <div class="table-scroll">
-                        <table>
+                        <table id="usersTable">
                             <thead>
                                 <tr>
-                                    <th>Utilisateur</th>
-                                    <th>Email</th>
+                                    <th style="cursor: pointer; user-select: none;" data-sort="name">
+                                        Utilisateur
+                                        <span class="sort-indicator" style="font-size: 0.75rem; opacity: 0.5;">⇅</span>
+                                    </th>
+                                    <th style="cursor: pointer; user-select: none;" data-sort="email">
+                                        Email
+                                        <span class="sort-indicator" style="font-size: 0.75rem; opacity: 0.5;">⇅</span>
+                                    </th>
                                     <th>Téléphone</th>
-                                    <th>Rôle</th>
-                                    <th>Statut</th>
-                                    <th>Inscription</th>
+                                    <th style="cursor: pointer; user-select: none;" data-sort="role">
+                                        Rôle
+                                        <span class="sort-indicator" style="font-size: 0.75rem; opacity: 0.5;">⇅</span>
+                                    </th>
+                                    <th style="cursor: pointer; user-select: none;" data-sort="statut">
+                                        Statut
+                                        <span class="sort-indicator" style="font-size: 0.75rem; opacity: 0.5;">⇅</span>
+                                    </th>
+                                    <th style="cursor: pointer; user-select: none;" data-sort="date">
+                                        Inscription
+                                        <span class="sort-indicator" style="font-size: 0.75rem; opacity: 0.5;">⇅</span>
+                                    </th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="usersTableBody">
                                 <?php foreach ($users as $u): ?>
-                                <tr>
+                                <tr class="user-row"
+                                    data-name="<?php echo htmlspecialchars(strtolower($u['prenom'] . ' ' . $u['nom'])); ?>"
+                                    data-email="<?php echo htmlspecialchars(strtolower($u['email'])); ?>"
+                                    data-role="<?php echo $u['role']; ?>"
+                                    data-statut="<?php echo $u['statut']; ?>"
+                                    data-date="<?php echo $u['date_inscription']; ?>">
                                     <td>
                                         <div style="display: flex; align-items: center; gap: 10px;">
                                             <div class="avatar" style="width:34px; height:34px; background: var(--color-green-100); color: var(--color-green-800); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem;">
@@ -207,6 +276,10 @@
                             </tbody>
                         </table>
                     </div>
+                    <div id="paginationControls" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-top: 12px;">
+                        <div id="paginationInfo" style="font-size: 0.85rem; color: var(--color-text-muted);"></div>
+                        <div id="paginationButtons" style="display: flex; gap: 6px; flex-wrap: wrap;"></div>
+                    </div>
                     <?php else: ?>
                     <div style="padding: 48px; text-align: center; color: var(--color-text-muted);">
                         Aucun utilisateur enregistré pour le moment.
@@ -217,6 +290,269 @@
         </div>
     </div>
 
+    <script>
+    // Recherche et filtrage dynamique
+    let currentSort = { column: null, direction: 'asc' };
+
+    const searchInput = document.getElementById('searchInput');
+    const filterStatus = document.getElementById('filterStatus');
+    const filterRole = document.getElementById('filterRole');
+    const resetBtn = document.getElementById('resetBtn');
+    const usersTable = document.getElementById('usersTable');
+    const usersTableBody = document.getElementById('usersTableBody');
+    const resultCount = document.getElementById('resultCount');
+    const allUserRows = Array.from(usersTableBody.querySelectorAll('tr.user-row'));
+    const paginationInfo = document.getElementById('paginationInfo');
+    const paginationButtons = document.getElementById('paginationButtons');
+    const statusDonut = document.getElementById('statusDonut');
+    const statusDonutTotal = document.getElementById('statusDonutTotal');
+    const statActif = document.getElementById('statActif');
+    const statInactif = document.getElementById('statInactif');
+    const statBanni = document.getElementById('statBanni');
+    const rowsPerPage = 8;
+    let currentPage = 1;
+
+    function createPaginationButton(label, disabled, onClick, isActive = false) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = label;
+        button.disabled = disabled;
+        button.style.padding = '6px 10px';
+        button.style.borderRadius = '6px';
+        button.style.border = '1px solid var(--color-border)';
+        button.style.background = isActive ? 'var(--color-green-100)' : '#fff';
+        button.style.color = isActive ? 'var(--color-green-900)' : 'var(--color-text)';
+        button.style.fontSize = '0.82rem';
+        button.style.cursor = disabled ? 'not-allowed' : 'pointer';
+        button.style.opacity = disabled ? '0.5' : '1';
+        if (!disabled) button.addEventListener('click', onClick);
+        return button;
+    }
+
+    function renderPagination(totalRows) {
+        const totalPages = Math.max(1, Math.ceil(totalRows / rowsPerPage));
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        paginationButtons.innerHTML = '';
+
+        const startItem = totalRows === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1;
+        const endItem = Math.min(currentPage * rowsPerPage, totalRows);
+        paginationInfo.textContent = `Affichage ${startItem}-${endItem} sur ${totalRows}`;
+
+        paginationButtons.appendChild(
+            createPaginationButton('Précédent', currentPage === 1 || totalRows === 0, () => {
+                currentPage -= 1;
+                filterAndSort();
+            })
+        );
+
+        for (let page = 1; page <= totalPages; page += 1) {
+            paginationButtons.appendChild(
+                createPaginationButton(String(page), totalRows === 0, () => {
+                    currentPage = page;
+                    filterAndSort();
+                }, currentPage === page)
+            );
+        }
+
+        paginationButtons.appendChild(
+            createPaginationButton('Suivant', currentPage === totalPages || totalRows === 0, () => {
+                currentPage += 1;
+                filterAndSort();
+            })
+        );
+    }
+
+    function updateStatusDonut(stats) {
+        const total = stats.actif + stats.inactif + stats.banni;
+        statusDonutTotal.textContent = total;
+
+        if (total === 0) {
+            statusDonut.style.setProperty('--donut-bg', 'conic-gradient(#e2e8f0 0deg 360deg)');
+            return;
+        }
+
+        const actifDeg = (stats.actif / total) * 360;
+        const inactifDeg = (stats.inactif / total) * 360;
+        const banniDeg = 360 - actifDeg - inactifDeg;
+
+        statusDonut.style.setProperty(
+            '--donut-bg',
+            `conic-gradient(
+                #16a34a 0deg ${actifDeg}deg,
+                #f97316 ${actifDeg}deg ${actifDeg + inactifDeg}deg,
+                #475569 ${actifDeg + inactifDeg}deg ${actifDeg + inactifDeg + banniDeg}deg
+            )`
+        );
+    }
+
+    // Fonction de filtrage et tri
+    function filterAndSort() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const statusFilter = filterStatus.value;
+        const roleFilter = filterRole.value;
+        
+        let rows = [...allUserRows];
+
+        // Filtrer
+        rows = rows.filter(row => {
+            const name = row.dataset.name || '';
+            const email = row.dataset.email || '';
+            const statut = row.dataset.statut || '';
+            const role = row.dataset.role || '';
+
+            const matchSearch = name.includes(searchTerm) || email.includes(searchTerm);
+            const matchStatus = !statusFilter || statut === statusFilter;
+            const matchRole = !roleFilter || role === roleFilter;
+
+            return matchSearch && matchStatus && matchRole;
+        });
+
+        // Trier
+        if (currentSort.column) {
+            rows.sort((a, b) => {
+                let aVal, bVal;
+
+                switch(currentSort.column) {
+                    case 'name':
+                        aVal = a.dataset.name;
+                        bVal = b.dataset.name;
+                        break;
+                    case 'email':
+                        aVal = a.dataset.email;
+                        bVal = b.dataset.email;
+                        break;
+                    case 'role':
+                        aVal = a.dataset.role;
+                        bVal = b.dataset.role;
+                        break;
+                    case 'statut':
+                        aVal = a.dataset.statut;
+                        bVal = b.dataset.statut;
+                        break;
+                    case 'date':
+                        aVal = new Date(a.dataset.date);
+                        bVal = new Date(b.dataset.date);
+                        break;
+                    default:
+                        return 0;
+                }
+
+                if (currentSort.direction === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                } else {
+                    return aVal < bVal ? 1 : -1;
+                }
+            });
+        }
+
+        // Mettre à jour le compteur
+        resultCount.textContent = rows.length;
+        const stats = { actif: 0, inactif: 0, banni: 0 };
+        rows.forEach(row => {
+            const statut = row.dataset.statut;
+            if (Object.prototype.hasOwnProperty.call(stats, statut)) {
+                stats[statut] += 1;
+            }
+        });
+        statActif.textContent = stats.actif;
+        statInactif.textContent = stats.inactif;
+        statBanni.textContent = stats.banni;
+        updateStatusDonut(stats);
+
+        const totalRows = rows.length;
+        const totalPages = Math.max(1, Math.ceil(totalRows / rowsPerPage));
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
+        }
+
+        // Afficher les lignes de la page courante
+        usersTableBody.innerHTML = '';
+        const start = (currentPage - 1) * rowsPerPage;
+        const paginatedRows = rows.slice(start, start + rowsPerPage);
+        paginatedRows.forEach(row => usersTableBody.appendChild(row));
+
+        // Afficher message si aucun résultat
+        if (totalRows === 0) {
+            const noResultsRow = document.createElement('tr');
+            noResultsRow.innerHTML = '<td colspan="7" style="text-align: center; padding: 32px; color: var(--color-text-muted);">Aucun utilisateur ne correspond à vos critères.</td>';
+            usersTableBody.appendChild(noResultsRow);
+        }
+
+        renderPagination(totalRows);
+    }
+
+    // Événement de recherche
+    searchInput.addEventListener('input', () => {
+        currentPage = 1;
+        filterAndSort();
+    });
+
+    // Événement de filtrage
+    filterStatus.addEventListener('change', () => {
+        currentPage = 1;
+        filterAndSort();
+    });
+    filterRole.addEventListener('change', () => {
+        currentPage = 1;
+        filterAndSort();
+    });
+
+    // Événement de réinitialisation
+    resetBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        filterStatus.value = '';
+        filterRole.value = '';
+        currentPage = 1;
+        currentSort = { column: null, direction: 'asc' };
+        updateSortIndicators();
+        filterAndSort();
+    });
+
+    // Tri par clic sur les en-têtes
+    usersTable.querySelectorAll('th[data-sort]').forEach(th => {
+        th.addEventListener('click', () => {
+            const column = th.dataset.sort;
+
+            if (currentSort.column === column) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.column = column;
+                currentSort.direction = 'asc';
+            }
+
+            currentPage = 1;
+            updateSortIndicators();
+            filterAndSort();
+        });
+    });
+
+    // Mettre à jour les indicateurs de tri
+    function updateSortIndicators() {
+        usersTable.querySelectorAll('th[data-sort] .sort-indicator').forEach(indicator => {
+            indicator.textContent = '⇅';
+            indicator.style.opacity = '0.5';
+            indicator.style.fontWeight = 'normal';
+        });
+
+        if (currentSort.column) {
+            const activeHeader = usersTable.querySelector(`th[data-sort="${currentSort.column}"]`);
+            if (activeHeader) {
+                const indicator = activeHeader.querySelector('.sort-indicator');
+                indicator.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
+                indicator.style.opacity = '1';
+                indicator.style.fontWeight = 'bold';
+            }
+        }
+    }
+
+    updateStatusDonut({
+        actif: <?php echo (int)$actifs; ?>,
+        inactif: <?php echo (int)$inactifs; ?>,
+        banni: <?php echo (int)$bannis; ?>
+    });
+    filterAndSort();
+    </script>
     <script src="assets/js/validation.js"></script>
 </body>
 </html>

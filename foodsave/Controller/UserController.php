@@ -1,8 +1,63 @@
 <?php
 include(__DIR__ . '/../config/config.php');
 include(__DIR__ . '/../Model/User.php');
+include(__DIR__ . '/../Model/PasswordResetCode.php');
 
 class UserController {
+    private function isStrongPassword(string $password): bool {
+        return strlen($password) >= 8
+            && preg_match('/[a-z]/', $password)
+            && preg_match('/[A-Z]/', $password)
+            && preg_match('/\d/', $password);
+    }
+
+    private function sendBrevoResetCode(string $email, string $code): array {
+        if (trim(BREVO_API_KEY) === '') {
+            return [false, 'BREVO_API_KEY non configuré.'];
+        }
+
+        $payload = [
+            'sender' => [
+                'name' => BREVO_SENDER_NAME,
+                'email' => BREVO_SENDER_EMAIL,
+            ],
+            'to' => [[
+                'email' => $email,
+            ]],
+            'subject' => 'Code de réinitialisation FoodSave',
+            'htmlContent' => '<p>Bonjour,</p>'
+                . '<p>Voici votre code de réinitialisation FoodSave :</p>'
+                . '<p style="font-size:26px;font-weight:bold;letter-spacing:4px;">' . $code . '</p>'
+                . '<p>Ce code expire dans 10 minutes.</p>'
+                . '<p>Si vous n\'êtes pas à l\'origine de cette demande, ignorez cet email.</p>',
+        ];
+
+        $ch = curl_init('https://api.brevo.com/v3/smtp/email');
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => [
+                'Accept: application/json',
+                'Content-Type: application/json',
+                'api-key: ' . BREVO_API_KEY,
+            ],
+            CURLOPT_POSTFIELDS => json_encode($payload),
+            CURLOPT_TIMEOUT => 20,
+        ]);
+        $resp = curl_exec($ch);
+        $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlErr = curl_error($ch);
+        curl_close($ch);
+
+        if ($curlErr) {
+            return [false, 'Erreur réseau Brevo: ' . $curlErr];
+        }
+        if ($httpCode < 200 || $httpCode >= 300) {
+            return [false, 'Brevo a refusé l\'envoi (HTTP ' . $httpCode . ').'];
+        }
+        return [true, null];
+    }
+
 
     /**
      * Récupère tous les utilisateurs avec statistiques (JOIN avec listes)
@@ -48,13 +103,14 @@ class UserController {
     }
 
     public function addUser(User $user) {
-        $sql = "INSERT INTO user VALUES (NULL, :prenom, :nom, :email, :password, :telephone, :date_naissance, :role, :statut, :date_inscription)";
+        $sql = "INSERT INTO user (nom, prenom, email, password, telephone, date_naissance, role, statut, date_inscription) 
+                VALUES (:nom, :prenom, :email, :password, :telephone, :date_naissance, :role, :statut, :date_inscription)";
         $db = config::getConnexion();
         try {
             $query = $db->prepare($sql);
             $query->execute([
-                'prenom' => $user->getPrenom(),
                 'nom' => $user->getNom(),
+                'prenom' => $user->getPrenom(),
                 'email' => $user->getEmail(),
                 'password' => password_hash($user->getPassword(), PASSWORD_BCRYPT),
                 'telephone' => $user->getTelephone(),
@@ -63,8 +119,10 @@ class UserController {
                 'statut' => $user->getStatut(),
                 'date_inscription' => $user->getDateInscription() ? $user->getDateInscription()->format('Y-m-d H:i:s') : null
             ]);
+            return true;
         } catch (Exception $e) {
-            echo 'Error: ' . $e->getMessage();
+            error_log('Erreur lors de l\'ajout utilisateur: ' . $e->getMessage());
+            return false;
         }
     }
 
@@ -116,6 +174,130 @@ class UserController {
      */
     public function login() {
         include __DIR__ . '/../View/Front/user/login.html';
+    }
+
+    public function forgotPassword() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        include __DIR__ . '/../View/Front/user/forgot_password.html';
+    }
+
+    public function handleForgotPasswordSendCode() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?action=forgotPassword');
+            exit;
+        }
+
+        $email = trim((string) ($_POST['email'] ?? ''));
+        if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['error'] = 'Veuillez saisir une adresse email valide.';
+            header('Location: index.php?action=forgotPassword');
+            exit;
+        }
+
+        $db = config::getConnexion();
+        $stmt = $db->prepare('SELECT id, email FROM user WHERE email = :email LIMIT 1');
+        $stmt->execute(['email' => $email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+            $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            PasswordResetCode::createCode((int) $user['id'], $user['email'], $code, 10);
+            [$ok, $error] = $this->sendBrevoResetCode($user['email'], $code);
+            if (!$ok) {
+                $_SESSION['error'] = $error ?: 'Impossible d\'envoyer l\'email de réinitialisation.';
+                header('Location: index.php?action=forgotPassword');
+                exit;
+            }
+        }
+
+        $_SESSION['password_reset_email'] = $email;
+        $_SESSION['password_reset_step'] = 'code';
+        $_SESSION['success'] = 'Si cet email existe, un code à 6 chiffres a été envoyé.';
+        header('Location: index.php?action=forgotPassword');
+        exit;
+    }
+
+    public function handleForgotPasswordVerifyCode() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?action=forgotPassword');
+            exit;
+        }
+
+        $email = trim((string) ($_SESSION['password_reset_email'] ?? ''));
+        $code = preg_replace('/\D+/', '', (string) ($_POST['code'] ?? ''));
+        if (!$email || strlen($code) !== 6) {
+            $_SESSION['error'] = 'Code invalide. Entrez un code à 6 chiffres.';
+            $_SESSION['password_reset_step'] = 'code';
+            header('Location: index.php?action=forgotPassword');
+            exit;
+        }
+
+        $ok = PasswordResetCode::verifyCode($email, $code);
+        if (!$ok) {
+            $_SESSION['error'] = 'Code incorrect, expiré, ou trop de tentatives.';
+            $_SESSION['password_reset_step'] = 'code';
+            header('Location: index.php?action=forgotPassword');
+            exit;
+        }
+
+        $_SESSION['password_reset_step'] = 'new_password';
+        $_SESSION['success'] = 'Code validé. Choisissez votre nouveau mot de passe.';
+        header('Location: index.php?action=forgotPassword');
+        exit;
+    }
+
+    public function handleForgotPasswordReset() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?action=forgotPassword');
+            exit;
+        }
+
+        $email = trim((string) ($_SESSION['password_reset_email'] ?? ''));
+        $password = (string) ($_POST['password'] ?? '');
+        $passwordConfirm = (string) ($_POST['password_confirm'] ?? '');
+
+        if (!$email || !PasswordResetCode::hasVerifiedCode($email)) {
+            $_SESSION['error'] = 'Session de réinitialisation invalide. Recommencez.';
+            unset($_SESSION['password_reset_step'], $_SESSION['password_reset_email']);
+            header('Location: index.php?action=forgotPassword');
+            exit;
+        }
+        if ($password !== $passwordConfirm) {
+            $_SESSION['error'] = 'Les mots de passe ne correspondent pas.';
+            $_SESSION['password_reset_step'] = 'new_password';
+            header('Location: index.php?action=forgotPassword');
+            exit;
+        }
+        if (!$this->isStrongPassword($password)) {
+            $_SESSION['error'] = 'Le mot de passe doit contenir 8 caractères, une majuscule, une minuscule et un chiffre.';
+            $_SESSION['password_reset_step'] = 'new_password';
+            header('Location: index.php?action=forgotPassword');
+            exit;
+        }
+
+        $db = config::getConnexion();
+        $stmt = $db->prepare('UPDATE user SET password = :password WHERE email = :email');
+        $stmt->execute([
+            'password' => password_hash($password, PASSWORD_BCRYPT),
+            'email' => $email,
+        ]);
+        PasswordResetCode::consumeCodes($email);
+
+        unset($_SESSION['password_reset_step'], $_SESSION['password_reset_email']);
+        $_SESSION['success'] = 'Mot de passe mis à jour. Vous pouvez vous connecter.';
+        header('Location: index.php?action=login');
+        exit;
     }
 
     /**
@@ -192,6 +374,10 @@ class UserController {
      * Traite la soumission de l'inscription
      */
     public function handleRegister() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: index.php?action=register');
             exit;
@@ -212,10 +398,14 @@ class UserController {
         $user->setDateInscription(new DateTime());
 
         if ($user->validate()) {
-            $this->addUser($user);
-            $_SESSION['success'] = 'Inscription réussie ! Veuillez vous connecter.';
-            header('Location: index.php?action=login');
-            exit;
+            if ($this->addUser($user)) {
+                $_SESSION['success'] = 'Inscription réussie ! Veuillez vous connecter.';
+                header('Location: index.php?action=login');
+                exit;
+            } else {
+                $errors['general'] = 'Erreur lors de la création du compte. Veuillez réessayer.';
+                include __DIR__ . '/../View/Front/user/register.html';
+            }
         } else {
             $errors = $user->errors;
             include __DIR__ . '/../View/Front/user/register.html';
