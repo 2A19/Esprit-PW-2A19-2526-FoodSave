@@ -44,10 +44,7 @@
       <span class="icon">🔗</span> Jointure
     </a>
 
-    <div class="nav-label" style="margin-top:8px;">Système</div>
-    <a class="nav-item" href="backoffice.html">
-      <span class="icon">⚙️</span> Administration
-    </a>
+
   </nav>
 
   <div class="sidebar-footer">
@@ -144,6 +141,90 @@
           <div>
             <strong>Conservez vos légumes correctement !</strong>
             <p>Les légumes à feuilles se conservent enveloppés dans un linge humide au réfrigérateur jusqu'à 5 jours. Évitez de les laver avant stockage.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:22px;" class="card">
+      <div class="card-header">
+        <div>
+          <h2>🚀 Métiers avancés</h2>
+          <p style="margin:6px 0 0;color:var(--text-muted);font-size:0.95rem;font-weight:500;">Partagez, planifiez, scannez, écoutez et interagissez avec l'assistant IA depuis le front office.</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tool-grid">
+          <div class="tool-card">
+            <div>
+              <h3>📱 SMS métier</h3>
+              <p>Envoyez rapidement une proposition de métier avancé par SMS à un contact mobile.</p>
+            </div>
+            <button class="btn btn-outline" type="button" onclick="sendMetierSms()">Envoyer SMS</button>
+          </div>
+          <div class="tool-card">
+            <div>
+              <h3>📣 Partage Facebook</h3>
+              <p>Diffusez le lien FoodSave et incitez vos partenaires à adopter les métiers avancés.</p>
+            </div>
+            <button class="btn btn-outline" type="button" onclick="shareOnFacebook()">Partager</button>
+          </div>
+          <div class="tool-card">
+            <div>
+              <h3>📅 Calendrier</h3>
+              <p>Ajoutez un rendez-vous métier ou une réunion de collecte directement dans votre calendrier.</p>
+            </div>
+            <button class="btn btn-outline" type="button" onclick="addCalendarEvent()">Ajouter au calendrier</button>
+          </div>
+          <div class="tool-card">
+            <div>
+              <h3>🔊 Lecture vocale</h3>
+              <p>Le tableau de bord peut être lu à voix haute pour un suivi vocal des métiers.</p>
+            </div>
+            <button class="btn btn-outline" type="button" onclick="speakOverview()">Lire à voix haute</button>
+          </div>
+          <div class="tool-card">
+            <div>
+              <h3>🔳 Code QR</h3>
+              <p>Générez un QR Code partageable vers votre page FoodSave ou vers le module métier.</p>
+            </div>
+            <button class="btn btn-outline" type="button" onclick="generateQr()">Générer QR</button>
+          </div>
+          <div class="tool-card">
+            <div>
+              <h3>🤖 Assistant IA</h3>
+              <p>Posez une question et obtenez une réponse intelligente sur le gaspillage alimentaire.</p>
+            </div>
+            <button class="btn btn-outline" type="button" onclick="focusAssistant()">Ouvrir assistant</button>
+          </div>
+        </div>
+
+        <div class="tool-extras">
+          <div class="qr-panel">
+            <div class="qr-toolbar">
+              <button class="btn btn-outline" type="button" onclick="generateQr()">🟩 Générer QR</button>
+              <button class="btn btn-outline" type="button" onclick="downloadQr()">⬇️ Télécharger</button>
+            </div>
+            <div class="qr-preview" id="qr-preview">
+              <img id="qr-preview-img" src="" alt="QR code FoodSave" />
+            </div>
+            <p style="margin-top:12px;color:var(--text-muted);font-size:0.92rem;">Scannez ce QR Code pour retrouver FoodSave ou partager une entrée métier avancée.</p>
+          </div>
+          <div class="assistant-panel">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+              <div>
+                <h3 style="margin:0 0 8px;font-size:1rem;">Assistant IA</h3>
+                <p style="margin:0;color:var(--text-muted);font-size:0.95rem;">Posez une question en lien avec les métiers, la collecte ou la réduction du gaspillage.</p>
+              </div>
+              <button class="btn btn-primary" type="button" onclick="askAssistant()">💬 Question rapide</button>
+            </div>
+            <textarea id="assistant-prompt" placeholder="Ex : Comment optimiser les collectes alimentaires aujourd'hui ?"></textarea>
+            <div class="assistant-actions">
+              <button class="btn btn-sm btn-outline" type="button" onclick="setAssistantPrompt('Donne-moi des conseils pour réduire le gaspillage alimentaire dans les métiers de la restauration.')">Conseil restauration</button>
+              <button class="btn btn-sm btn-outline" type="button" onclick="setAssistantPrompt('Comment organiser une collecte locale efficace ?')">Collecte locale</button>
+              <button class="btn btn-sm btn-outline" type="button" onclick="setAssistantPrompt('Quels outils utiliser pour gérer des métiers avancés ?')">Outils métiers</button>
+            </div>
+            <div class="assistant-response" id="assistant-response">Réponse de l'assistant IA ici.</div>
           </div>
         </div>
       </div>

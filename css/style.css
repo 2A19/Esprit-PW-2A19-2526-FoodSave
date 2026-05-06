@@ -410,6 +410,121 @@ body {
 
 .card-body { padding: 26px; }
 
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.tool-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 170px;
+  background: rgba(82, 196, 143, 0.08);
+  border: 1px solid rgba(45, 106, 79, 0.16);
+  border-radius: 20px;
+  padding: 18px 16px;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.tool-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-sm);
+}
+
+.tool-card h3 {
+  font-size: 1rem;
+  margin: 0 0 10px;
+  color: var(--text);
+}
+
+.tool-card p {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.tool-card button {
+  align-self: flex-start;
+}
+
+.tool-extras {
+  display: grid;
+  grid-template-columns: minmax(240px, 1.1fr) minmax(240px, 1fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.qr-panel,
+.assistant-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+  padding: 18px;
+  box-shadow: var(--shadow-xs);
+}
+
+.qr-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.qr-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 240px;
+  background: #f7fff2;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.qr-preview img {
+  max-width: 220px;
+  width: 100%;
+  border-radius: 16px;
+}
+
+.assistant-panel textarea {
+  width: 100%;
+  min-height: 120px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--cream);
+  resize: vertical;
+  margin-top: 12px;
+}
+
+.assistant-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 14px 0 10px;
+}
+
+.assistant-response {
+  background: var(--bg-secondary);
+  border-radius: 14px;
+  padding: 16px;
+  min-height: 120px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+@media (max-width: 900px) {
+  .tool-extras {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ══════════════════════════════════════════
    BUTTONS
 ══════════════════════════════════════════ */

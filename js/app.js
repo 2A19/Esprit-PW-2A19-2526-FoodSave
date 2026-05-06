@@ -906,6 +906,189 @@ function typeEmoji(t) {
   return map[t] || '🍽️';
 }
 
+function sendMetierSms() {
+  const phone = prompt('Entrez le numéro de téléphone du destinataire (ex: +33123456789) :');
+  if (!phone || !phone.trim()) {
+    alert('Numéro de téléphone requis pour envoyer le SMS.');
+    return;
+  }
+
+  const message = encodeURIComponent('FoodSave vous propose un métier avancé pour réduire le gaspillage alimentaire. Découvrez nos outils métiers et collectes.');
+  const smsUrl = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
+    ? `sms:${phone}?&body=${message}`
+    : `sms:${phone}?body=${message}`;
+
+  window.location.href = smsUrl;
+  alert('SMS ouvert avec le message pré-rempli. Envoyez-le pour partager FoodSave !');
+}
+
+function shareOnFacebook() {
+  const currentUrl = window.location.href;
+  const url = encodeURIComponent(currentUrl);
+  const quote = encodeURIComponent('Découvrez FoodSave : métiers avancés, collecte optimisée et zéro gaspillage. Rejoignez-nous pour réduire le gaspillage alimentaire !');
+  const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${quote}`;
+
+  // Afficher le lien partagé
+  alert(`Lien partagé sur Facebook :\n${currentUrl}\n\nMessage :\n${quote.replace(/%20/g, ' ')}`);
+
+  window.open(shareUrl, '_blank', 'noopener,width=600,height=400');
+}
+
+function addCalendarEvent() {
+  const title = encodeURIComponent('FoodSave - Réunion métier avancé');
+  const description = encodeURIComponent('Planifiez une session métier avancé pour améliorer la collecte et réduire le gaspillage alimentaire.');
+  const location = encodeURIComponent('FoodSave');
+  const start = new Date();
+  start.setHours(10, 0, 0, 0);
+  const end = new Date(start.getTime() + 60 * 60 * 1000);
+
+  // Format pour Google Calendar: YYYYMMDDTHHMMSSZ
+  const formatDate = date => date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+  const startStr = formatDate(start);
+  const endStr = formatDate(end);
+
+  // URL pour ajouter à Google Calendar
+  const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startStr}/${endStr}&details=${description}&location=${location}`;
+
+  // Ouvrir dans une nouvelle fenêtre
+  window.open(googleCalendarUrl, '_blank', 'noopener,width=800,height=600');
+
+  alert('Événement ouvert dans Google Calendar. Cliquez sur "Enregistrer" pour l\'ajouter à votre calendrier.');
+}
+
+function speakOverview() {
+  if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+    alert('Reconnaissance vocale non supportée sur ce navigateur.');
+    return;
+  }
+
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = 'fr-FR';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onstart = () => {
+    alert('Parlez maintenant... Dites ce que vous voulez que je lise à voix haute.');
+  };
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    if (transcript.trim()) {
+      speakText(transcript);
+    } else {
+      alert('Aucun texte reconnu. Veuillez réessayer.');
+    }
+  };
+
+  recognition.onerror = (event) => {
+    alert('Erreur de reconnaissance vocale: ' + event.error);
+  };
+
+  recognition.start();
+}
+
+function speakText(text) {
+  if (!window.speechSynthesis) {
+    alert('Synthèse vocale non supportée sur ce navigateur.');
+    return;
+  }
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'fr-FR';
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utterance);
+}
+
+let lastQrPayload = '';
+
+function generateQr() {
+  lastQrPayload = `FoodSave - Métiers avancés\nPage: ${window.location.href}`;
+  const qrImg = document.getElementById('qr-preview-img');
+  if (!qrImg) return;
+  const api = 'https://api.qrserver.com/v1/create-qr-code/';
+  const params = `size=220x220&data=${encodeURIComponent(lastQrPayload)}`;
+  qrImg.src = `${api}?${params}`;
+  qrImg.alt = 'QR code FoodSave';
+}
+
+async function downloadQr() {
+  const qrImg = document.getElementById('qr-preview-img');
+  if (!qrImg || !qrImg.src) {
+    alert('Générez d abord le QR Code.');
+    return;
+  }
+  try {
+    const response = await fetch(qrImg.src);
+    const blob = await response.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'FoodSave_QR.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  } catch (err) {
+    alert('Impossible de télécharger le QR Code pour le moment.');
+  }
+}
+
+function focusAssistant() {
+  const prompt = document.getElementById('assistant-prompt');
+  if (prompt) prompt.focus();
+}
+
+function setAssistantPrompt(text) {
+  const promptEl = document.getElementById('assistant-prompt');
+  if (promptEl) promptEl.value = text;
+}
+
+function askAssistant() {
+  const promptEl = document.getElementById('assistant-prompt');
+  const responseEl = document.getElementById('assistant-response');
+  if (!promptEl || !responseEl) return;
+  const question = promptEl.value.trim();
+  if (!question) {
+    responseEl.textContent = 'Veuillez saisir une question pour l\'assistant IA.';
+    return;
+  }
+
+  const msg = question.toLowerCase();
+  let answer = 'Je suis l\'assistant IA de FoodSave. Posez-moi une question sur la gestion des déchets, les collectes, les métiers avancés ou la réduction du gaspillage alimentaire.';
+
+  if (msg.includes('réduire') || msg.includes('gaspillage') || msg.includes('diminuer')) {
+    answer = 'Pour réduire le gaspillage alimentaire, adoptez ces stratégies : planifiez les achats, utilisez les restes créativement, donnez les surplus, et surveillez les dates de péremption. FoodSave vous aide à suivre et optimiser.';
+  } else if (msg.includes('collecte') || msg.includes('ramassage')) {
+    answer = 'Les collectes efficaces nécessitent une planification : définissez des horaires fixes, communiquez via SMS et QR codes, et assurez-vous d\'avoir des partenaires fiables. Utilisez le module collectes de FoodSave pour organiser.';
+  } else if (msg.includes('métier') || msg.includes('profession') || msg.includes('avancé')) {
+    answer = 'Les métiers avancés dans l\'anti-gaspillage incluent la gestion intelligente des stocks, la communication instantanée (SMS, partage), et l\'utilisation d\'outils comme les QR codes et calendriers pour coordonner les équipes.';
+  } else if (msg.includes('facebook') || msg.includes('partage') || msg.includes('réseau')) {
+    answer = 'Partagez vos succès sur Facebook pour inspirer d\'autres. Utilisez le bouton dédié pour diffuser le lien FoodSave et encourager l\'adhésion au mouvement zéro gaspillage.';
+  } else if (msg.includes('calendrier') || msg.includes('rdv') || msg.includes('événement')) {
+    answer = 'Planifiez vos collectes et réunions via le bouton calendrier. Cela crée un fichier .ics que vous pouvez importer dans votre agenda pour ne rien oublier.';
+  } else if (msg.includes('sms') || msg.includes('message')) {
+    answer = 'Envoyez des propositions de métiers avancés par SMS. Entrez le numéro du destinataire et le message sera pré-rempli pour un partage rapide.';
+  } else if (msg.includes('qr') || msg.includes('code')) {
+    answer = 'Générez un QR code pour partager facilement l\'accès à FoodSave ou à une collecte spécifique. Scannez-le pour accéder rapidement aux informations.';
+  } else if (msg.includes('voix') || msg.includes('parler') || msg.includes('dire')) {
+    answer = 'Utilisez la lecture vocale : parlez dans votre micro, et l\'assistant répétera ce que vous dites à voix haute. Idéal pour l\'accessibilité.';
+  } else if (msg.includes('export') || msg.includes('csv') || msg.includes('pdf')) {
+    answer = 'Exportez vos données en CSV ou PDF pour analyser hors ligne. Utilisez les boutons d\'export pour sauvegarder les listes de déchets ou collectes.';
+  } else if (msg.includes('catégorie') || msg.includes('type')) {
+    answer = 'Les catégories aident à classer les déchets : légumes, fruits, pain, etc. Créez et gérez les catégories dans l\'onglet dédié pour une meilleure organisation.';
+  } else if (msg.includes('stat') || msg.includes('chiffre') || msg.includes('total')) {
+    answer = 'Consultez les statistiques sur le dashboard : total des déchets, ajouts du jour, CO2 économisé. Ces métriques vous aident à mesurer l\'impact de vos actions.';
+  } else if (msg.includes('conseil') || msg.includes('astuce')) {
+    answer = 'Conseil du jour : conservez les légumes en linge humide au frigo. Pour plus d\'idées, consultez régulièrement le dashboard.';
+  } else if (msg.includes('aide') || msg.includes('help')) {
+    answer = 'Je peux vous aider sur : réduction du gaspillage, organisation des collectes, utilisation des outils avancés (SMS, Facebook, calendrier, voix, QR), export de données, et gestion des catégories.';
+  } else {
+    // Fallback pour toute autre question
+    answer = 'Votre question porte sur "' + question + '". En tant qu\'assistant FoodSave, je me concentre sur les thèmes de la gestion des déchets et de la réduction du gaspillage. Pouvez-vous reformuler ou préciser ?';
+  }
+
+  responseEl.textContent = answer;
+}
+
 // ============================================================
 //  JOINTURE 3 ENTITÉS — Détail collecte avec déchets + catégories
 // ============================================================
