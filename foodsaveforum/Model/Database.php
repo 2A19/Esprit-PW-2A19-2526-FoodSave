@@ -1,7 +1,12 @@
 <?php
+/**
+ * Database Connection Class - Unified FoodSave Database
+ * Used by both FoodSave and Forum applications
+ * Database: foodsave_db
+ */
 class Database {
     private $host = 'localhost';
-    private $db_name = 'foodsave_forum';
+    private $db_name = 'foodsave_db';  // UNIFIED DATABASE
     private $user = 'root';
     private $password = '';
     private $conn;
@@ -11,13 +16,17 @@ class Database {
 
         try {
             $this->conn = new PDO(
-                'mysql:host=' . $this->host . ';dbname=' . $this->db_name,
+                'mysql:host=' . $this->host . ';dbname=' . $this->db_name . ';charset=utf8mb4',
                 $this->user,
-                $this->password
+                $this->password,
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                ]
             );
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            echo 'Erreur de connexion: ' . $e->getMessage();
+            error_log('Database Connection Error: ' . $e->getMessage());
+            echo 'Erreur de connexion à la base de données: ' . $e->getMessage();
         }
 
         return $this->conn;

@@ -4,360 +4,225 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($title) ? $title : 'FoodSave - BackOffice'; ?></title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="/foodsaveforum/public/assets/css/style.css?v=1.2">
+    <link rel="stylesheet" href="/foodsaveforum/public/assets/css/style.css?v=3.0">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-       
-        body { font-family: 'Poppins', sans-serif; background: #EDE8D0; }
-       
-        /* ========== SIDEBAR ========== */
-        .admin-container { display: flex; min-height: 100vh; }
-       
-        .sidebar {
-            width: 280px;
-            background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
-            color: #e0e0e0;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-       
-        .sidebar-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 1rem;
-        }
-       
-        .sidebar-header .logo-area {
-            display: flex;
-            align-items: center;
+        /* ── Back-office overrides: map old class names → dark design system ── */
+
+        /* Stats cards (back views use .stat-card / .stats-cards) */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
             gap: 12px;
+            margin: 14px 0 16px;
         }
-       
-        .sidebar-header .logo-area img { height: 40px; }
-        .sidebar-header .logo-area span {
-            font-size: 1.2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #4caf50, #ff6b35);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-       
-        .sidebar-menu { list-style: none; padding: 0 1rem; }
-        .sidebar-menu li { margin-bottom: 0.5rem; }
-       
-        .sidebar-menu a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            color: #b0b0b0;
-            text-decoration: none;
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            transition: all 0.3s ease;
-            font-weight: 500;
+            padding: 14px;
+            text-align: center;
+            transition: all 0.2s;
         }
-       
-        .sidebar-menu a:hover, .sidebar-menu a.active {
-            background: linear-gradient(135deg, rgba(76,175,80,0.2), rgba(255,107,53,0.1));
-            color: #4caf50;
+        .stat-card:hover { background: var(--bg-card-hover); border-color: var(--border-hover); }
+        .stat-card .number { display: block; color: var(--green-bright); font-size: 1.55rem; font-weight: 800; letter-spacing: -0.5px; }
+        .stat-card h4 { color: var(--text-muted); font-size: 0.82rem; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; font-weight: 500; }
+
+        /* Data table wrapper (back views use .data-table) */
+        .data-table {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
         }
-       
-        .sidebar-menu a i { width: 24px; font-size: 1.1rem; }
-       
-        /* ========== MAIN CONTENT ========== */
-        .main-content {
-            flex: 1;
-            margin-left: 280px;
-            padding: 2rem;
-            background: #EDE8D0;
-            min-height: 100vh;
-        }
-       
-        /* ========== NAVBAR ========== */
-        .navbar {
-            background: rgba(255,255,255,0.9);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 0.8rem 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-       
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-       
-        .nav-logo {
+        .data-table h3 {
+            margin-bottom: 12px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
-       
-        .nav-logo img { height: 40px; }
-        .nav-logo span { font-weight: 700; font-size: 1.2rem; color: #333; }
-       
-        .nav-menu { display: flex; gap: 1rem; }
-        .nav-link {
-            text-decoration: none;
-            color: #555;
-            padding: 8px 16px;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-        }
-        .nav-link:hover, .nav-link.active {
-            background: #4caf50;
-            color: white;
-        }
-       
-        .login-btn {
-            padding: 8px 18px;
-            border-radius: 30px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin-left: 5px;
-        }
-        .login-outline { background: transparent; border: 1px solid #4caf50; color: #4caf50; }
-        .login-outline:hover { background: #4caf50; color: white; }
-        .login-primary { background: #ff6b35; color: white; }
-        .login-primary:hover { background: #e65100; transform: translateY(-2px); }
-       
-        /* ========== CONTENT HEADER ========== */
+        .data-table h3 i { color: var(--green-bright); }
+
+        /* Content header */
         .content-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
+            margin-bottom: 18px;
         }
         .content-header h1 {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            color: #333;
+            color: #fff;
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        .content-header h1 i { color: #ffc107; }
-       
-        /* ========== STATS CARDS ========== */
-        .stats-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-       
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 20px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-       
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #4caf50, #ff6b35);
-        }
-       
-        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .stat-card .number { font-size: 2.2rem; font-weight: 800; color: #4caf50; }
-        .stat-card h4 { font-size: 0.85rem; color: #888; margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
-       
-        /* ========== TABLE CARD ========== */
-        .data-table {
-            background: white;
-            border-radius: 20px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-       
-        .data-table h3 {
-            margin-bottom: 1rem;
-            color: #333;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .data-table h3 i { color: #4caf50; }
-       
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-       
-        th, td {
-            padding: 14px 12px;
-            text-align: left;
-            border-bottom: 1px solid #f0f0f0;
-        }
-       
+        .content-header h1 i { color: var(--amber); }
+
+        /* Table */
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 11px 13px; text-align: left; border-bottom: 1px solid rgba(74,222,128,0.06); }
         th {
-            background: #f8f6ee;
-            font-weight: 600;
-            color: #444;
-            font-size: 0.85rem;
+            background: rgba(74,222,128,0.05);
+            color: rgba(255,255,255,0.65);
+            font-size: 0.78rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.05em;
         }
-       
-        tr:hover td { background: rgba(76,175,80,0.03); }
-       
-        /* ========== BADGES & BUTTONS ========== */
+        td { color: var(--text-muted); font-size: 0.86rem; vertical-align: top; }
+        tbody tr:hover td { background: rgba(74,222,128,0.025); }
+        .table-responsive { overflow-x: auto; }
+
+        /* Badges */
         .badge-status {
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 0.7rem;
+            padding: 3px 11px;
+            border-radius: 999px;
+            font-size: 0.72rem;
             font-weight: 600;
-            color: white;
+            background: rgba(74,222,128,0.12);
+            color: var(--green-bright);
+            border: 1px solid rgba(74,222,128,0.25);
         }
-        .badge-status { background: #4caf50; }
-        .badge-status.warning { background: #ffc107; color: #333; }
-        .badge-status.danger { background: #dc3545; }
-       
-        .stars { color: #ffc107; font-size: 0.85rem; letter-spacing: 2px; }
-       
+        .badge-status.danger {
+            background: rgba(248,113,113,0.12);
+            color: var(--red);
+            border-color: rgba(248,113,113,0.25);
+        }
+        .badge-status.warning {
+            background: rgba(251,191,36,0.12);
+            color: var(--amber);
+            border-color: rgba(251,191,36,0.25);
+        }
+
+        /* Action buttons */
         .btn-edit, .btn-validate, .btn-delete, .btn-view {
-            padding: 6px 14px;
-            border-radius: 50px;
+            padding: 5px 13px;
+            border-radius: 999px;
             border: none;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
-            font-size: 0.75rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin: 0 3px;
+            font-size: 0.74rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin: 2px;
+            font-family: inherit;
         }
-        .btn-edit { background: #ffc107; color: #333; }
-        .btn-edit:hover { background: #e0a800; transform: translateY(-1px); }
-        .btn-validate { background: #4caf50; color: white; }
-        .btn-validate:hover { background: #2e7d32; transform: translateY(-1px); }
-        .btn-delete { background: #dc3545; color: white; }
-        .btn-delete:hover { background: #c82333; transform: translateY(-1px); }
-        .btn-view { background: #17a2b8; color: white; }
-        .btn-view:hover { background: #138496; transform: translateY(-1px); }
-       
-        .success {
-            background: #d4edda;
-            color: #155724;
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 1rem;
+        .btn-view    { background: rgba(96,165,250,0.12);  color: var(--blue);  border: 1px solid rgba(96,165,250,0.25); }
+        .btn-view:hover    { background: rgba(96,165,250,0.22); }
+        .btn-validate{ background: rgba(74,222,128,0.12);  color: var(--green-bright); border: 1px solid rgba(74,222,128,0.25); }
+        .btn-validate:hover{ background: rgba(74,222,128,0.22); }
+        .btn-delete  { background: rgba(248,113,113,0.12); color: var(--red);  border: 1px solid rgba(248,113,113,0.25); }
+        .btn-delete:hover  { background: rgba(248,113,113,0.22); }
+        .btn-edit    { background: rgba(251,191,36,0.12);  color: var(--amber); border: 1px solid rgba(251,191,36,0.25); }
+        .btn-edit:hover    { background: rgba(251,191,36,0.22); }
+
+        /* Alerts */
+        .alert, .success {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-size: 0.9rem;
         }
-
-        .alert {
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .alert-success, .success {
+            background: rgba(74,222,128,0.08);
+            border: 1px solid rgba(74,222,128,0.2);
+            color: var(--green-bright);
         }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-        }
-
         .alert-danger {
-            background: #f8d7da;
-            color: #721c24;
+            background: rgba(248,113,113,0.08);
+            border: 1px solid rgba(248,113,113,0.2);
+            color: var(--red);
         }
-       
-        .table-responsive { overflow-x: auto; }
 
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: #888;
+        /* Empty state */
+        .empty-state { text-align: center; padding: 3rem; color: var(--text-muted); }
+
+        /* Filters */
+        .filters { margin-bottom: 16px; background: rgba(255,255,255,0.025); border: 1px solid var(--border); border-radius: 12px; padding: 13px; }
+        .filter-form { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .filter-form select {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-base);
+            padding: 7px 12px;
+            font-family: inherit;
+            font-size: 0.88rem;
         }
-       
-        @media (max-width: 768px) {
-            .sidebar { width: 80px; }
-            .sidebar-header .logo-area span, .sidebar-menu a span { display: none; }
-            .main-content { margin-left: 80px; }
-            .stats-cards { grid-template-columns: 1fr; }
-        }
+        .filter-form select option { background: #0d1f14; }
     </style>
 </head>
 <body>
 
-<div class="admin-container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="logo-area">
-                <img src="/foodsaveforum/public/assets/images/logo-foodsave.svg?v=20260421_v2" alt="Logo">
-                <span>FoodSave Admin</span>
+<!-- Ambient background (same as front) -->
+<header class="admin-header">
+    <div class="container admin-header-inner">
+        <div class="logo logo-brand">
+            <a href="index.php?action=posts">
+                <img src="/foodsaveforum/public/assets/images/logo-foodsave.svg?v=20260421_v2" alt="FoodSave Logo" class="logo-image">
+            </a>
+        </div>
+
+
+
+        <div class="header-actions">
+            <a href="/foodsaveforum/foodsave/index.php?action=logout" class="btn btn-small btn-secondary"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <div class="container">
+        <div class="admin-shell">
+            <!-- Sidebar -->
+            <aside class="admin-sidebar">
+                <ul>
+                    <li><a href="admin.php?action=dashboard"><i class="fas fa-th-large"></i> Tableau de bord</a></li>
+                    <li><a href="admin.php?action=posts"><i class="fas fa-newspaper"></i> Sujets</a></li>
+                    <li><a href="admin.php?action=commentaires"><i class="fas fa-comments"></i> Messages</a></li>
+                    <li><a href="/foodsaveforum/stats.php"><i class="fas fa-chart-line"></i> Statistiques</a></li>
+                    <li><a href="index.php?action=posts"><i class="fas fa-reply"></i> Retour au forum</a></li>
+                    <li><a href="/foodsaveforum/foodsave/index.php?action=logout"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li>
+                </ul>
+            </aside>
+
+            <!-- Content -->
+            <div class="admin-content">
+                <?php
+                if (isset($errors) && !empty($errors)) {
+                    echo '<div class="alert alert-danger">';
+                    foreach ($errors as $error) {
+                        echo '<p>' . htmlspecialchars($error) . '</p>';
+                    }
+                    echo '</div>';
+                }
+                if (isset($success) && $success) {
+                    echo '<div class="success"><i class="fas fa-check-circle"></i> ' . htmlspecialchars($message) . '</div>';
+                }
+                ?>
+
+                <?php include $content; ?>
             </div>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="admin.php?action=dashboard"><i class="fas fa-th-large"></i> <span>Tableau de bord</span></a></li>
-            <li><a href="admin.php?action=posts"><i class="fas fa-newspaper"></i> <span>Sujets</span></a></li>
-            <li><a href="admin.php?action=commentaires"><i class="fas fa-comments"></i> <span>Messages</span></a></li>
-            <li><a href="stats.php"><i class="fas fa-chart-line"></i> <span>Statistiques</span></a></li>
-            <li><a href="index.php?action=posts"><i class="fas fa-reply"></i> <span>Retour au front</span></a></li>
-            <li><a href="#logout"><i class="fas fa-sign-out-alt"></i> <span>Déconnexion</span></a></li>
-        </ul>
     </div>
+</main>
 
-    <!-- Main Content -->
-    <div class="main-content">
-       
-        <!-- Navbar -->
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="nav-menu">
-                    <a href="admin.php?action=dashboard" class="nav-link"><i class="fas fa-th-large"></i> Tableau de bord</a>
-                    <a href="admin.php?action=posts" class="nav-link"><i class="fas fa-newspaper"></i> Sujets</a>
-                    <a href="admin.php?action=commentaires" class="nav-link"><i class="fas fa-comments"></i> Messages</a>
-                    <a href="stats.php" class="nav-link"><i class="fas fa-chart-line"></i> Statistiques</a>
-                </div>
-                <div class="user-actions">
-                    <button class="login-btn login-outline"><i class="fas fa-user"></i> Profil</button>
-                    <button class="login-btn login-primary"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
-                </div>
-            </div>
-        </nav>
-
-        <?php
-        if (isset($errors) && !empty($errors)) {
-            echo '<div class="alert alert-danger">';
-            foreach ($errors as $error) {
-                echo '<p>' . htmlspecialchars($error) . '</p>';
-            }
-            echo '</div>';
-        }
-        if (isset($success) && $success) {
-            echo '<div class="success"><i class="fas fa-check-circle"></i> ' . htmlspecialchars($message) . '</div>';
-        }
-        ?>
-        
-        <?php include $content; ?>
+<footer class="footer">
+    <div class="container">
+        <p>© 2026 FoodSave – Plateforme Anti-Gaspillage. Tous droits réservés.</p>
     </div>
-</div>
+</footer>
 
-<script src="/foodsaveforum/public/assets/js/script.js"></script>
+<script src="/foodsaveforum/public/assets/js/script.js?v=2.0"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <div class="create-post-container">
     <h2>✍️ Créer un nouveau Post</h2>
 
-    <form method="POST" action="index.php?action=store-post" class="form-post" enctype="multipart/form-data">
+    <form method="POST" action="index.php?action=store" class="form-post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="titre">Titre du Post *</label>
             <input 

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier mon profil — FoodSave</title>
+    <link rel="icon" type="image/png" href="assets/images/logo-foodsave.png">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <a href="index.php?action=dashboard" class="brand">
+                <img src="assets/images/logo-foodsave.png" alt="FoodSave">
+                <span><span class="brand-food">Food</span><span class="brand-save">Save</span></span>
+            </a>
+            <nav class="primary-nav">
+                <a href="index.php?action=dashboard">Tableau de bord</a>
+                <a href="index.php?action=profile" class="active">Mon profil</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="index.php?action=logout" class="btn-login">Déconnexion</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-small" style="padding-top: 28px; padding-bottom: 48px;">
+        <?php if (isset($errors) && count($errors) > 0): ?>
+            <div class="alert alert-error fade-in">
+                <span class="alert-icon">✕</span>
+                <div>
+                    <strong>Erreurs de validation&nbsp;:</strong>
+                    <ul style="margin-top: 6px; margin-left: 18px;">
+                        <?php foreach ($errors as $error): ?>
+                            <li><?php echo htmlspecialchars($error); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <form id="editProfileForm" method="POST" action="index.php?action=handleEditProfile" enctype="multipart/form-data">
+            <div class="panel">
+                <div style="display: flex; align-items: center; gap: 16px; padding-bottom: 20px; margin-bottom: 24px; border-bottom: 1px solid var(--color-border-light);">
+                    <div class="avatar-lg" style="background: linear-gradient(135deg, var(--color-primary-orange), var(--color-orange-700)); box-shadow: var(--shadow-orange);">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </div>
+                    <div>
+                        <h1 style="font-size: 1.4rem; margin-bottom: 4px;">Modifier mon profil</h1>
+                        <p style="color: var(--color-text-muted); font-size: 0.92rem;">Mettez à jour vos informations personnelles</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group <?php echo isset($errors['prenom']) ? 'error' : ''; ?>">
+                        <label for="prenom">Prénom <span style="color: var(--color-primary-orange);">*</span></label>
+                        <input type="text" id="prenom" name="prenom" value="<?php echo htmlspecialchars($user['prenom']); ?>" required>
+                        <?php if (isset($errors['prenom'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['prenom']); ?></div><?php endif; ?>
+                    </div>
+                    <div class="form-group <?php echo isset($errors['nom']) ? 'error' : ''; ?>">
+                        <label for="nom">Nom <span style="color: var(--color-primary-orange);">*</span></label>
+                        <input type="text" id="nom" name="nom" value="<?php echo htmlspecialchars($user['nom']); ?>" required>
+                        <?php if (isset($errors['nom'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['nom']); ?></div><?php endif; ?>
+                    </div>
+                </div>
+
+                <div class="form-group <?php echo isset($errors['email']) ? 'error' : ''; ?>">
+                    <label for="email">Email <span style="color: var(--color-primary-orange);">*</span></label>
+                    <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
+                    <?php if (isset($errors['email'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['email']); ?></div><?php endif; ?>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group <?php echo isset($errors['telephone']) ? 'error' : ''; ?>">
+                        <label for="telephone">Téléphone</label>
+                        <input type="tel" id="telephone" name="telephone" value="<?php echo htmlspecialchars($user['telephone'] ?? ''); ?>">
+                        <?php if (isset($errors['telephone'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['telephone']); ?></div><?php endif; ?>
+                    </div>
+                    <div class="form-group <?php echo isset($errors['date_naissance']) ? 'error' : ''; ?>">
+                        <label for="date_naissance">Date de naissance</label>
+                        <input type="date" id="date_naissance" name="date_naissance" value="<?php echo htmlspecialchars($user['date_naissance'] ?? ''); ?>">
+                        <?php if (isset($errors['date_naissance'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['date_naissance']); ?></div><?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Photo de profil -->
+                <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--color-border-light);">
+                    <h3 style="margin-bottom: 16px; font-size: 1rem; font-weight: 600;">Photo de profil</h3>
+                    <div style="display: flex; gap: 24px; align-items: flex-start;">
+                        <div style="flex-shrink: 0;">
+                            <div id="photoPreview" class="avatar-xl avatar-green">
+                                <?php if (isset($user['profile_photo']) && $user['profile_photo']): ?>
+                                    <img src="assets/uploads/profile_photos/<?php echo htmlspecialchars($user['profile_photo']); ?>" alt="Photo de profil" style="width: 100%; height: 100%; object-fit: cover;">
+                                <?php else: ?>
+                                    <div style="text-align: center; color: white; font-weight: 600; font-size: 1.4rem;">
+                                        <?php echo strtoupper(substr($user['prenom'], 0, 1) . substr($user['nom'], 0, 1)); ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="form-group">
+                                <label for="profile_photo">Choisir une photo</label>
+                                <input type="file" id="profile_photo" name="profile_photo" accept="image/jpeg,image/png,image/gif,image/webp" style="padding: 8px; border: 1px solid var(--color-border-light); border-radius: 4px; width: 100%; cursor: pointer;">
+                                <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 8px;">
+                                    Formats acceptés: JPG, PNG, GIF, WebP • Taille max: 5 MB
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--color-border-light);">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Enregistrer les modifications</button>
+                    <a href="index.php?action=profile" class="btn btn-outline" style="flex: 1; text-align: center;">Annuler</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 FoodSave. Tous droits réservés.</p>
+    </footer>
+
+    <script>
+        // Photo preview
+        document.getElementById('profile_photo').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validate file size
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Fichier trop volumineux. Taille maximale: 5 MB');
+                    e.target.value = '';
+                    return;
+                }
+                
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Type de fichier non accepté. Utilisez JPG, PNG, GIF ou WebP');
+                    e.target.value = '';
+                    return;
+                }
+                
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('photoPreview');
+                    preview.innerHTML = '<img src="' + event.target.result + '" alt="Aperçu" style="width: 100%; height: 100%; object-fit: cover;">';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+
+    <script src="assets/js/validation.js"></script>
+</body>
+</html>

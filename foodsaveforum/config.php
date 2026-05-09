@@ -1,4 +1,9 @@
 <?php
+/**
+ * Unified Database Configuration
+ * Both FoodSave and Forum use foodsave_db
+ * Updated: 2026-05-09
+ */
 if (!class_exists('config')) {
 class config {
     private static $pdo = null;
@@ -7,7 +12,7 @@ class config {
         if (!isset(self::$pdo)) {
             try {
                 self::$pdo = new PDO(
-                    'mysql:host=localhost;dbname=foodsave_forum',
+                    'mysql:host=localhost;dbname=foodsave_db;charset=utf8mb4',
                     'root',
                     '',
                     [

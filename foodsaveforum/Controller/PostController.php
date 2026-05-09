@@ -151,7 +151,13 @@ class PostController {
 
     // FrontOffice: Afficher tous les posts
     public function listAll() {
-        $sql = "SELECT * FROM posts WHERE statue != 'banni' ORDER BY date_creation DESC";
+        $sql = "SELECT p.*,
+                       TRIM(CONCAT(COALESCE(u.prenom, ''), ' ', COALESCE(u.nom, ''))) AS auteur_nom,
+                       u.email AS auteur_email
+                FROM posts p
+                LEFT JOIN `user` u ON u.id = p.id_utilisateur
+                WHERE p.statue != 'banni'
+                ORDER BY p.date_creation DESC";
         $db = config::getConnexion();
         try {
             $list = $db->query($sql);
@@ -167,10 +173,16 @@ class PostController {
         
                     p.id_post, p.titre, p.contenu as post_contenu, p.audio_path as post_audio_path, p.date_creation, 
                     p.id_utilisateur as post_id_utilisateur, p.categorie, p.statue as post_statue,
+                    TRIM(CONCAT(COALESCE(up.prenom, ''), ' ', COALESCE(up.nom, ''))) as post_auteur_nom,
+                    up.email as post_auteur_email,
                     c.id_commentaire, c.contenu as commentaire_contenu, c.audio_path as commentaire_audio_path, c.date_publication,
-                    c.id_utilisateur as commentaire_id_utilisateur, c.statue as commentaire_statue
+                    c.id_utilisateur as commentaire_id_utilisateur, c.statue as commentaire_statue,
+                    TRIM(CONCAT(COALESCE(uc.prenom, ''), ' ', COALESCE(uc.nom, ''))) as commentaire_auteur_nom,
+                    uc.email as commentaire_auteur_email
                 FROM posts p 
                 LEFT JOIN commentaires c ON p.id_post = c.id_post 
+                LEFT JOIN `user` up ON up.id = p.id_utilisateur
+                LEFT JOIN `user` uc ON uc.id = c.id_utilisateur
                 WHERE p.id_post = :id_post AND (c.statue != 'banni' OR c.id_commentaire IS NULL)
                 ORDER BY c.date_publication DESC";
         
@@ -197,6 +209,8 @@ class PostController {
                     'audio_path' => $row['post_audio_path'],
                     'date_creation' => $row['date_creation'],
                     'id_utilisateur' => $row['post_id_utilisateur'],
+                    'auteur_nom' => $row['post_auteur_nom'] ?: $row['post_auteur_email'],
+                    'auteur_email' => $row['post_auteur_email'],
                     'categorie' => $row['categorie'],
                     'statue' => $row['post_statue']
                 ];
@@ -210,6 +224,8 @@ class PostController {
                     'date_publication' => $row['date_publication'],
                     'id_post' => $row['id_post'],
                     'id_utilisateur' => $row['commentaire_id_utilisateur'],
+                    'auteur_nom' => $row['commentaire_auteur_nom'] ?: $row['commentaire_auteur_email'],
+                    'auteur_email' => $row['commentaire_auteur_email'],
                     'statue' => $row['commentaire_statue']
                 ];
             }
@@ -335,13 +351,24 @@ class PostController {
         $db = config::getConnexion();
         try {
             if (!empty($category)) {
-                $sql = "SELECT * FROM posts WHERE categorie = :categorie ORDER BY date_creation DESC";
+                $sql = "SELECT p.*,
+                               TRIM(CONCAT(COALESCE(u.prenom, ''), ' ', COALESCE(u.nom, ''))) AS auteur_nom,
+                               u.email AS auteur_email
+                        FROM posts p
+                        LEFT JOIN `user` u ON u.id = p.id_utilisateur
+                        WHERE p.categorie = :categorie
+                        ORDER BY p.date_creation DESC";
                 $stmt = $db->prepare($sql);
                 $stmt->execute([':categorie' => $category]);
                 return $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
 
-            $sql = "SELECT * FROM posts ORDER BY date_creation DESC";
+            $sql = "SELECT p.*,
+                           TRIM(CONCAT(COALESCE(u.prenom, ''), ' ', COALESCE(u.nom, ''))) AS auteur_nom,
+                           u.email AS auteur_email
+                    FROM posts p
+                    LEFT JOIN `user` u ON u.id = p.id_utilisateur
+                    ORDER BY p.date_creation DESC";
             $list = $db->query($sql);
             return $list->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
@@ -379,7 +406,13 @@ class PostController {
 
     // Filtrer par catégorie
     public function getByCategory($category) {
-        $sql = "SELECT * FROM posts WHERE categorie = :categorie AND statue != 'banni' ORDER BY date_creation DESC";
+        $sql = "SELECT p.*,
+                       TRIM(CONCAT(COALESCE(u.prenom, ''), ' ', COALESCE(u.nom, ''))) AS auteur_nom,
+                       u.email AS auteur_email
+                FROM posts p
+                LEFT JOIN `user` u ON u.id = p.id_utilisateur
+                WHERE p.categorie = :categorie AND p.statue != 'banni'
+                ORDER BY p.date_creation DESC";
         $db = config::getConnexion();
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':categorie', $category);

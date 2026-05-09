@@ -38,203 +38,228 @@ $totalDislikes = array_sum($dislikesData);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistiques Likes/Dislikes - FoodSave Forum</title>
-    <link rel="stylesheet" href="/foodsaveforum/public/assets/css/style.css?v=1.2">
+    <title>Statistiques – FoodSave Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/foodsaveforum/public/assets/css/style.css?v=3.0">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        .stats-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        /* ── Stat cards ── */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 12px;
+            margin: 0 0 20px;
         }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .stat-card:hover { background: var(--bg-card-hover); border-color: var(--border-hover); }
+        .stat-card .number { display: block; color: var(--green-bright); font-size: 1.55rem; font-weight: 800; letter-spacing: -0.5px; }
+        .stat-card h4 { color: var(--text-muted); font-size: 0.82rem; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; font-weight: 500; }
 
+        /* ── Charts ── */
         .charts-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 24px;
+            gap: 16px;
         }
-
         .chart-box {
-            background: white;
-            border: 1px solid #dce8df;
-            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
             padding: 18px;
-            box-shadow: 0 6px 18px rgba(34, 48, 38, 0.06);
         }
-
         .chart-title {
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             font-weight: 700;
-            color: #1f5f34;
-            margin-bottom: 12px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 14px;
             text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .summary-row {
+        /* ── Content header ── */
+        .content-header {
             display: flex;
+            align-items: center;
             gap: 10px;
-            margin: 0 0 16px;
-            flex-wrap: wrap;
+            margin-bottom: 18px;
         }
-
-        .summary-pill {
-            border: 1px solid #dce8df;
-            background: #f8fbf9;
-            border-radius: 999px;
-            padding: 8px 12px;
+        .content-header h1 {
+            font-size: 1.5rem;
             font-weight: 700;
-            color: #4d5b50;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-
-        .back-link {
-            display: inline-block;
-            margin-bottom: 16px;
-            padding: 10px 16px;
-            background: #6f7d71;
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: 700;
-        }
-
-        .back-link:hover {
-            background: #5c695f;
-        }
+        .content-header h1 i { color: var(--amber); }
 
         @media (max-width: 900px) {
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
+            .charts-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
-<body class="front-office">
-    <header class="header">
-        <div class="container header-inner">
-            <div class="logo logo-brand">
-                <a href="index.php?action=posts">
-                    <img src="/foodsaveforum/public/assets/images/logo-foodsave.svg?v=20260421_v2" alt="FoodSave Logo" class="logo-image">
-                </a>
-            </div>
-            <nav class="navbar">
+<body>
+
+<header class="admin-header">
+    <div class="container admin-header-inner">
+        <div class="logo logo-brand">
+            <a href="index.php?action=posts">
+                <img src="/foodsaveforum/public/assets/images/logo-foodsave.svg?v=20260421_v2" alt="FoodSave Logo" class="logo-image">
+            </a>
+        </div>
+
+        <div class="header-actions">
+            <a href="#logout" class="btn btn-small btn-secondary"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <div class="container">
+        <div class="admin-shell">
+
+            <!-- Sidebar -->
+            <aside class="admin-sidebar">
                 <ul>
-                    <li><a href="index.php?action=posts">Accueil</a></li>
-                    <li><a href="stats.php">Statistiques</a></li>
+                    <li><a href="admin.php?action=dashboard"><i class="fas fa-th-large"></i> Tableau de bord</a></li>
+                    <li><a href="admin.php?action=posts"><i class="fas fa-newspaper"></i> Sujets</a></li>
+                    <li><a href="admin.php?action=commentaires"><i class="fas fa-comments"></i> Messages</a></li>
+                    <li><a href="stats.php" class="active"><i class="fas fa-chart-line"></i> Statistiques</a></li>
+                    <li><a href="index.php?action=posts"><i class="fas fa-reply"></i> Retour au forum</a></li>
+                    <li><a href="#logout"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li>
                 </ul>
-            </nav>
-            <div class="header-actions">
-                <a href="index.php?action=posts" class="btn-small btn-secondary">Retour au forum</a>
-            </div>
-        </div>
-    </header>
+            </aside>
 
-    <main class="main-content">
-        <div class="container page-card">
-            <a href="index.php?action=posts" class="back-link">← Retour au Forum</a>
-            <h1 style="color:#1f5f34; margin-bottom: 10px;">Statistiques Likes / Dislikes</h1>
-            <div class="summary-row">
-                <span class="summary-pill">👍 Likes totaux: <?php echo $totalLikes; ?></span>
-                <span class="summary-pill">👎 Dislikes totaux: <?php echo $totalDislikes; ?></span>
-            </div>
+            <!-- Content -->
+            <div class="admin-content">
 
-            <div class="charts-grid">
-                <div class="chart-box">
-                    <div class="chart-title">Courbe des réactions par post</div>
-                    <canvas id="lineChart"></canvas>
+                <div class="content-header">
+                    <h1><i class="fas fa-chart-line"></i> Statistiques Likes / Dislikes</h1>
                 </div>
 
-                <div class="chart-box">
-                    <div class="chart-title">Disque de sondage Likes vs Dislikes</div>
-                    <canvas id="pieChart"></canvas>
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <span class="number"><?php echo $totalLikes; ?></span>
+                        <h4>👍 Likes totaux</h4>
+                    </div>
+                    <div class="stat-card">
+                        <span class="number" style="color: var(--red);"><?php echo $totalDislikes; ?></span>
+                        <h4>👎 Dislikes totaux</h4>
+                    </div>
                 </div>
+
+                <div class="charts-grid">
+                    <div class="chart-box">
+                        <div class="chart-title">Courbe des réactions par post</div>
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <div class="chart-title">Likes vs Dislikes</div>
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </main>
+    </div>
+</main>
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 FoodSave - Plateforme Anti-Gaspillage. Tous droits réservés.</p>
-        </div>
-    </footer>
+<footer class="footer">
+    <div class="container">
+        <p>© 2026 FoodSave – Plateforme Anti-Gaspillage. Tous droits réservés.</p>
+    </div>
+</footer>
 
-    <script>
-        const postTitles = <?php echo json_encode($postTitles); ?>;
-        const likesData = <?php echo json_encode($likesData); ?>;
-        const dislikesData = <?php echo json_encode($dislikesData); ?>;
-        const totalLikes = <?php echo (int) $totalLikes; ?>;
-        const totalDislikes = <?php echo (int) $totalDislikes; ?>;
+<script src="/foodsaveforum/public/assets/js/script.js?v=2.0"></script>
+<script>
+    const postTitles   = <?php echo json_encode($postTitles); ?>;
+    const likesData    = <?php echo json_encode($likesData); ?>;
+    const dislikesData = <?php echo json_encode($dislikesData); ?>;
+    const totalLikes    = <?php echo (int) $totalLikes; ?>;
+    const totalDislikes = <?php echo (int) $totalDislikes; ?>;
 
-        new Chart(document.getElementById('lineChart'), {
-            type: 'line',
-            data: {
-                labels: postTitles,
-                datasets: [
-                    {
-                        label: 'Likes',
-                        data: likesData,
-                        borderColor: '#3ea95b',
-                        backgroundColor: 'rgba(62, 169, 91, 0.15)',
-                        borderWidth: 3,
-                        tension: 0.35,
-                        fill: true
-                    },
-                    {
-                        label: 'Dislikes',
-                        data: dislikesData,
-                        borderColor: '#d73535',
-                        backgroundColor: 'rgba(215, 53, 53, 0.12)',
-                        borderWidth: 3,
-                        tension: 0.35,
-                        fill: true
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: '#4d5b50',
-                            font: { weight: '700' }
-                        }
-                    }
+    const gridColor  = 'rgba(74,222,128,0.07)';
+    const tickColor  = 'rgba(255,255,255,0.4)';
+    const legendColor = 'rgba(255,255,255,0.6)';
+
+    new Chart(document.getElementById('lineChart'), {
+        type: 'line',
+        data: {
+            labels: postTitles,
+            datasets: [
+                {
+                    label: 'Likes',
+                    data: likesData,
+                    borderColor: '#4ade80',
+                    backgroundColor: 'rgba(74,222,128,0.1)',
+                    borderWidth: 2,
+                    tension: 0.35,
+                    fill: true,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#4ade80'
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { color: '#4d5b50' }
-                    },
-                    x: {
-                        ticks: { color: '#4d5b50' }
-                    }
+                {
+                    label: 'Dislikes',
+                    data: dislikesData,
+                    borderColor: '#f87171',
+                    backgroundColor: 'rgba(248,113,113,0.08)',
+                    borderWidth: 2,
+                    tension: 0.35,
+                    fill: true,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#f87171'
                 }
-            }
-        });
-
-        new Chart(document.getElementById('pieChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Likes', 'Dislikes'],
-                datasets: [{
-                    data: [totalLikes, totalDislikes],
-                    backgroundColor: ['#3ea95b', '#d73535'],
-                    borderColor: '#ffffff',
-                    borderWidth: 2
-                }]
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { labels: { color: legendColor, font: { weight: '600' } } }
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            color: '#4d5b50',
-                            font: { weight: '700' }
-                        }
-                    }
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: tickColor },
+                    grid: { color: gridColor }
+                },
+                x: {
+                    ticks: { color: tickColor, maxRotation: 45 },
+                    grid: { color: gridColor }
                 }
             }
-        });
-    </script>
+        }
+    });
+
+    new Chart(document.getElementById('pieChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Likes', 'Dislikes'],
+            datasets: [{
+                data: [totalLikes, totalDislikes],
+                backgroundColor: ['rgba(74,222,128,0.7)', 'rgba(248,113,113,0.7)'],
+                borderColor: 'rgba(13,31,20,0.8)',
+                borderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: legendColor, font: { weight: '600' }, padding: 16 }
+                }
+            }
+        }
+    });
+</script>
 </body>
 </html>

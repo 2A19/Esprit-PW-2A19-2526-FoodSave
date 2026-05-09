@@ -49,7 +49,7 @@
                                     #<?php echo $commentaire['id_post']; ?>
                                 </a>
                             </td>
-                            <td>User #<?php echo $commentaire['id_utilisateur']; ?></td>
+                            <td><?php echo htmlspecialchars($commentaire['auteur_nom'] ?: ($commentaire['auteur_email'] ?? 'Utilisateur')); ?></td>
                             <td><?php echo date('d/m/Y H:i', strtotime($commentaire['date_publication'])); ?></td>
                             <td>
                                 <?php if ($commentaire['statue'] === 'actif'): ?>

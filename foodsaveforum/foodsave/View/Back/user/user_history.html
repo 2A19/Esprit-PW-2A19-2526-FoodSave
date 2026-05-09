@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique utilisateur — FoodSave Admin</title>
+    <link rel="icon" type="image/png" href="assets/images/logo-foodsave.png">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="admin-body">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <img src="assets/images/logo-foodsave.png" alt="FoodSave">
+                <span><span class="brand-food">Food</span><span class="brand-save">Save</span></span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="admin.php?action=dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    Tableau de bord
+                </a>
+                <a href="admin.php?action=users" class="active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Utilisateurs
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="index.php?action=logout">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Déconnexion
+                </a>
+            </div>
+        </aside>
+
+        <div class="admin-main">
+            <div class="admin-topbar">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" aria-label="Menu">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    </button>
+                    <div class="admin-topbar-title">
+                        <h1>Historique d'activité</h1>
+                        <div class="admin-breadcrumb"><a href="admin.php?action=users">Utilisateurs</a> / Historique</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-content">
+                <div class="dashboard-header">
+                    <h1><?php echo htmlspecialchars(($user['prenom'] ?? '') . ' ' . ($user['nom'] ?? '')); ?></h1>
+                    <p>Historique des actions utilisateur (connexion, mises à jour, changements de mot de passe, etc.).</p>
+                </div>
+
+                <div class="table-wrap">
+                    <div class="table-head">
+                        <h2>Journal des actions</h2>
+                        <a href="admin.php?action=users" class="btn btn-outline btn-sm">Retour</a>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date/Heure</th>
+                                    <th>Action</th>
+                                    <th>Détails</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (empty($logs)): ?>
+                                    <tr>
+                                        <td colspan="3" style="text-align:center;">Aucune action enregistrée pour cet utilisateur.</td>
+                                    </tr>
+                                <?php else: ?>
+                                    <?php foreach ($logs as $log): ?>
+                                        <tr>
+                                            <td><?php echo htmlspecialchars(date('d/m/Y H:i:s', strtotime($log['created_at']))); ?></td>
+                                            <td><?php echo htmlspecialchars($log['action']); ?></td>
+                                            <td><?php echo htmlspecialchars($log['details'] ?? ''); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

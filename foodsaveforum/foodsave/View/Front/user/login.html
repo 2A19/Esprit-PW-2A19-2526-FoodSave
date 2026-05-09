@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion — FoodSave</title>
+    <link rel="icon" type="image/png" href="assets/images/logo-foodsave.png">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="header-container">
+            <a href="home.html" class="brand">
+                <img src="assets/images/logo-foodsave.png" alt="FoodSave">
+                <span>
+                    <span class="brand-food">Food</span>
+                    <span class="brand-save">Save</span>
+                </span>
+            </a>
+
+            <nav class="primary-nav">
+                <a href="home.html">Accueil</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="index.php?action=register" class="btn-register">
+                    S'inscrire
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="auth-page">
+        <div class="auth-card fade-in">
+
+            <div class="auth-card-header">
+                <h1>Connexion</h1>
+                <p>Accédez à votre compte FoodSave</p>
+            </div>
+
+            <?php if (isset($_SESSION['success'])): ?>
+                <div class="alert alert-success">
+                    <span class="alert-icon">✓</span>
+                    <div>
+                        <strong>Succès !</strong>
+                        <?php echo htmlspecialchars($_SESSION['success']); ?>
+                    </div>
+                    <?php unset($_SESSION['success']); ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if (isset($errors['login'])): ?>
+                <div class="alert alert-error">
+                    <span class="alert-icon">✕</span>
+                    <div>
+                        <strong>Erreur :</strong>
+                        <?php echo htmlspecialchars($errors['login']); ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <form id="loginForm" method="POST" action="index.php?action=handleLogin">
+
+                <!-- EMAIL -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+
+                    <div class="input-wrap has-icon">
+                        <span class="input-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                        </span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Email"
+                            required
+                        >
+                    </div>
+
+                    <?php if (isset($errors['email'])): ?>
+                        <div class="form-error">
+                            ⚠ <?php echo htmlspecialchars($errors['email']); ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+
+                    <div class="input-wrap has-icon has-icon-right">
+                        <span class="input-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                        </span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Mot de passe"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="input-icon-right"
+                            onclick="
+                                const i = document.getElementById('password');
+                                i.type = i.type === 'password' ? 'text' : 'password';
+                            "
+                            aria-label="Afficher le mot de passe"
+                        >
+                            <svg width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <?php if (isset($errors['password'])): ?>
+                        <div class="form-error">
+                            ⚠ <?php echo htmlspecialchars($errors['password']); ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <div class="auth-extras">
+                    <label>
+                        <input type="checkbox" name="remember">
+                        Se souvenir de moi
+                    </label>
+
+                    <a href="index.php?action=forgotPassword">Mot de passe oublié ?</a>
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-block btn-lg"
+                >
+                    Se connecter
+                </button>
+
+            </form>
+
+            <div id="webauthnLoginBlock" style="margin-top: 18px; display: none;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; color: var(--color-text-muted); font-size: 0.85rem;">
+                    <span style="flex: 1; height: 1px; background: var(--color-border);"></span>
+                    <span>ou</span>
+                    <span style="flex: 1; height: 1px; background: var(--color-border);"></span>
+                </div>
+                <button
+                    type="button"
+                    id="btnFingerprintLogin"
+                    class="btn btn-outline btn-block btn-lg"
+                    style="display: flex; align-items: center; justify-content: center; gap: 10px;"
+                >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 11c0 6-3 9-3 9"/>
+                        <path d="M15 11v3c0 2.5-1 4-1 4"/>
+                        <path d="M18 11c0-3.3-2.7-6-6-6S6 7.7 6 11v3"/>
+                        <path d="M9 19c-1-1.5-1-3-1-5"/>
+                        <path d="M3 11a9 9 0 0 1 13.5-7.7"/>
+                        <path d="M21 14c-.3 1.7-1 3.4-2 4.8"/>
+                    </svg>
+                    Se connecter avec empreinte
+                </button>
+                <div id="webauthnLoginError" class="form-error" style="display: none; margin-top: 10px;"></div>
+            </div>
+
+            <div class="auth-links-toggle">
+                <p>
+                    Pas encore de compte ?
+                    <a href="index.php?action=register">S'inscrire</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 FoodSave. Tous droits réservés.</p>
+    </footer>
+
+    <script src="assets/js/validation.js"></script>
+    <script src="assets/js/webauthn.js"></script>
+    <script>
+    (function () {
+        if (!window.FoodSaveWebAuthn || !FoodSaveWebAuthn.isSupported()) return;
+
+        const block = document.getElementById('webauthnLoginBlock');
+        const button = document.getElementById('btnFingerprintLogin');
+        const errorBox = document.getElementById('webauthnLoginError');
+        const emailInput = document.getElementById('email');
+        const form = document.getElementById('loginForm');
+        let autoTriedEmail = '';
+        let autoTimer = null;
+        let passkeyInFlight = false;
+        if (!block || !button) return;
+
+        block.style.display = '';
+
+        async function runPasskeyLogin() {
+            if (passkeyInFlight) return;
+            errorBox.style.display = 'none';
+            errorBox.textContent = '';
+            passkeyInFlight = true;
+            button.disabled = true;
+            const originalLabel = button.innerHTML;
+            button.innerHTML = 'Vérification de l\'empreinte...';
+
+            try {
+                const email = emailInput && emailInput.value
+                    ? emailInput.value.trim()
+                    : '';
+                const res = await FoodSaveWebAuthn.loginWithPasskey(email);
+                if (res.redirect) {
+                    window.location.href = res.redirect;
+                    return;
+                }
+                window.location.reload();
+            } catch (err) {
+                errorBox.textContent = '\u26a0 ' + (err && err.message
+                    ? err.message
+                    : 'Échec de la connexion par empreinte.');
+                errorBox.style.display = '';
+            } finally {
+                passkeyInFlight = false;
+                button.disabled = false;
+                button.innerHTML = originalLabel;
+            }
+        }
+
+        button.addEventListener('click', runPasskeyLogin);
+
+        function scheduleAutoPasskey() {
+            const email = emailInput && emailInput.value
+                ? emailInput.value.trim()
+                : '';
+            if (!email || email === autoTriedEmail || passkeyInFlight) return;
+            clearTimeout(autoTimer);
+            autoTimer = setTimeout(function () {
+                autoTriedEmail = email;
+                runPasskeyLogin();
+            }, 450);
+        }
+
+        if (emailInput) {
+            emailInput.addEventListener('change', scheduleAutoPasskey);
+            emailInput.addEventListener('blur', scheduleAutoPasskey);
+            emailInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    scheduleAutoPasskey();
+                }
+            });
+        }
+
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                if (emailInput && emailInput.value && passkeyInFlight) {
+                    e.preventDefault();
+                }
+            });
+        }
+    })();
+    </script>
+
+</body>
+</html>

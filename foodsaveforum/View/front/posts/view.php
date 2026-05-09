@@ -10,7 +10,7 @@
         </div>
 
         <div class="post-meta">
-            <span class="author">👤 Utilisateur #<?php echo $data['post']['id_utilisateur']; ?></span>
+            <span class="author">👤 <?php echo htmlspecialchars($data['post']['auteur_nom'] ?: ($data['post']['auteur_email'] ?? 'Utilisateur')); ?></span>
             <span class="date">📅 <?php echo date('d/m/Y à H:i', strtotime($data['post']['date_creation'])); ?></span>
         </div>
 
@@ -44,10 +44,10 @@
         </div>
 
         <div class="post-actions">
-            <a href="index.php?action=edit-post&id=<?php echo $data['post']['id_post']; ?>" class="btn btn-warning">
+            <a href="index.php?action=edit&id=<?php echo $data['post']['id_post']; ?>" class="btn btn-warning">
                 ✏️ Modifier
             </a>
-            <a href="index.php?action=delete-post&id=<?php echo $data['post']['id_post']; ?>" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr ?');">
+            <a href="index.php?action=delete&id=<?php echo $data['post']['id_post']; ?>" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr ?');">
                 🗑️ Supprimer
             </a>
             <a href="index.php?action=posts" class="btn btn-secondary">Retour au forum</a>
@@ -64,7 +64,7 @@
                 <?php foreach ($data['commentaires'] as $commentaire): ?>
                     <div class="comment-card entity-card">
                         <div class="comment-header">
-                            <strong>Utilisateur #<?php echo $commentaire['id_utilisateur']; ?></strong>
+                            <strong><?php echo htmlspecialchars($commentaire['auteur_nom'] ?: ($commentaire['auteur_email'] ?? 'Utilisateur')); ?></strong>
                             <span class="comment-date">📅 <?php echo date('d/m/Y H:i', strtotime($commentaire['date_publication'])); ?></span>
                         </div>
                         <div class="comment-content">

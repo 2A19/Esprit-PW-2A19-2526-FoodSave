@@ -40,7 +40,7 @@
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
-            <a href="index.php?action=view-post&id=<?php echo $commentaire['id_post']; ?>" class="btn btn-secondary">Annuler</a>
+            <a href="index.php?action=view&id=<?php echo $commentaire['id_post']; ?>" class="btn btn-secondary">Annuler</a>
         </div>
     </form>
 </div>

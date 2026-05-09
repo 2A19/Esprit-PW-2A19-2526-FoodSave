@@ -61,7 +61,7 @@
                             <td><strong>#<?php echo $post['id_post']; ?></strong></td>
                             <td><?php echo htmlspecialchars(substr($post['titre'], 0, 40)); ?></td>
                             <td><span class="badge-status"><?php echo htmlspecialchars($post['categorie']); ?></span></td>
-                            <td>User #<?php echo $post['id_utilisateur']; ?></td>
+                            <td><?php echo htmlspecialchars($post['auteur_nom'] ?: ($post['auteur_email'] ?? 'Utilisateur')); ?></td>
                             <td><?php echo date('d/m/Y H:i', strtotime($post['date_creation'])); ?></td>
                             <td>
                                 <?php if ($post['statue'] === 'actif'): ?>

@@ -7,7 +7,7 @@
     
     <div style="padding: 1rem 0; border-bottom: 1px solid #f0f0f0;">
         <p><strong>Catégorie:</strong> <span class="badge-status"><?php echo htmlspecialchars($post['categorie']); ?></span></p>
-        <p><strong>Auteur:</strong> Utilisateur #<?php echo $post['id_utilisateur']; ?></p>
+        <p><strong>Auteur:</strong> <?php echo htmlspecialchars($post['auteur_nom'] ?: ($post['auteur_email'] ?? 'Utilisateur')); ?></p>
         <p><strong>Date de création:</strong> <?php echo date('d/m/Y H:i', strtotime($post['date_creation'])); ?></p>
         <p><strong>Statut:</strong> 
             <?php if ($post['statue'] === 'actif'): ?>

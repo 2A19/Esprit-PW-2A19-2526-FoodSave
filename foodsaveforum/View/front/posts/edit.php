@@ -65,7 +65,7 @@
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">💾 Enregistrer les modifications</button>
-            <a href="index.php?action=view-post&id=<?php echo $post['id_post']; ?>" class="btn btn-secondary">Annuler</a>
+            <a href="index.php?action=view&id=<?php echo $post['id_post']; ?>" class="btn btn-secondary">Annuler</a>
         </div>
     </form>
 </div>

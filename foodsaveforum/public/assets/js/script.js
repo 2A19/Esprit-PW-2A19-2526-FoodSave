@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('id_post', postId);
             formData.append('type', type);
             
-            fetch('index.php?action=like-post', {
+            fetch('index.php?action=toggle-like', {
                 method: 'POST',
                 body: formData
             })

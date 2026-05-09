@@ -129,13 +129,18 @@ class CommentaireController {
     }
 
     public function showCommentaire($id) {
-        $sql="SELECT * FROM commentaires WHERE id_commentaire = $id";
+        $sql = "SELECT c.*,
+                       TRIM(CONCAT(COALESCE(u.prenom, ''), ' ', COALESCE(u.nom, ''))) AS auteur_nom,
+                       u.email AS auteur_email
+                FROM commentaires c
+                LEFT JOIN `user` u ON u.id = c.id_utilisateur
+                WHERE c.id_commentaire = :id";
         $db= config::getConnexion();
         $query= $db->prepare($sql);
 
         try
         {
-            $query->execute();
+            $query->execute(['id' => $id]);
             $commentaire= $query->fetch();
             return $commentaire;
         }
@@ -255,7 +260,12 @@ class CommentaireController {
 
     // BackOffice methods
     public function listAllForAdmin() {
-        $sql = "SELECT * FROM commentaires ORDER BY date_publication DESC";
+        $sql = "SELECT c.*,
+                       TRIM(CONCAT(COALESCE(u.prenom, ''), ' ', COALESCE(u.nom, ''))) AS auteur_nom,
+                       u.email AS auteur_email
+                FROM commentaires c
+                LEFT JOIN `user` u ON u.id = c.id_utilisateur
+                ORDER BY c.date_publication DESC";
         $db = config::getConnexion();
         try {
             $list = $db->query($sql);
