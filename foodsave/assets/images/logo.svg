@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 120" role="img" aria-label="FoodSave">
+  <defs>
+    <linearGradient id="foodsaveGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4CAF50"/>
+      <stop offset="100%" stop-color="#2E7D32"/>
+    </linearGradient>
+    <linearGradient id="foodsaveOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB74D"/>
+      <stop offset="100%" stop-color="#FFA726"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="44" cy="60" r="30" fill="url(#foodsaveGreen)"/>
+  <path d="M29 66c11 0 17-9 30-9-2 10-11 21-25 21-9 0-14-4-16-12 2 0 6 0 11 0z" fill="url(#foodsaveOrange)"/>
+  <path d="M42 38c5-8 12-12 20-14-4 7-10 13-18 18" fill="#81C784"/>
+
+  <text x="88" y="72" font-family="Arial, sans-serif" font-size="42" font-weight="700" fill="#4CAF50">Food</text>
+  <text x="198" y="72" font-family="Arial, sans-serif" font-size="42" font-weight="700" fill="#FFA726">Save</text>
+</svg>

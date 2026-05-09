@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier utilisateur — FoodSave Admin</title>
+    <link rel="icon" type="image/png" href="assets/images/logo-foodsave.png">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="admin-body">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <img src="assets/images/logo-foodsave.png" alt="FoodSave">
+                <span><span class="brand-food">Food</span><span class="brand-save">Save</span></span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="admin.php?action=dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    Tableau de bord
+                </a>
+                <a href="admin.php?action=users" class="active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Utilisateurs
+                </a>
+                <a href="admin.php?action=users">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Profils
+                </a>
+                <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg> Recettes</a>
+                <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21h6M12 3a7 7 0 0 0-4 12.7c.7.7 1 1.5 1 2.3h6c0-.8.3-1.6 1-2.3A7 7 0 0 0 12 3z"/></svg> Astuces</a>
+                <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Commentaires</a>
+                <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Paramètres</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="index.php?action=logout">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Déconnexion
+                </a>
+            </div>
+        </aside>
+
+        <div class="admin-main">
+            <div class="admin-topbar">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+                    <div class="admin-topbar-title">
+                        <h1>Modifier utilisateur</h1>
+                        <div class="admin-breadcrumb"><a href="admin.php?action=dashboard">Accueil</a> / <a href="admin.php?action=users">Utilisateurs</a> / Modifier</div>
+                    </div>
+                </div>
+                <div class="admin-topbar-actions">
+                    <button class="icon-btn" aria-label="Notifications">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        <span class="notif-dot"></span>
+                    </button>
+                    <div class="admin-user">
+                        <div class=\"avatar avatar-orange\"><?php echo strtoupper(substr($_SESSION['user_prenom'] ?? 'A', 0, 1)); ?></div>
+                        <div class="admin-user-info">
+                            <div class="name"><?php echo htmlspecialchars($_SESSION['user_prenom'] ?? 'Admin'); ?></div>
+                            <div class="role">Administrateur</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-content">
+                <?php if (isset($errors) && is_array($errors) && count($errors) > 0): ?>
+                    <div class="alert alert-error fade-in">
+                        <span class="alert-icon">✕</span>
+                        <div>
+                            <strong>Erreurs de validation&nbsp;:</strong>
+                            <ul style="margin-top: 6px; margin-left: 18px;">
+                                <?php foreach ($errors as $error): ?>
+                                    <li><?php echo htmlspecialchars($error); ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <form method="POST" action="admin.php?action=handleEditUser" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value="<?php echo htmlspecialchars($user['id']); ?>">
+
+                    <div class="panel" style="max-width: 880px;">
+                        <div style="display: flex; align-items: center; gap: 18px; padding-bottom: 22px; margin-bottom: 24px; border-bottom: 1px solid var(--color-border-light);">
+                            <div class="avatar-lg avatar-orange">
+                                <?php echo strtoupper(substr($user['prenom'], 0, 1) . substr($user['nom'], 0, 1)); ?>
+                            </div>
+                            <div>
+                                <h2 style="font-size: 1.3rem; margin-bottom: 4px;">
+                                    Modifier <?php echo htmlspecialchars($user['prenom'] . ' ' . $user['nom']); ?>
+                                </h2>
+                                <p style="color: var(--color-text-muted); font-size: 0.9rem;">Modifiez les informations de cet utilisateur</p>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div class="form-group <?php echo isset($errors['prenom']) ? 'error' : ''; ?>">
+                                <label for="prenom">Prénom <span style="color: var(--color-primary-orange);">*</span></label>
+                                <input type="text" id="prenom" name="prenom" value="<?php echo htmlspecialchars($user['prenom']); ?>" required>
+                                <?php if (isset($errors['prenom'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['prenom']); ?></div><?php endif; ?>
+                            </div>
+                            <div class="form-group <?php echo isset($errors['nom']) ? 'error' : ''; ?>">
+                                <label for="nom">Nom <span style="color: var(--color-primary-orange);">*</span></label>
+                                <input type="text" id="nom" name="nom" value="<?php echo htmlspecialchars($user['nom']); ?>" required>
+                                <?php if (isset($errors['nom'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['nom']); ?></div><?php endif; ?>
+                            </div>
+                        </div>
+
+                        <div class="form-group <?php echo isset($errors['email']) ? 'error' : ''; ?>">
+                            <label for="email">Email <span style="color: var(--color-primary-orange);">*</span></label>
+                            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
+                            <?php if (isset($errors['email'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['email']); ?></div><?php endif; ?>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div class="form-group">
+                                <label for="telephone">Téléphone</label>
+                                <input type="tel" id="telephone" name="telephone" value="<?php echo htmlspecialchars($user['telephone'] ?? ''); ?>">
+                            </div>
+                            <div class="form-group">
+                                <label for="date_naissance">Date de naissance</label>
+                                <input type="date" id="date_naissance" name="date_naissance" value="<?php echo htmlspecialchars($user['date_naissance'] ?? ''); ?>">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="statut">Statut</label>
+                            <select id="statut" name="statut">
+                                <option value="actif" <?php echo $user['statut'] === 'actif' ? 'selected' : ''; ?>>Actif</option>
+                                <option value="inactif" <?php echo $user['statut'] === 'inactif' ? 'selected' : ''; ?>>Inactif</option>
+                                <option value="banni" <?php echo $user['statut'] === 'banni' ? 'selected' : ''; ?>>Banni</option>
+                            </select>
+                        </div>
+
+                        <!-- Photo de profil -->
+                        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--color-border-light);">
+                            <h3 style="margin-bottom: 16px; font-size: 1rem; font-weight: 600;">Photo de profil</h3>
+                            <div style="display: flex; gap: 24px; align-items: flex-start;">
+                                <div style="flex-shrink: 0;">
+                                    <div id="photoPreview" class="avatar-xl avatar-orange">
+                                        <?php if (isset($user['profile_photo']) && $user['profile_photo']): ?>
+                                            <img src="assets/uploads/profile_photos/<?php echo htmlspecialchars($user['profile_photo']); ?>" alt="Photo de profil" style="width: 100%; height: 100%; object-fit: cover;">
+                                        <?php else: ?>
+                                            <div style="text-align: center; color: white; font-weight: 600; font-size: 1.4rem;">
+                                                <?php echo strtoupper(substr($user['prenom'], 0, 1) . substr($user['nom'], 0, 1)); ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div class="form-group">
+                                        <label for="profile_photo">Choisir une photo</label>
+                                        <input type="file" id="profile_photo" name="profile_photo" accept="image/jpeg,image/png,image/gif,image/webp" style="padding: 8px; border: 1px solid var(--color-border-light); border-radius: 4px; width: 100%; cursor: pointer;">
+                                        <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 8px;">
+                                            Formats acceptés: JPG, PNG, GIF, WebP • Taille max: 5 MB
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--color-border-light);">
+                            <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+                            <a href="admin.php?action=user_details&id=<?php echo $user['id']; ?>" class="btn btn-outline">Annuler</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Photo preview
+        document.getElementById('profile_photo').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validate file size
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Fichier trop volumineux. Taille maximale: 5 MB');
+                    e.target.value = '';
+                    return;
+                }
+                
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Type de fichier non accepté. Utilisez JPG, PNG, GIF ou WebP');
+                    e.target.value = '';
+                    return;
+                }
+                
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('photoPreview');
+                    preview.innerHTML = '<img src="' + event.target.result + '" alt="Aperçu" style="width: 100%; height: 100%; object-fit: cover;">';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+
+    <script src="assets/js/validation.js"></script>
+</body>
+</html>
