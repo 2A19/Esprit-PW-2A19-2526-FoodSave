@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon profil — FoodSave</title>
+    <link rel="icon" type="image/png" href="assets/images/logo-foodsave.png">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <a href="index.php?action=dashboard" class="brand">
+                <img src="assets/images/logo-foodsave.png" alt="FoodSave">
+                <span><span class="brand-food">Food</span><span class="brand-save">Save</span></span>
+            </a>
+            <nav class="primary-nav">
+                <a href="index.php?action=dashboard">Tableau de bord</a>
+                <a href="index.php?action=profile" class="active">Mon profil</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="index.php?action=logout" class="btn-login">Déconnexion</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-small" style="padding-top: 28px; padding-bottom: 48px;">
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="alert alert-success fade-in">
+                <span class="alert-icon">✓</span>
+                <div><strong>Succès&nbsp;!</strong> <?php echo htmlspecialchars($_SESSION['success']); ?></div>
+                <?php unset($_SESSION['success']); ?>
+            </div>
+        <?php endif; ?>
+
+        <div class="panel">
+            <div style="display: flex; align-items: center; gap: 18px; padding-bottom: 20px; margin-bottom: 24px; border-bottom: 1px solid var(--color-border-light);">
+                <div class="avatar-lg avatar-green">
+                    <?php if (isset($user['profile_photo']) && $user['profile_photo']): ?>
+                        <img src="assets/uploads/profile_photos/<?php echo htmlspecialchars($user['profile_photo']); ?>" alt="Photo de profil">
+                    <?php else: ?>
+                        <?php echo strtoupper(substr($user['prenom'], 0, 1) . substr($user['nom'], 0, 1)); ?>
+                    <?php endif; ?>
+                </div>
+                <div>
+                    <h1 style="font-size: 1.4rem; margin-bottom: 4px;">
+                        <?php echo htmlspecialchars($user['prenom'] . ' ' . $user['nom']); ?>
+                    </h1>
+                    <p style="color: var(--color-text-muted); font-size: 0.92rem;">Mon profil utilisateur</p>
+                </div>
+            </div>
+
+            <div class="profile-info-grid">
+                <div class="profile-info-item">
+                    <strong>Prénom</strong>
+                    <p><?php echo htmlspecialchars($user['prenom']); ?></p>
+                </div>
+                <div class="profile-info-item">
+                    <strong>Nom</strong>
+                    <p><?php echo htmlspecialchars($user['nom']); ?></p>
+                </div>
+                <div class="profile-info-item" style="grid-column: 1 / -1;">
+                    <strong>Email</strong>
+                    <p><?php echo htmlspecialchars($user['email']); ?></p>
+                </div>
+                <div class="profile-info-item">
+                    <strong>Téléphone</strong>
+                    <p><?php echo htmlspecialchars($user['telephone'] ?? '—'); ?></p>
+                </div>
+                <div class="profile-info-item">
+                    <strong>Date de naissance</strong>
+                    <p><?php echo $user['date_naissance'] ? date('d/m/Y', strtotime($user['date_naissance'])) : '—'; ?></p>
+                </div>
+                <div class="profile-info-item" style="grid-column: 1 / -1;">
+                    <strong>Date d'inscription</strong>
+                    <p><?php echo $user['date_inscription'] ? date('d/m/Y', strtotime($user['date_inscription'])) : '—'; ?></p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <a href="index.php?action=editProfile" class="btn btn-primary" style="flex: 1;">Modifier mon profil</a>
+                <a href="index.php?action=dashboard" class="btn btn-outline" style="flex: 1;">Retour</a>
+            </div>
+        </div>
+
+        <div class="panel" style="margin-top: 20px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 11c0 6-3 9-3 9"/>
+                    <path d="M15 11v3c0 2.5-1 4-1 4"/>
+                    <path d="M18 11c0-3.3-2.7-6-6-6S6 7.7 6 11v3"/>
+                    <path d="M9 19c-1-1.5-1-3-1-5"/>
+                    <path d="M3 11a9 9 0 0 1 13.5-7.7"/>
+                    <path d="M21 14c-.3 1.7-1 3.4-2 4.8"/>
+                </svg>
+                <h2 style="font-size: 1.15rem; margin: 0;">Connexion par empreinte digitale</h2>
+            </div>
+            <p style="color: var(--color-text-muted); font-size: 0.9rem; margin-bottom: 14px;">
+                Activez une passkey (Windows Hello, Touch ID...) pour vous connecter sans mot de passe.
+            </p>
+
+            <div id="passkeyUnsupported" style="display: none; padding: 12px; background: #fff7ed; color: #9a3412; border-radius: 6px; font-size: 0.88rem;">
+                Votre navigateur ou cet appareil ne prend pas en charge WebAuthn. Utilisez Chrome ou Edge sur un PC/téléphone compatible (Windows Hello / Touch ID).
+            </div>
+
+            <div id="passkeyArea" style="display: none;">
+                <div id="passkeysAlert" style="display: none; margin-bottom: 12px; padding: 10px 12px; border-radius: 6px; font-size: 0.88rem;"></div>
+
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 16px;">
+                    <input
+                        type="text"
+                        id="passkeyLabel"
+                        placeholder="Nom (ex. Mon PC)"
+                        maxlength="150"
+                        style="flex: 1; min-width: 180px; padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; font-size: 0.9rem;"
+                    >
+                    <button type="button" id="btnEnrollPasskey" class="btn btn-primary" style="white-space: nowrap;">
+                        Activer l'empreinte
+                    </button>
+                </div>
+
+                <div id="passkeysList" style="display: grid; gap: 8px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 FoodSave. Tous droits réservés.</p>
+    </footer>
+
+    <script src="assets/js/validation.js"></script>
+    <script src="assets/js/webauthn.js"></script>
+    <script>
+    (function () {
+        const supported = window.FoodSaveWebAuthn && FoodSaveWebAuthn.isSupported();
+        const unsupportedBox = document.getElementById('passkeyUnsupported');
+        const area = document.getElementById('passkeyArea');
+        const alertBox = document.getElementById('passkeysAlert');
+        const list = document.getElementById('passkeysList');
+        const enrollBtn = document.getElementById('btnEnrollPasskey');
+        const labelInput = document.getElementById('passkeyLabel');
+
+        if (!supported) {
+            if (unsupportedBox) unsupportedBox.style.display = '';
+            return;
+        }
+        if (area) area.style.display = '';
+
+        function showAlert(message, kind) {
+            if (!alertBox) return;
+            alertBox.textContent = message;
+            alertBox.style.display = '';
+            if (kind === 'success') {
+                alertBox.style.background = 'var(--color-green-50)';
+                alertBox.style.color = 'var(--color-green-800)';
+            } else {
+                alertBox.style.background = '#fef2f2';
+                alertBox.style.color = '#991b1b';
+            }
+            setTimeout(function () {
+                alertBox.style.display = 'none';
+            }, 4000);
+        }
+
+        function escapeHtml(s) {
+            return String(s == null ? '' : s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function formatDate(s) {
+            if (!s) return '—';
+            try {
+                const d = new Date(s.replace(' ', 'T'));
+                if (isNaN(d.getTime())) return s;
+                return d.toLocaleDateString('fr-FR') + ' ' +
+                    d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            } catch (e) { return s; }
+        }
+
+        async function refresh() {
+            try {
+                const items = await FoodSaveWebAuthn.listPasskeys();
+                if (!items.length) {
+                    list.innerHTML = '<div style="padding: 14px; border: 1px dashed var(--color-border); border-radius: 8px; color: var(--color-text-muted); font-size: 0.88rem; text-align: center;">Aucune empreinte enregistrée.</div>';
+                    return;
+                }
+                list.innerHTML = items.map(function (p) {
+                    return '<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 8px;">' +
+                        '<div>' +
+                            '<div style="font-weight: 600; font-size: 0.92rem;">' + escapeHtml(p.label || 'Empreinte') + '</div>' +
+                            '<div style="color: var(--color-text-muted); font-size: 0.78rem;">' +
+                                'Créée le ' + escapeHtml(formatDate(p.created_at)) +
+                                (p.last_used_at ? ' · Dernière utilisation ' + escapeHtml(formatDate(p.last_used_at)) : '') +
+                            '</div>' +
+                        '</div>' +
+                        '<button type="button" class="btn btn-outline btn-sm" data-pid="' + p.id + '">Supprimer</button>' +
+                    '</div>';
+                }).join('');
+
+                list.querySelectorAll('button[data-pid]').forEach(function (btn) {
+                    btn.addEventListener('click', async function () {
+                        if (!confirm('Supprimer cette empreinte ?')) return;
+                        try {
+                            await FoodSaveWebAuthn.deletePasskey(btn.dataset.pid);
+                            showAlert('Empreinte supprimée.', 'success');
+                            refresh();
+                        } catch (e) {
+                            showAlert(e.message || 'Suppression refusée.', 'error');
+                        }
+                    });
+                });
+            } catch (e) {
+                showAlert(e.message || 'Erreur de chargement.', 'error');
+            }
+        }
+
+        enrollBtn.addEventListener('click', async function () {
+            enrollBtn.disabled = true;
+            const original = enrollBtn.textContent;
+            enrollBtn.textContent = 'Validation par empreinte...';
+            try {
+                const label = (labelInput.value || '').trim() || 'Empreinte ' + (new Date()).toLocaleDateString('fr-FR');
+                await FoodSaveWebAuthn.registerPasskey(label);
+                labelInput.value = '';
+                showAlert('Empreinte ajoutée avec succès.', 'success');
+                refresh();
+            } catch (err) {
+                showAlert(err && err.message ? err.message : 'Échec de l\'activation.', 'error');
+            } finally {
+                enrollBtn.disabled = false;
+                enrollBtn.textContent = original;
+            }
+        });
+
+        refresh();
+    })();
+    </script>
+</body>
+</html>

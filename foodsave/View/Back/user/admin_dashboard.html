@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord — FoodSave Admin</title>
+    <link rel="icon" type="image/png" href="assets/images/logo-foodsave.png">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="admin-body">
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <img src="assets/images/logo-foodsave.png" alt="FoodSave">
+                <span><span class="brand-food">Food</span><span class="brand-save">Save</span></span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="admin.php?action=dashboard" class="active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    Tableau de bord
+                </a>
+                <a href="admin.php?action=users">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Utilisateurs
+                </a>
+                <a href="admin.php?action=users">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Profils
+                </a>
+                
+                <!-- FORUM MANAGEMENT SECTION -->
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--color-border); opacity: 0.8;">
+                    <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--color-text-muted); padding: 0 12px; margin-bottom: 8px;">Forum & Communauté</div>
+                </div>
+                
+                <a href="../forum/admin.php?action=dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Forum Admin
+                </a>
+                
+                <a href="../forum/admin.php?action=posts">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Gérer Posts
+                </a>
+                
+                <a href="../forum/admin.php?action=comments">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Gérer Commentaires
+                </a>
+                
+                <!-- FOODSAVE MANAGEMENT SECTION -->
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--color-border); opacity: 0.8;">
+                    <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--color-text-muted); padding: 0 12px; margin-bottom: 8px;">Blog & Contenu</div>
+                </div>
+                
+                <a href="admin.php?action=adminArticles">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    Articles & Blog
+                </a>
+                <a href="admin.php?action=adminArticles">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+                    Avis & Commentaires
+                </a>
+                <a href="admin.php?action=adminNewsletter">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                    Newsletter
+                </a>
+
+                <!-- EVENEMENT MANAGEMENT SECTION -->
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--color-border); opacity: 0.8;">
+                    <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--color-text-muted); padding: 0 12px; margin-bottom: 8px;">Gestion Evenements</div>
+                </div>
+
+                <a href="admin.php?action=evenements">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    Evenements
+                </a>
+                <a href="admin.php?action=participants">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Participants
+                </a>
+                <a href="admin.php?action=evenementStats">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    Statistiques
+                </a>
+
+                <!-- DECHETS MANAGEMENT SECTION -->
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--color-border); opacity: 0.8;">
+                    <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--color-text-muted); padding: 0 12px; margin-bottom: 8px;">Déchets</div>
+                </div>
+
+                <a href="admin.php?action=dechet_index">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                    Déchets
+                </a>
+                <a href="admin.php?action=collecte_index">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                    Collectes
+                </a>
+                <a href="admin.php?action=category_index">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                    Catégories
+                </a>
+                <a href="admin.php?action=dechet_stats">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    Statistiques
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="index.php?action=logout">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Déconnexion
+                </a>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <div class="admin-main">
+            <!-- Top bar -->
+            <div class="admin-topbar">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" aria-label="Menu">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    </button>
+                    <div class="admin-topbar-title">
+                        <h1>Tableau de bord</h1>
+                        <div class="admin-breadcrumb"><a href="admin.php?action=dashboard">Accueil</a> / Dashboard</div>
+                    </div>
+                </div>
+                <div class="admin-topbar-actions">
+                    <button class="icon-btn" aria-label="Notifications">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        <span class="notif-dot"></span>
+                    </button>
+                    <div class="admin-user">
+                        <div class="avatar avatar-orange">
+                            <?php if (isset($_SESSION['user_profile_photo']) && $_SESSION['user_profile_photo']): ?>
+                                <img src="assets/uploads/profile_photos/<?php echo htmlspecialchars($_SESSION['user_profile_photo']); ?>" alt="Photo">
+                            <?php else: ?>
+                                <?php echo strtoupper(substr($_SESSION['user_prenom'] ?? 'A', 0, 1)); ?>
+                            <?php endif; ?>
+                        </div>
+                        <div class="admin-user-info">
+                            <div class="name"><?php echo htmlspecialchars($_SESSION['user_prenom'] ?? 'Admin'); ?></div>
+                            <div class="role">Administrateur</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-content">
+                <?php if (isset($_SESSION['success'])): ?>
+                    <div class="alert alert-success fade-in">
+                        <span class="alert-icon">✓</span>
+                        <div><?php echo htmlspecialchars($_SESSION['success']); ?></div>
+                        <?php unset($_SESSION['success']); ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php
+                    $totalUsers = count($users);
+                    $activeUsers = count(array_filter($users, fn($u) => $u['statut'] === 'actif'));
+                    $inactiveUsers = count(array_filter($users, fn($u) => $u['statut'] === 'inactif'));
+                    $bannedUsers = count(array_filter($users, fn($u) => $u['statut'] === 'banni'));
+                    $adminCount = count(array_filter($users, fn($u) => $u['role'] === 'admin'));
+                    
+                    $activePercent = $totalUsers > 0 ? round(($activeUsers / $totalUsers) * 100) : 0;
+                    $inactivePercent = $totalUsers > 0 ? round(($inactiveUsers / $totalUsers) * 100) : 0;
+                    $bannedPercent = $totalUsers > 0 ? round(($bannedUsers / $totalUsers) * 100) : 0;
+                ?>
+
+
+
+                <!-- CHARTS -->
+                <div class="panels-grid">
+                    <!-- Line chart -->
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h3>Activité récente</h3>
+                            <select>
+                                <option>7 derniers jours</option>
+                                <option>30 derniers jours</option>
+                                <option>3 derniers mois</option>
+                            </select>
+                        </div>
+                        <svg viewBox="0 0 520 220" width="100%" height="220" role="img" aria-label="Graphique d'activité récente">
+                            <defs>
+                                <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#4CAF50" stop-opacity="0.25"/>
+                                    <stop offset="100%" stop-color="#4CAF50" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
+                            <!-- grid lines -->
+                            <g stroke="#F3F4F6" stroke-width="1">
+                                <line x1="40" y1="30"  x2="510" y2="30"/>
+                                <line x1="40" y1="80"  x2="510" y2="80"/>
+                                <line x1="40" y1="130" x2="510" y2="130"/>
+                                <line x1="40" y1="180" x2="510" y2="180"/>
+                            </g>
+                            <!-- y labels -->
+                            <g font-family="Poppins" font-size="11" fill="#9CA3AF">
+                                <text x="30" y="34" text-anchor="end">50</text>
+                                <text x="30" y="84" text-anchor="end">40</text>
+                                <text x="30" y="134" text-anchor="end">20</text>
+                                <text x="30" y="184" text-anchor="end">0</text>
+                            </g>
+                            <!-- area -->
+                            <path d="M40,150 L118,135 L196,110 L274,95 L352,75 L430,62 L510,55 L510,180 L40,180 Z" fill="url(#areaFill)"/>
+                            <!-- line -->
+                            <path d="M40,150 L118,135 L196,110 L274,95 L352,75 L430,62 L510,55" stroke="#4CAF50" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- dots -->
+                            <g fill="white" stroke="#4CAF50" stroke-width="2.5">
+                                <circle cx="40"  cy="150" r="4"/>
+                                <circle cx="118" cy="135" r="4"/>
+                                <circle cx="196" cy="110" r="4"/>
+                                <circle cx="274" cy="95"  r="4"/>
+                                <circle cx="352" cy="75"  r="4"/>
+                                <circle cx="430" cy="62"  r="4"/>
+                                <circle cx="510" cy="55"  r="4"/>
+                            </g>
+                            <!-- x labels -->
+                            <g font-family="Poppins" font-size="11" fill="#9CA3AF" text-anchor="middle">
+                                <text x="40"  y="205">Jan</text>
+                                <text x="118" y="205">Fév</text>
+                                <text x="196" y="205">Mar</text>
+                                <text x="274" y="205">Avr</text>
+                                <text x="352" y="205">Mai</text>
+                                <text x="430" y="205">Juin</text>
+                                <text x="510" y="205">Juil</text>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- Donut -->
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h3>Répartition des recettes</h3>
+                        </div>
+                        <div class="donut-wrap">
+                            <svg viewBox="0 0 120 120" width="140" height="140" role="img" aria-label="Donut répartition des recettes">
+                                <!-- segments are stroke dasharrays on circles with circumference ~314 (r=50) -->
+                                <circle cx="60" cy="60" r="50" fill="none" stroke="#F3F4F6" stroke-width="18"/>
+                                <!-- Petit-déjeuner 25% = 78.5 -->
+                                <circle cx="60" cy="60" r="50" fill="none" stroke="#4CAF50" stroke-width="18"
+                                    stroke-dasharray="78.5 235.5" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
+                                <!-- Déjeuner 35% = 110 starts at -25% -->
+                                <circle cx="60" cy="60" r="50" fill="none" stroke="#FDD835" stroke-width="18"
+                                    stroke-dasharray="110 204" stroke-dashoffset="-78.5" transform="rotate(-90 60 60)"/>
+                                <!-- Dîner 25% = 78.5 starts at -60% -->
+                                <circle cx="60" cy="60" r="50" fill="none" stroke="#66BB6A" stroke-width="18"
+                                    stroke-dasharray="78.5 235.5" stroke-dashoffset="-188.5" transform="rotate(-90 60 60)"/>
+                                <!-- Collation 15% = 47.1 starts at -85% -->
+                                <circle cx="60" cy="60" r="50" fill="none" stroke="#FFA726" stroke-width="18"
+                                    stroke-dasharray="47.1 266.9" stroke-dashoffset="-267" transform="rotate(-90 60 60)"/>
+                            </svg>
+                            <ul class="donut-legend">
+                                <li><span class="dot" style="background:#4CAF50"></span> Petit-déjeuner <span class="pct">25%</span></li>
+                                <li><span class="dot" style="background:#FDD835"></span> Déjeuner <span class="pct">35%</span></li>
+                                <li><span class="dot" style="background:#66BB6A"></span> Dîner <span class="pct">25%</span></li>
+                                <li><span class="dot" style="background:#FFA726"></span> Collation <span class="pct">15%</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RECENT USERS TABLE -->
+                <div class="table-wrap">
+                    <div class="table-head">
+                        <div>
+                            <h2 style="font-size: 1.05rem;">Utilisateurs récents</h2>
+                            <p style="color: var(--color-text-muted); font-size: 0.85rem; margin-top: 2px;">Les utilisateurs inscrits avec recherche et tri</p>
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <a href="admin.php?action=add_user" class="btn btn-primary btn-sm">Ajouter un utilisateur</a>
+                            <a href="admin.php?action=users" class="btn btn-outline btn-sm">Voir tous les utilisateurs</a>
+                        </div>
+                    </div>
+
+                    <!-- SEARCH BAR -->
+                    <div style="padding: 14px 0; display: flex; gap: 10px; border-bottom: 1px solid var(--color-border);">
+                        <input type="text" id="dashboardSearchInput" placeholder="Rechercher..." style="flex: 1; padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; font-size: 0.9rem;">
+                        <select id="dashboardStatusFilter" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; font-size: 0.9rem;">
+                            <option value="">Tous</option>
+                            <option value="actif">Actifs</option>
+                            <option value="inactif">Inactifs</option>
+                        </select>
+                    </div>
+
+                    <?php if (count($users) > 0): ?>
+                    <div class="table-scroll">
+                        <table id="dashboardUsersTable">
+                            <thead>
+                                <tr>
+                                    <th style="cursor: pointer; user-select: none;" data-sort="name">
+                                        Utilisateur <span class="sort-indicator" style="font-size: 0.75rem; opacity: 0.5;">⇅</span>
+                                    </th>
+                                    <th>Email</th>
+                                    <th style="cursor: pointer; user-select: none;" data-sort="role">
+                                        Rôle <span class="sort-indicator" style="font-size: 0.75rem; opacity: 0.5;">⇅</span>
+                                    </th>
+                                    <th style="cursor: pointer; user-select: none;" data-sort="statut">
+                                        Statut <span class="sort-indicator" style="font-size: 0.75rem; opacity: 0.5;">⇅</span>
+                                    </th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboardUsersBody">
+                                <?php foreach ($users as $u): ?>
+                                <tr class="dashboard-user-row" data-name="<?php echo htmlspecialchars(strtolower($u['prenom'] . ' ' . $u['nom'])); ?>" data-email="<?php echo htmlspecialchars(strtolower($u['email'])); ?>" data-role="<?php echo $u['role']; ?>" data-statut="<?php echo $u['statut']; ?>">
+                                    <td>
+                                        <span class="user-name"><?php echo htmlspecialchars($u['prenom'] . ' ' . $u['nom']); ?></span>
+                                    </td>
+                                    <td><?php echo htmlspecialchars($u['email']); ?></td>
+                                    <td>
+                                        <span class="badge badge-<?php echo $u['role'] === 'admin' ? 'admin' : 'user'; ?>">
+                                            <?php echo $u['role'] === 'admin' ? 'Administrateur' : 'Utilisateur'; ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-<?php echo htmlspecialchars($u['statut']); ?>">
+                                            <?php echo ucfirst(htmlspecialchars($u['statut'])); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="actions">
+                                            <a href="admin.php?action=edit_user&id=<?php echo $u['id']; ?>" class="action-btn action-btn-edit" title="Modifier">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                            </a>
+                                            <form method="POST" action="admin.php?action=deleteUser" style="display:inline;" onsubmit="return confirm('Supprimer cet utilisateur ?');">
+                                                <input type="hidden" name="id" value="<?php echo $u['id']; ?>">
+                                                <button type="submit" class="action-btn action-btn-delete" title="Supprimer">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <?php else: ?>
+                    <div style="padding: 32px; text-align: center; color: var(--color-text-muted);">
+                        Aucun utilisateur enregistré pour le moment.
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Recherche et filtrage du dashboard
+    let dashboardSort = { column: null, direction: 'asc' };
+
+    const dashboardSearchInput = document.getElementById('dashboardSearchInput');
+    const dashboardStatusFilter = document.getElementById('dashboardStatusFilter');
+    const dashboardUsersTable = document.getElementById('dashboardUsersTable');
+    const dashboardUsersBody = document.getElementById('dashboardUsersBody');
+
+    function filterAndSortDashboard() {
+        const searchTerm = dashboardSearchInput.value.toLowerCase();
+        const statusFilter = dashboardStatusFilter.value;
+        
+        let rows = Array.from(dashboardUsersBody.querySelectorAll('tr.dashboard-user-row'));
+
+        // Filtrer
+        rows = rows.filter(row => {
+            const name = row.dataset.name || '';
+            const email = row.dataset.email || '';
+            const statut = row.dataset.statut || '';
+
+            const matchSearch = name.includes(searchTerm) || email.includes(searchTerm);
+            const matchStatus = !statusFilter || statut === statusFilter;
+
+            return matchSearch && matchStatus;
+        });
+
+        // Trier
+        if (dashboardSort.column) {
+            rows.sort((a, b) => {
+                let aVal, bVal;
+
+                switch(dashboardSort.column) {
+                    case 'name':
+                        aVal = a.dataset.name;
+                        bVal = b.dataset.name;
+                        break;
+                    case 'role':
+                        aVal = a.dataset.role;
+                        bVal = b.dataset.role;
+                        break;
+                    case 'statut':
+                        aVal = a.dataset.statut;
+                        bVal = b.dataset.statut;
+                        break;
+                    default:
+                        return 0;
+                }
+
+                if (dashboardSort.direction === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                } else {
+                    return aVal < bVal ? 1 : -1;
+                }
+            });
+        }
+
+        // Afficher/masquer les lignes
+        dashboardUsersBody.innerHTML = '';
+        rows.forEach(row => dashboardUsersBody.appendChild(row));
+
+        // Afficher message si aucun résultat
+        if (rows.length === 0) {
+            const noResultsRow = document.createElement('tr');
+            noResultsRow.innerHTML = '<td colspan="5" style="text-align: center; padding: 32px; color: var(--color-text-muted);">Aucun utilisateur ne correspond à vos critères.</td>';
+            dashboardUsersBody.appendChild(noResultsRow);
+        }
+    }
+
+    // Événements
+    dashboardSearchInput.addEventListener('input', filterAndSortDashboard);
+    dashboardStatusFilter.addEventListener('change', filterAndSortDashboard);
+
+    // Tri par clic sur les en-têtes
+    dashboardUsersTable.querySelectorAll('th[data-sort]').forEach(th => {
+        th.addEventListener('click', () => {
+            const column = th.dataset.sort;
+
+            if (dashboardSort.column === column) {
+                dashboardSort.direction = dashboardSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                dashboardSort.column = column;
+                dashboardSort.direction = 'asc';
+            }
+
+            updateDashboardSortIndicators();
+            filterAndSortDashboard();
+        });
+    });
+
+    // Mettre à jour les indicateurs de tri
+    function updateDashboardSortIndicators() {
+        dashboardUsersTable.querySelectorAll('th[data-sort] .sort-indicator').forEach(indicator => {
+            indicator.textContent = '⇅';
+            indicator.style.opacity = '0.5';
+            indicator.style.fontWeight = 'normal';
+        });
+
+        if (dashboardSort.column) {
+            const activeHeader = dashboardUsersTable.querySelector(`th[data-sort="${dashboardSort.column}"]`);
+            if (activeHeader) {
+                const indicator = activeHeader.querySelector('.sort-indicator');
+                indicator.textContent = dashboardSort.direction === 'asc' ? '▲' : '▼';
+                indicator.style.opacity = '1';
+                indicator.style.fontWeight = 'bold';
+            }
+        }
+    }
+    </script>
+    <script src="assets/js/validation.js"></script>
+</body>
+</html>

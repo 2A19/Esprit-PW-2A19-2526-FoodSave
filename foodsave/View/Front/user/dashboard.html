@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord — FoodSave</title>
+    <link rel="icon" type="image/png" href="assets/images/logo-foodsave.png">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <a href="index.php?action=dashboard" class="brand">
+                <img src="assets/images/logo-foodsave.png" alt="FoodSave">
+                <span><span class="brand-food">Food</span><span class="brand-save">Save</span></span>
+            </a>
+            <nav class="primary-nav">
+                <a href="index.php?action=dashboard">Tableau de bord</a>
+                <a href="index.php?action=profile">Mon profil</a>
+                <a href="index.php?action=blog">📝 Blog</a>
+                <a href="index.php?action=recettes">🍳 Recettes</a>
+                <a href="index.php?action=conseils">💡 Conseils</a>
+                <a href="../forum/index.php?action=list">Forum</a>
+                <a href="index.php?action=evenements">📅 Événements</a>
+                <a href="index.php?action=dashboard_spa">🗑️ Déchets</a>
+            </nav>
+            <div class="nav-actions">
+                <div class="admin-user">
+                    <div class="avatar avatar-orange">
+                        <?php if (isset($_SESSION['user_profile_photo']) && $_SESSION['user_profile_photo']): ?>
+                            <img src="assets/uploads/profile_photos/<?php echo htmlspecialchars($_SESSION['user_profile_photo']); ?>" alt="Photo de profil">
+                        <?php else: ?>
+                            <?php echo strtoupper(substr($_SESSION['user_prenom'] ?? 'U', 0, 1)); ?>
+                        <?php endif; ?>
+                    </div>
+                    <div class="admin-user-info">
+                        <div class="name"><?php echo htmlspecialchars($_SESSION['user_prenom'] ?? ''); ?></div>
+                        <div class="role"><?php echo $_SESSION['user_role'] === 'admin' ? 'Administrateur' : 'Utilisateur'; ?></div>
+                    </div>
+                </div>
+                <?php if ($_SESSION['user_role'] === 'admin'): ?>
+                <a href="admin.php" class="btn-admin">Administration</a>
+                <?php endif; ?>
+                <a href="index.php?action=logout" class="btn-login">Déconnexion</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" style="padding-top: 28px; padding-bottom: 48px;">
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="alert alert-success fade-in">
+                <span class="alert-icon">✓</span>
+                <div><strong>Succès&nbsp;!</strong> <?php echo htmlspecialchars($_SESSION['success']); ?></div>
+                <?php unset($_SESSION['success']); ?>
+            </div>
+        <?php endif; ?>
+
+        <div class="dashboard-header">
+            <h1>Bienvenue, <?php echo htmlspecialchars($_SESSION['user_prenom']); ?> 👋</h1>
+            <p>Gérez vos aliments et réduisez le gaspillage avec FoodSave.</p>
+        </div>
+
+        <div class="panel" style="margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+                <div>
+                    <h2 style="margin: 0 0 6px 0; font-size: 1.1rem;">Connexion par empreinte (Windows Hello)</h2>
+                    <p style="margin: 0; color: var(--color-text-muted); font-size: 0.9rem;">
+                        Créez une passkey locale sur ce PC pour vous connecter ensuite avec votre empreinte.
+                    </p>
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button type="button" id="btnCreatePasskeyDashboard" class="btn btn-primary">
+                        Créer une passkey maintenant
+                    </button>
+                    <a href="index.php?action=profile" class="btn btn-outline">Gérer mes passkeys</a>
+                </div>
+            </div>
+            <div id="dashboardPasskeyAlert" style="display: none; margin-top: 12px; padding: 10px 12px; border-radius: 6px; font-size: 0.88rem;"></div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card slide-in">
+                <div class="stat-icon green" style="margin-bottom: 14px;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <h3>Mon profil</h3>
+                <p>Consultez et modifiez vos informations personnelles.</p>
+                <a href="index.php?action=profile" class="btn btn-primary btn-sm">Voir le profil</a>
+            </div>
+
+            <div class="dashboard-card slide-in">
+                <div class="stat-icon orange" style="margin-bottom: 14px;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-4"/><polyline points="9 11 9 3 15 3 15 11"/></svg>
+                </div>
+                <h3>Mes listes</h3>
+                <p>Gérez vos listes de courses et de stockage d'aliments.</p>
+                <a href="#" class="btn btn-outline btn-sm">Gérer les listes</a>
+            </div>
+
+            <div class="dashboard-card slide-in">
+                <div class="stat-icon green" style="margin-bottom: 14px;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
+                </div>
+                <h3>Blog FoodSave</h3>
+                <p>Découvrez nos articles, recettes et conseils pour manger mieux.</p>
+                <a href="index.php?action=blog" class="btn btn-outline btn-sm">Lire le blog</a>
+            </div>
+
+            <div class="dashboard-card slide-in">
+                <div class="stat-icon orange" style="margin-bottom: 14px;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                </div>
+                <h3>Recettes suggérées</h3>
+                <p>Découvrez des recettes basées sur vos ingrédients.</p>
+                <a href="index.php?action=recettes" class="btn btn-outline btn-sm">Voir les recettes</a>
+            </div>
+
+            <div class="dashboard-card slide-in">
+                <div class="stat-icon green" style="margin-bottom: 14px;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                </div>
+                <h3>Déchets</h3>
+                <p>Gérez vos déchets, collectes, catégories et suivez vos statistiques depuis le tableau de bord interactif.</p>
+                <a href="index.php?action=dashboard_spa" class="btn btn-primary btn-sm">Accéder →</a>
+            </div>
+
+            <div class="dashboard-card slide-in">
+                <div class="stat-icon green" style="margin-bottom: 14px;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                </div>
+                <h3>Conseils pratiques</h3>
+                <p>Découvrez nos meilleurs conseils pour réduire le gaspillage.</p>
+                <a href="index.php?action=conseils" class="btn btn-outline btn-sm">Lire les conseils</a>
+            </div>
+
+            <div class="dashboard-card slide-in">
+                <div class="stat-icon orange" style="margin-bottom: 14px;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <h3>Forum & Communauté</h3>
+                <p>Partagez vos astuces et discutez avec d'autres utilisateurs.</p>
+                <a href="/foodsaveforum/forum/index.php?action=list" class="btn btn-primary btn-sm">Accéder au forum</a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 FoodSave. Tous droits réservés.</p>
+    </footer>
+
+    <script src="assets/js/validation.js"></script>
+    <script src="assets/js/webauthn.js"></script>
+    <script>
+    (function () {
+        const btn = document.getElementById('btnCreatePasskeyDashboard');
+        const alertBox = document.getElementById('dashboardPasskeyAlert');
+        const supported = window.FoodSaveWebAuthn && FoodSaveWebAuthn.isSupported();
+        if (!btn || !alertBox) return;
+
+        function showAlert(message, kind) {
+            alertBox.textContent = message;
+            alertBox.style.display = '';
+            if (kind === 'success') {
+                alertBox.style.background = 'var(--color-green-50)';
+                alertBox.style.color = 'var(--color-green-800)';
+            } else {
+                alertBox.style.background = '#fef2f2';
+                alertBox.style.color = '#991b1b';
+            }
+        }
+
+        if (!supported) {
+            btn.disabled = true;
+            showAlert('WebAuthn non disponible sur ce navigateur/appareil.', 'error');
+            return;
+        }
+
+        btn.addEventListener('click', async function () {
+            btn.disabled = true;
+            const original = btn.textContent;
+            btn.textContent = 'Validation Windows Hello...';
+            try {
+                const label = 'PC ' + (new Date()).toLocaleDateString('fr-FR');
+                await FoodSaveWebAuthn.registerPasskey(label);
+                showAlert('Passkey créée. Vous pouvez maintenant vous connecter avec empreinte.', 'success');
+                btn.textContent = 'Passkey créée';
+            } catch (err) {
+                showAlert(err && err.message ? err.message : 'Impossible de créer la passkey.', 'error');
+                btn.disabled = false;
+                btn.textContent = original;
+            }
+        });
+    })();
+    </script>
+</body>
+</html>

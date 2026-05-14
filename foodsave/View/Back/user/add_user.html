@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter utilisateur — FoodSave Admin</title>
+    <link rel="icon" type="image/png" href="assets/images/logo-foodsave.png">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="admin-body">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <img src="assets/images/logo-foodsave.png" alt="FoodSave">
+                <span><span class="brand-food">Food</span><span class="brand-save">Save</span></span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="admin.php?action=dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    Tableau de bord
+                </a>
+                <a href="admin.php?action=users" class="active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Utilisateurs
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="index.php?action=logout">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Déconnexion
+                </a>
+            </div>
+        </aside>
+
+        <div class="admin-main">
+            <div class="admin-topbar">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" aria-label="Menu">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    </button>
+                    <div class="admin-topbar-title">
+                        <h1>Ajouter un utilisateur</h1>
+                        <div class="admin-breadcrumb"><a href="admin.php?action=dashboard">Accueil</a> / <a href="admin.php?action=users">Utilisateurs</a> / Ajouter</div>
+                    </div>
+                </div>
+                <div class="admin-topbar-actions">
+                    <div class="admin-user">
+                        <div class=\"avatar avatar-orange\"><?php echo strtoupper(substr($_SESSION['user_prenom'] ?? 'A', 0, 1)); ?></div>
+                        <div class="admin-user-info">
+                            <div class="name"><?php echo htmlspecialchars($_SESSION['user_prenom'] ?? 'Admin'); ?></div>
+                            <div class="role">Administrateur</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-content">
+                <?php if (isset($errors['general'])): ?>
+                    <div class="alert alert-error fade-in">
+                        <span class="alert-icon">✕</span>
+                        <div><?php echo htmlspecialchars($errors['general']); ?></div>
+                    </div>
+                <?php endif; ?>
+
+                <form method="POST" action="admin.php?action=handleAddUser">
+                    <div class="panel" style="max-width: 900px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 20px;">
+                            <h2 style="font-size: 1.2rem; margin: 0;">Créer un nouveau compte utilisateur</h2>
+                            <a href="admin.php?action=users" class="btn btn-outline btn-sm">Retour à la liste</a>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div class="form-group <?php echo isset($errors['prenom']) ? 'error' : ''; ?>">
+                                <label for="prenom">Prénom</label>
+                                <input type="text" id="prenom" name="prenom" required value="<?php echo htmlspecialchars($formData['prenom'] ?? ''); ?>">
+                                <?php if (isset($errors['prenom'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['prenom']); ?></div><?php endif; ?>
+                            </div>
+                            <div class="form-group <?php echo isset($errors['nom']) ? 'error' : ''; ?>">
+                                <label for="nom">Nom</label>
+                                <input type="text" id="nom" name="nom" required value="<?php echo htmlspecialchars($formData['nom'] ?? ''); ?>">
+                                <?php if (isset($errors['nom'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['nom']); ?></div><?php endif; ?>
+                            </div>
+                        </div>
+
+                        <div class="form-group <?php echo isset($errors['email']) ? 'error' : ''; ?>">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required value="<?php echo htmlspecialchars($formData['email'] ?? ''); ?>">
+                            <?php if (isset($errors['email'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['email']); ?></div><?php endif; ?>
+                        </div>
+
+                        <div class="form-group <?php echo isset($errors['password']) ? 'error' : ''; ?>">
+                            <label for="password">Mot de passe</label>
+                            <input type="password" id="password" name="password" required placeholder="Minimum 8 caractères, Majuscule, minuscule, chiffre">
+                            <?php if (isset($errors['password'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['password']); ?></div><?php endif; ?>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div class="form-group <?php echo isset($errors['telephone']) ? 'error' : ''; ?>">
+                                <label for="telephone">Téléphone</label>
+                                <input type="tel" id="telephone" name="telephone" value="<?php echo htmlspecialchars($formData['telephone'] ?? ''); ?>">
+                                <?php if (isset($errors['telephone'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['telephone']); ?></div><?php endif; ?>
+                            </div>
+                            <div class="form-group <?php echo isset($errors['date_naissance']) ? 'error' : ''; ?>">
+                                <label for="date_naissance">Date de naissance</label>
+                                <input type="date" id="date_naissance" name="date_naissance" value="<?php echo htmlspecialchars($formData['date_naissance'] ?? ''); ?>">
+                                <?php if (isset($errors['date_naissance'])): ?><div class="form-error">✕ <?php echo htmlspecialchars($errors['date_naissance']); ?></div><?php endif; ?>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div class="form-group">
+                                <label for="role">Rôle</label>
+                                <select id="role" name="role">
+                                    <option value="user" <?php echo (($formData['role'] ?? 'user') === 'user') ? 'selected' : ''; ?>>Utilisateur</option>
+                                    <option value="admin" <?php echo (($formData['role'] ?? '') === 'admin') ? 'selected' : ''; ?>>Administrateur</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="statut">Statut</label>
+                                <select id="statut" name="statut">
+                                    <option value="actif" <?php echo (($formData['statut'] ?? 'actif') === 'actif') ? 'selected' : ''; ?>>Actif</option>
+                                    <option value="inactif" <?php echo (($formData['statut'] ?? '') === 'inactif') ? 'selected' : ''; ?>>Inactif</option>
+                                    <option value="banni" <?php echo (($formData['statut'] ?? '') === 'banni') ? 'selected' : ''; ?>>Banni</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--color-border);">
+                            <button type="submit" class="btn btn-primary">Ajouter l'utilisateur</button>
+                            <a href="admin.php?action=dashboard" class="btn btn-outline">Annuler</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

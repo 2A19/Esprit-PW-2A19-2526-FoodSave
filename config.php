@@ -1,0 +1,31 @@
+<?php
+/**
+ * Unified Database Configuration
+ * Both FoodSave and Forum use foodsave_db
+ * Updated: 2026-05-09
+ */
+if (!class_exists('config')) {
+class config {
+    private static $pdo = null;
+
+    public static function getConnexion() {
+        if (!isset(self::$pdo)) {
+            try {
+                self::$pdo = new PDO(
+                    'mysql:host=localhost;dbname=foodsave_db;charset=utf8mb4',
+                    'root',
+                    '',
+                    [
+                        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    ]
+                );
+            } catch (Exception $e) {
+                die('Erreur: ' . $e->getMessage());
+            }
+        }
+        return self::$pdo;
+    }
+}
+}
+?>

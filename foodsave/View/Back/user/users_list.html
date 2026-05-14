@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utilisateurs — FoodSave Admin</title>
+    <link rel="icon" type="image/png" href="assets/images/logo-foodsave.png">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="admin-body">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <img src="assets/images/logo-foodsave.png" alt="FoodSave">
+                <span><span class="brand-food">Food</span><span class="brand-save">Save</span></span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="admin.php?action=dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    Tableau de bord
+                </a>
+                <a href="admin.php?action=users" class="active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Utilisateurs
+                </a>
+                <a href="admin.php?action=users">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Profils
+                </a>
+                <a href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
+                    Recettes
+                </a>
+                <a href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21h6M12 3a7 7 0 0 0-4 12.7c.7.7 1 1.5 1 2.3h6c0-.8.3-1.6 1-2.3A7 7 0 0 0 12 3z"/></svg>
+                    Astuces
+                </a>
+                <a href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Commentaires
+                </a>
+                <a href="#">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    Paramètres
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="index.php?action=logout">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Déconnexion
+                </a>
+            </div>
+        </aside>
+
+        <div class="admin-main">
+            <div class="admin-topbar">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" aria-label="Menu">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    </button>
+                    <div class="admin-topbar-title">
+                        <h1>Utilisateurs</h1>
+                        <div class="admin-breadcrumb"><a href="admin.php?action=dashboard">Accueil</a> / Utilisateurs</div>
+                    </div>
+                </div>
+                <div class="admin-topbar-actions">
+                    <button class="icon-btn" aria-label="Notifications">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        <span class="notif-dot"></span>
+                    </button>
+                    <div class="admin-user">
+                        <div class=\"avatar avatar-orange\"><?php echo strtoupper(substr($_SESSION['user_prenom'] ?? 'A', 0, 1)); ?></div>
+                        <div class="admin-user-info">
+                            <div class="name"><?php echo htmlspecialchars($_SESSION['user_prenom'] ?? 'Admin'); ?></div>
+                            <div class="role">Administrateur</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-content">
+                <?php if (isset($_SESSION['success'])): ?>
+                    <div class="alert alert-success fade-in">
+                        <span class="alert-icon">✓</span>
+                        <div><?php echo htmlspecialchars($_SESSION['success']); ?></div>
+                        <?php unset($_SESSION['success']); ?>
+                    </div>
+                <?php endif; ?>
+                <?php if (isset($_SESSION['error'])): ?>
+                    <div class="alert alert-error fade-in">
+                        <span class="alert-icon">✕</span>
+                        <div><?php echo htmlspecialchars($_SESSION['error']); ?></div>
+                        <?php unset($_SESSION['error']); ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php
+                    $total = count($users);
+                    $actifs = count(array_filter($users, fn($u) => $u['statut'] === 'actif'));
+                    $inactifs = count(array_filter($users, fn($u) => $u['statut'] === 'inactif'));
+                    $bannis = count(array_filter($users, fn($u) => $u['statut'] === 'banni'));
+                ?>
+                <!-- Summary stats -->
+                <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-label">Total</div>
+                            <div class="stat-value"><?php echo $total; ?></div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-label">Actifs</div>
+                            <div class="stat-value"><?php echo $actifs; ?></div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-label">Inactifs</div>
+                            <div class="stat-value"><?php echo $inactifs; ?></div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon teal">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-label">Bannis</div>
+                            <div class="stat-value"><?php echo $bannis; ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TABLE -->
+                <div class="table-wrap">
+                    <div class="table-head">
+                        <div>
+                            <h2>Liste des utilisateurs</h2>
+                            <p style="color: var(--color-text-muted); font-size: 0.85rem; margin-top: 2px;">Gérez tous les utilisateurs de la plateforme</p>
+                        </div>
+                    </div>
+
+                    <!-- SEARCH AND FILTER -->
+                    <div style="padding: 14px 0; display: flex; gap: 12px; align-items: center; border-bottom: 1px solid var(--color-border);">
+                        <div style="flex: 1; display: flex; gap: 8px;">
+                            <input type="text" id="searchInput" placeholder="Rechercher par nom, email..." style="flex: 1; padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; font-size: 0.9rem;" aria-label="Recherche">
+                            <select id="filterStatus" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; font-size: 0.9rem;">
+                                <option value="">Tous les statuts</option>
+                                <option value="actif">Actifs</option>
+                                <option value="inactif">Inactifs</option>
+                                <option value="banni">Bannis</option>
+                            </select>
+                            <select id="filterRole" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; font-size: 0.9rem;">
+                                <option value="">Tous les rôles</option>
+                                <option value="user">Utilisateur</option>
+                                <option value="admin">Administrateur</option>
+                            </select>
+                        </div>
+                        <button id="resetBtn" class="btn btn-outline btn-sm" style="white-space: nowrap;">Réinitialiser</button>
+                    </div>
+
+                    <!-- RESULTS COUNT -->
+                    <div style="padding: 10px 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 0.85rem; color: var(--color-text-muted);">
+                        <div><span id="resultCount"><?php echo count($users); ?></span> résultats</div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button type="button" id="exportCsvBtn" class="btn btn-outline btn-sm">Exporter CSV</button>
+                            <button type="button" id="exportPdfBtn" class="btn btn-outline btn-sm">Exporter PDF</button>
+                        </div>
+                    </div>
+                    <div id="statusChartCard" style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap; padding: 8px 0 14px; border-bottom: 1px solid var(--color-border);">
+                        <div id="statusDonut" style="--donut-bg: conic-gradient(#16a34a 0deg 0deg, #f97316 0deg 0deg, #475569 0deg 360deg); width: 110px; height: 110px; border-radius: 50%; background: var(--donut-bg); position: relative; flex-shrink: 0;">
+                            <div style="position: absolute; inset: 16px; border-radius: 50%; background: rgba(13, 31, 20, 0.92); border: 1px solid rgba(74, 222, 128, 0.18); display: flex; align-items: center; justify-content: center; text-align: center;">
+                                <div>
+                                    <div style="font-size: 0.72rem; color: var(--color-text-muted);">Total</div>
+                                    <div id="statusDonutTotal" style="font-size: 1rem; font-weight: 700;"><?php echo $total; ?></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: grid; gap: 6px;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">
+                                <span style="width: 10px; height: 10px; border-radius: 50%; background: #16a34a; display: inline-block;"></span>
+                                Actifs: <strong id="statActif"><?php echo $actifs; ?></strong>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">
+                                <span style="width: 10px; height: 10px; border-radius: 50%; background: #f97316; display: inline-block;"></span>
+                                Inactifs: <strong id="statInactif"><?php echo $inactifs; ?></strong>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">
+                                <span style="width: 10px; height: 10px; border-radius: 50%; background: #475569; display: inline-block;"></span>
+                                Bannis: <strong id="statBanni"><?php echo $bannis; ?></strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <?php if (count($users) > 0): ?>
+                    <div class="table-scroll">
+                        <table id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th style="cursor: pointer; user-select: none;" data-sort="name">
+                                        Utilisateur
+                                        <span class="sort-indicator" style="font-size: 0.75rem; opacity: 0.5;">⇅</span>
+                                    </th>
+                                    <th style="cursor: pointer; user-select: none;" data-sort="email">
+                                        Email
+                                        <span class="sort-indicator" style="font-size: 0.75rem; opacity: 0.5;">⇅</span>
+                                    </th>
+                                    <th>Téléphone</th>
+                                    <th style="cursor: pointer; user-select: none;" data-sort="role">
+                                        Rôle
+                                        <span class="sort-indicator" style="font-size: 0.75rem; opacity: 0.5;">⇅</span>
+                                    </th>
+                                    <th style="cursor: pointer; user-select: none;" data-sort="statut">
+                                        Statut
+                                        <span class="sort-indicator" style="font-size: 0.75rem; opacity: 0.5;">⇅</span>
+                                    </th>
+                                    <th style="cursor: pointer; user-select: none;" data-sort="date">
+                                        Inscription
+                                        <span class="sort-indicator" style="font-size: 0.75rem; opacity: 0.5;">⇅</span>
+                                    </th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <?php foreach ($users as $u): ?>
+                                <tr class="user-row"
+                                    data-id="<?php echo (int)$u['id']; ?>"
+                                    data-name="<?php echo htmlspecialchars(strtolower($u['prenom'] . ' ' . $u['nom'])); ?>"
+                                    data-email="<?php echo htmlspecialchars(strtolower($u['email'])); ?>"
+                                    data-role="<?php echo $u['role']; ?>"
+                                    data-statut="<?php echo $u['statut']; ?>"
+                                    data-date="<?php echo $u['date_inscription']; ?>">
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <div class="avatar-sm avatar-orange">
+                                                <?php if (isset($u['profile_photo']) && $u['profile_photo']): ?>
+                                                    <img src="assets/uploads/profile_photos/<?php echo htmlspecialchars($u['profile_photo']); ?>" alt="Photo">
+                                                <?php else: ?>
+                                                    <?php echo strtoupper(substr($u['prenom'], 0, 1) . substr($u['nom'], 0, 1)); ?>
+                                                <?php endif; ?>
+                                            </div>
+                                            <span class="user-name"><?php echo htmlspecialchars($u['prenom'] . ' ' . $u['nom']); ?></span>
+                                        </div>
+                                    </td>
+                                    <td><?php echo htmlspecialchars($u['email']); ?></td>
+                                    <td><?php echo htmlspecialchars($u['telephone'] ?? '—'); ?></td>
+                                    <td>
+                                        <span class="badge badge-<?php echo $u['role'] === 'admin' ? 'admin' : 'user'; ?>">
+                                            <?php echo $u['role'] === 'admin' ? 'Administrateur' : 'Utilisateur'; ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <span class="badge badge-<?php echo htmlspecialchars($u['statut']); ?> user-status-badge">
+                                                <?php echo ucfirst(htmlspecialchars($u['statut'])); ?>
+                                            </span>
+                                            <label class="status-switch" title="Activer / désactiver">
+                                                <input
+                                                    type="checkbox"
+                                                    class="status-toggle"
+                                                    data-user-id="<?php echo (int)$u['id']; ?>"
+                                                    <?php echo $u['statut'] === 'actif' ? 'checked' : ''; ?>
+                                                >
+                                                <span class="status-slider"></span>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td><?php echo !empty($u['date_inscription']) ? date('d/m/Y', strtotime($u['date_inscription'])) : '—'; ?></td>
+                                    <td>
+                                        <div class="actions">
+                                            <a href="admin.php?action=user_details&id=<?php echo $u['id']; ?>" class="action-btn action-btn-view" title="Voir">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                            </a>
+                                            <a href="admin.php?action=user_history&id=<?php echo $u['id']; ?>" class="action-btn action-btn-view" title="Historique">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13a9 9 0 1 0 2.13-5.74L3 8"/><path d="M12 7v5l3 3"/></svg>
+                                            </a>
+                                            <a href="admin.php?action=edit_user&id=<?php echo $u['id']; ?>" class="action-btn action-btn-edit" title="Modifier">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                            </a>
+                                            <button type="button" class="action-btn action-btn-delete ban-user-btn" title="Bannir" data-user-id="<?php echo (int)$u['id']; ?>">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                                            </button>
+                                            <form method="POST" action="admin.php?action=deleteUser" style="display:inline;" onsubmit="return confirm('Supprimer cet utilisateur ?');">
+                                                <input type="hidden" name="id" value="<?php echo $u['id']; ?>">
+                                                <button type="submit" class="action-btn action-btn-delete" title="Supprimer">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="paginationControls" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-top: 12px;">
+                        <div id="paginationInfo" style="font-size: 0.85rem; color: var(--color-text-muted);"></div>
+                        <div id="paginationButtons" style="display: flex; gap: 6px; flex-wrap: wrap;"></div>
+                    </div>
+                    <?php else: ?>
+                    <div style="padding: 48px; text-align: center; color: var(--color-text-muted);">
+                        Aucun utilisateur enregistré pour le moment.
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="banModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 class="modal-title">Bannir l'utilisateur</h3>
+            <p class="modal-sub">Choisissez le type de ban et saisissez le motif (obligatoire).</p>
+            <input type="hidden" id="banUserId" value="">
+
+            <div class="m-form-group">
+                <label class="m-label">Type de ban</label>
+                <select id="banType" class="m-select">
+                    <option value="temporary">Temporaire</option>
+                    <option value="permanent">Permanent</option>
+                </select>
+            </div>
+
+            <div class="m-form-group" id="banDurationWrap">
+                <label class="m-label">Durée (jours)</label>
+                <input type="number" id="banDurationDays" class="m-input" min="1" value="7">
+            </div>
+
+            <div class="m-form-group">
+                <label class="m-label">Motif</label>
+                <textarea id="banReason" class="m-input" rows="3" placeholder="Motif du ban (obligatoire)"></textarea>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="banCancelBtn" class="btn-cancel">Annuler</button>
+                <button type="button" id="banSubmitBtn" class="btn-danger">Confirmer le ban</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Recherche et filtrage dynamique
+    let currentSort = { column: null, direction: 'asc' };
+
+    const searchInput = document.getElementById('searchInput');
+    const filterStatus = document.getElementById('filterStatus');
+    const filterRole = document.getElementById('filterRole');
+    const resetBtn = document.getElementById('resetBtn');
+    const usersTable = document.getElementById('usersTable');
+    const usersTableBody = document.getElementById('usersTableBody');
+    const resultCount = document.getElementById('resultCount');
+    const allUserRows = Array.from(usersTableBody.querySelectorAll('tr.user-row'));
+    const paginationInfo = document.getElementById('paginationInfo');
+    const paginationButtons = document.getElementById('paginationButtons');
+    const statusDonut = document.getElementById('statusDonut');
+    const statusDonutTotal = document.getElementById('statusDonutTotal');
+    const statActif = document.getElementById('statActif');
+    const statInactif = document.getElementById('statInactif');
+    const statBanni = document.getElementById('statBanni');
+    const exportCsvBtn = document.getElementById('exportCsvBtn');
+    const exportPdfBtn = document.getElementById('exportPdfBtn');
+    const banModal = document.getElementById('banModal');
+    const banUserIdInput = document.getElementById('banUserId');
+    const banTypeSelect = document.getElementById('banType');
+    const banDurationWrap = document.getElementById('banDurationWrap');
+    const banDurationDaysInput = document.getElementById('banDurationDays');
+    const banReasonInput = document.getElementById('banReason');
+    const banCancelBtn = document.getElementById('banCancelBtn');
+    const banSubmitBtn = document.getElementById('banSubmitBtn');
+    const rowsPerPage = 8;
+    let currentPage = 1;
+    let currentFilteredRows = [...allUserRows];
+
+    function createPaginationButton(label, disabled, onClick, isActive = false) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = label;
+        button.disabled = disabled;
+        button.style.padding = '6px 10px';
+        button.style.borderRadius = '6px';
+        button.style.border = '1px solid var(--color-border)';
+        button.style.background = isActive ? 'rgba(74, 222, 128, 0.16)' : 'rgba(255, 255, 255, 0.04)';
+        button.style.color = isActive ? '#86efac' : 'rgba(255, 255, 255, 0.8)';
+        button.style.fontSize = '0.82rem';
+        button.style.cursor = disabled ? 'not-allowed' : 'pointer';
+        button.style.opacity = disabled ? '0.5' : '1';
+        if (!disabled) button.addEventListener('click', onClick);
+        return button;
+    }
+
+    function renderPagination(totalRows) {
+        const totalPages = Math.max(1, Math.ceil(totalRows / rowsPerPage));
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        paginationButtons.innerHTML = '';
+
+        const startItem = totalRows === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1;
+        const endItem = Math.min(currentPage * rowsPerPage, totalRows);
+        paginationInfo.textContent = `Affichage ${startItem}-${endItem} sur ${totalRows}`;
+
+        paginationButtons.appendChild(
+            createPaginationButton('Précédent', currentPage === 1 || totalRows === 0, () => {
+                currentPage -= 1;
+                filterAndSort();
+            })
+        );
+
+        for (let page = 1; page <= totalPages; page += 1) {
+            paginationButtons.appendChild(
+                createPaginationButton(String(page), totalRows === 0, () => {
+                    currentPage = page;
+                    filterAndSort();
+                }, currentPage === page)
+            );
+        }
+
+        paginationButtons.appendChild(
+            createPaginationButton('Suivant', currentPage === totalPages || totalRows === 0, () => {
+                currentPage += 1;
+                filterAndSort();
+            })
+        );
+    }
+
+    function updateStatusDonut(stats) {
+        const total = stats.actif + stats.inactif + stats.banni;
+        statusDonutTotal.textContent = total;
+
+        if (total === 0) {
+            statusDonut.style.setProperty('--donut-bg', 'conic-gradient(#e2e8f0 0deg 360deg)');
+            return;
+        }
+
+        const actifDeg = (stats.actif / total) * 360;
+        const inactifDeg = (stats.inactif / total) * 360;
+        const banniDeg = 360 - actifDeg - inactifDeg;
+
+        statusDonut.style.setProperty(
+            '--donut-bg',
+            `conic-gradient(
+                #16a34a 0deg ${actifDeg}deg,
+                #f97316 ${actifDeg}deg ${actifDeg + inactifDeg}deg,
+                #475569 ${actifDeg + inactifDeg}deg ${actifDeg + inactifDeg + banniDeg}deg
+            )`
+        );
+    }
+
+    function attachStatusToggleHandlers() {
+        usersTableBody.querySelectorAll('.status-toggle').forEach((toggle) => {
+            if (toggle.dataset.bound === '1') return;
+            toggle.dataset.bound = '1';
+
+            toggle.addEventListener('change', async () => {
+                const userId = toggle.dataset.userId;
+                const nextStatus = toggle.checked ? 'actif' : 'inactif';
+                const previousChecked = !toggle.checked;
+                toggle.disabled = true;
+
+                try {
+                    const body = new URLSearchParams({
+                        id: userId,
+                        status: nextStatus,
+                    });
+
+                    const response = await fetch('admin.php?action=toggleUserStatus', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                        },
+                        body: body.toString(),
+                    });
+
+                    const rawText = await response.text();
+                    const jsonText = rawText.trim().replace(/^[^{]*/, '');
+                    let data = null;
+                    try {
+                        data = JSON.parse(jsonText);
+                    } catch (parseError) {
+                        throw new Error('Réponse serveur invalide lors du changement de statut.');
+                    }
+                    if (!response.ok || !data.ok) {
+                        throw new Error(data.error || 'Mise à jour refusée.');
+                    }
+
+                    const row = toggle.closest('tr.user-row');
+                    if (row) {
+                        row.dataset.statut = data.status;
+                        const badge = row.querySelector('.user-status-badge');
+                        if (badge) {
+                            badge.className = 'badge user-status-badge badge-' + data.status;
+                            badge.textContent = data.label;
+                        }
+                    }
+
+                    filterAndSort();
+                } catch (err) {
+                    toggle.checked = previousChecked;
+                    alert(err && err.message ? err.message : 'Impossible de changer le statut.');
+                } finally {
+                    toggle.disabled = false;
+                }
+            });
+        });
+    }
+
+    function attachBanButtonHandlers() {
+        usersTableBody.querySelectorAll('.ban-user-btn').forEach((btn) => {
+            if (btn.dataset.bound === '1') return;
+            btn.dataset.bound = '1';
+            btn.addEventListener('click', () => {
+                if (!banModal) return;
+                banUserIdInput.value = btn.dataset.userId || '';
+                banTypeSelect.value = 'temporary';
+                banDurationDaysInput.value = '7';
+                banReasonInput.value = '';
+                banDurationWrap.style.display = '';
+                banModal.classList.add('open');
+            });
+        });
+    }
+
+    function getExportRows() {
+        return currentFilteredRows.map((row) => {
+            const id = row.dataset.id || '';
+            const nameEl = row.querySelector('.user-name');
+            const roleBadge = row.querySelector('td:nth-child(4) .badge');
+            const statusBadge = row.querySelector('td:nth-child(5) .badge');
+            const cells = row.querySelectorAll('td');
+            const name = nameEl ? nameEl.textContent.trim() : '';
+            const email = cells[1] ? cells[1].textContent.trim() : '';
+            const role = roleBadge ? roleBadge.textContent.trim() : '';
+            const status = statusBadge ? statusBadge.textContent.trim() : '';
+            const registrationDate = cells[5] ? cells[5].textContent.trim() : '';
+
+            return { id, name, email, role, status, registrationDate };
+        });
+    }
+
+    function escapeCsv(value) {
+        const text = String(value ?? '');
+        return '"' + text.replace(/"/g, '""') + '"';
+    }
+
+    function downloadBlob(filename, content, mimeType) {
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    function exportCurrentRowsToCsv() {
+        const rows = getExportRows();
+        if (!rows.length) {
+            alert('Aucune donnée à exporter.');
+            return;
+        }
+
+        const headers = ['ID', 'Name', 'Email', 'Role', 'Status', 'Registration Date'];
+        const lines = [headers.map(escapeCsv).join(',')];
+        rows.forEach((row) => {
+            lines.push([
+                escapeCsv(row.id),
+                escapeCsv(row.name),
+                escapeCsv(row.email),
+                escapeCsv(row.role),
+                escapeCsv(row.status),
+                escapeCsv(row.registrationDate),
+            ].join(','));
+        });
+
+        const filename = 'users-export-' + new Date().toISOString().slice(0, 10) + '.csv';
+        downloadBlob(filename, '\uFEFF' + lines.join('\n'), 'text/csv;charset=utf-8;');
+    }
+
+    function exportCurrentRowsToPdf() {
+        const rows = getExportRows();
+        if (!rows.length) {
+            alert('Aucune donnée à exporter.');
+            return;
+        }
+
+        const htmlRows = rows.map((row) => (
+            '<tr>' +
+                '<td>' + row.id + '</td>' +
+                '<td>' + row.name + '</td>' +
+                '<td>' + row.email + '</td>' +
+                '<td>' + row.role + '</td>' +
+                '<td>' + row.status + '</td>' +
+                '<td>' + row.registrationDate + '</td>' +
+            '</tr>'
+        )).join('');
+
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+            alert('Popup bloquée. Autorisez les popups pour exporter en PDF.');
+            return;
+        }
+
+        const printable = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Users Export</title>' +
+            '<style>body{font-family:Arial,sans-serif;padding:20px;color:#111}h1{font-size:18px;margin:0 0 12px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:8px;font-size:12px;text-align:left}th{background:#f3f4f6}</style>' +
+            '</head><body>' +
+            '<h1>Users Export - ' + new Date().toLocaleString('fr-FR') + '</h1>' +
+            '<table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Registration Date</th></tr></thead><tbody>' +
+            htmlRows +
+            '</tbody></table></body></html>';
+
+        printWindow.document.open();
+        printWindow.document.write(printable);
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+    }
+
+    // Fonction de filtrage et tri
+    function filterAndSort() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const statusFilter = filterStatus.value;
+        const roleFilter = filterRole.value;
+        
+        let rows = [...allUserRows];
+
+        // Filtrer
+        rows = rows.filter(row => {
+            const name = row.dataset.name || '';
+            const email = row.dataset.email || '';
+            const statut = row.dataset.statut || '';
+            const role = row.dataset.role || '';
+
+            const matchSearch = name.includes(searchTerm) || email.includes(searchTerm);
+            const matchStatus = !statusFilter || statut === statusFilter;
+            const matchRole = !roleFilter || role === roleFilter;
+
+            return matchSearch && matchStatus && matchRole;
+        });
+
+        // Trier
+        if (currentSort.column) {
+            rows.sort((a, b) => {
+                let aVal, bVal;
+
+                switch(currentSort.column) {
+                    case 'name':
+                        aVal = a.dataset.name;
+                        bVal = b.dataset.name;
+                        break;
+                    case 'email':
+                        aVal = a.dataset.email;
+                        bVal = b.dataset.email;
+                        break;
+                    case 'role':
+                        aVal = a.dataset.role;
+                        bVal = b.dataset.role;
+                        break;
+                    case 'statut':
+                        aVal = a.dataset.statut;
+                        bVal = b.dataset.statut;
+                        break;
+                    case 'date':
+                        aVal = new Date(a.dataset.date);
+                        bVal = new Date(b.dataset.date);
+                        break;
+                    default:
+                        return 0;
+                }
+
+                if (currentSort.direction === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                } else {
+                    return aVal < bVal ? 1 : -1;
+                }
+            });
+        }
+
+        // Mettre à jour le compteur
+        resultCount.textContent = rows.length;
+        currentFilteredRows = [...rows];
+        const stats = { actif: 0, inactif: 0, banni: 0 };
+        rows.forEach(row => {
+            const statut = row.dataset.statut;
+            if (Object.prototype.hasOwnProperty.call(stats, statut)) {
+                stats[statut] += 1;
+            }
+        });
+        statActif.textContent = stats.actif;
+        statInactif.textContent = stats.inactif;
+        statBanni.textContent = stats.banni;
+        updateStatusDonut(stats);
+
+        const totalRows = rows.length;
+        const totalPages = Math.max(1, Math.ceil(totalRows / rowsPerPage));
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
+        }
+
+        // Afficher les lignes de la page courante
+        usersTableBody.innerHTML = '';
+        const start = (currentPage - 1) * rowsPerPage;
+        const paginatedRows = rows.slice(start, start + rowsPerPage);
+        paginatedRows.forEach(row => usersTableBody.appendChild(row));
+        attachStatusToggleHandlers();
+        attachBanButtonHandlers();
+
+        // Afficher message si aucun résultat
+        if (totalRows === 0) {
+            const noResultsRow = document.createElement('tr');
+            noResultsRow.innerHTML = '<td colspan="7" style="text-align: center; padding: 32px; color: var(--color-text-muted);">Aucun utilisateur ne correspond à vos critères.</td>';
+            usersTableBody.appendChild(noResultsRow);
+        }
+
+        renderPagination(totalRows);
+    }
+
+    // Événement de recherche
+    searchInput.addEventListener('input', () => {
+        currentPage = 1;
+        filterAndSort();
+    });
+
+    // Événement de filtrage
+    filterStatus.addEventListener('change', () => {
+        currentPage = 1;
+        filterAndSort();
+    });
+    filterRole.addEventListener('change', () => {
+        currentPage = 1;
+        filterAndSort();
+    });
+
+    // Événement de réinitialisation
+    resetBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        filterStatus.value = '';
+        filterRole.value = '';
+        currentPage = 1;
+        currentSort = { column: null, direction: 'asc' };
+        updateSortIndicators();
+        filterAndSort();
+    });
+
+    if (exportCsvBtn) {
+        exportCsvBtn.addEventListener('click', exportCurrentRowsToCsv);
+    }
+
+    if (exportPdfBtn) {
+        exportPdfBtn.addEventListener('click', exportCurrentRowsToPdf);
+    }
+
+    if (banTypeSelect) {
+        banTypeSelect.addEventListener('change', () => {
+            banDurationWrap.style.display = banTypeSelect.value === 'temporary' ? '' : 'none';
+        });
+    }
+
+    if (banCancelBtn) {
+        banCancelBtn.addEventListener('click', () => {
+            banModal.classList.remove('open');
+        });
+    }
+
+    if (banModal) {
+        banModal.addEventListener('click', () => banModal.classList.remove('open'));
+        const modalBoxEl = banModal.querySelector('.modal-box');
+        if (modalBoxEl) {
+            modalBoxEl.addEventListener('click', (e) => e.stopPropagation());
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') banModal.classList.remove('open');
+        });
+    }
+
+    if (banSubmitBtn) {
+        banSubmitBtn.addEventListener('click', async () => {
+            const userId = banUserIdInput.value;
+            const banType = banTypeSelect.value;
+            const reason = (banReasonInput.value || '').trim();
+            const durationDays = parseInt(banDurationDaysInput.value || '0', 10);
+
+            if (!userId) {
+                alert('Utilisateur invalide.');
+                return;
+            }
+            if (!reason) {
+                alert('Le motif du ban est obligatoire.');
+                return;
+            }
+            if (banType === 'temporary' && (!durationDays || durationDays <= 0)) {
+                alert('Veuillez saisir une durée valide (jours).');
+                return;
+            }
+
+            banSubmitBtn.disabled = true;
+            try {
+                const body = new URLSearchParams({
+                    id: userId,
+                    ban_type: banType,
+                    reason,
+                    duration_days: String(durationDays || 0),
+                });
+                const response = await fetch('admin.php?action=banUser', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                    },
+                    body: body.toString(),
+                });
+                const rawText = await response.text();
+                const jsonText = rawText.trim().replace(/^[^{]*/, '');
+                let data = null;
+                try {
+                    data = JSON.parse(jsonText);
+                } catch (e) {
+                    throw new Error('Réponse serveur invalide.');
+                }
+                if (!response.ok || !data.ok) {
+                    throw new Error(data.error || 'Ban refusé.');
+                }
+
+                let row = null;
+                for (let i = 0; i < allUserRows.length; i += 1) {
+                    const candidate = allUserRows[i];
+                    if (String(candidate.dataset.id || '') === String(userId)) {
+                        row = candidate;
+                        break;
+                    }
+                }
+                if (row) {
+                    row.dataset.statut = 'banni';
+                    const badge = row.querySelector('.user-status-badge');
+                    if (badge) {
+                        badge.className = 'badge user-status-badge badge-banni';
+                        badge.textContent = 'Banni';
+                    }
+                    const toggle = row.querySelector('.status-toggle');
+                    if (toggle) {
+                        toggle.checked = false;
+                    }
+                }
+
+                banModal.classList.remove('open');
+                filterAndSort();
+            } catch (err) {
+                alert(err && err.message ? err.message : 'Impossible d\'appliquer le ban.');
+            } finally {
+                banSubmitBtn.disabled = false;
+            }
+        });
+    }
+
+    // Tri par clic sur les en-têtes
+    usersTable.querySelectorAll('th[data-sort]').forEach(th => {
+        th.addEventListener('click', () => {
+            const column = th.dataset.sort;
+
+            if (currentSort.column === column) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.column = column;
+                currentSort.direction = 'asc';
+            }
+
+            currentPage = 1;
+            updateSortIndicators();
+            filterAndSort();
+        });
+    });
+
+    // Mettre à jour les indicateurs de tri
+    function updateSortIndicators() {
+        usersTable.querySelectorAll('th[data-sort] .sort-indicator').forEach(indicator => {
+            indicator.textContent = '⇅';
+            indicator.style.opacity = '0.5';
+            indicator.style.fontWeight = 'normal';
+        });
+
+        if (currentSort.column) {
+            const activeHeader = usersTable.querySelector(`th[data-sort="${currentSort.column}"]`);
+            if (activeHeader) {
+                const indicator = activeHeader.querySelector('.sort-indicator');
+                indicator.textContent = currentSort.direction === 'asc' ? '▲' : '▼';
+                indicator.style.opacity = '1';
+                indicator.style.fontWeight = 'bold';
+            }
+        }
+    }
+
+    updateStatusDonut({
+        actif: <?php echo (int)$actifs; ?>,
+        inactif: <?php echo (int)$inactifs; ?>,
+        banni: <?php echo (int)$bannis; ?>
+    });
+    attachStatusToggleHandlers();
+    attachBanButtonHandlers();
+    filterAndSort();
+    </script>
+    <script src="assets/js/validation.js"></script>
+</body>
+</html>
