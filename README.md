@@ -1,69 +1,72 @@
-````md
-# 🍽️ FoodSave — Plateforme Intelligente de Lutte contre le Gaspillage Alimentaire
+<div align="center">
 
-> Projet intégré — Technologies Web | Esprit School of Engineering  
-> Année universitaire : 2025-2026 | Classe : 2A19 | Équipe : NextWave
+<img src="https://img.shields.io/badge/FoodSave-Smart%20Food%20Waste%20Management-6DBE45?style=for-the-badge" />
+
+<br><br>
+
+<h1>FoodSave</h1>
+
+<p>
+Plateforme intelligente de sensibilisation et de gestion du gaspillage alimentaire
+</p>
+
+<p>
+Projet intégré — Technologies Web • ESPRIT School of Engineering
+</p>
+
+<p>
+Année universitaire 2025–2026 • Classe 2A19 • Équipe NextWave
+</p>
+
+</div>
 
 ---
 
-## 📋 Description
+## Présentation
 
-**FoodSave** est une plateforme web communautaire intelligente dédiée à la lutte contre le gaspillage alimentaire.
+FoodSave est une plateforme web communautaire conçue pour sensibiliser contre le gaspillage alimentaire tout en proposant des solutions digitales modernes basées sur l’intelligence artificielle, l’analyse de données et l’interaction communautaire.
 
-Notre objectif est de sensibiliser les utilisateurs tout en proposant des solutions digitales modernes basées sur l’intelligence artificielle, l’interaction communautaire et la gestion intelligente des ressources alimentaires.
-
-La plateforme permet aux utilisateurs de :
-
-- Sensibiliser contre le gaspillage alimentaire 🌍
-- Partager des conseils et expériences via un forum interactif 💬
-- Gérer des événements et initiatives écologiques 📅
-- Suivre des statistiques et indicateurs dynamiques 📊
-- Utiliser des fonctionnalités IA intelligentes 🤖
-- Interagir dans une interface moderne et responsive ✨
+L’objectif du projet est de créer un environnement interactif permettant aux utilisateurs de partager des contenus, gérer des événements, suivre des statistiques et accéder à des outils intelligents favorisant des habitudes plus durables.
 
 ---
 
-## 🚀 Fonctionnalités Principales
+## Fonctionnalités
 
-### 👤 Gestion des Utilisateurs
+### Gestion des utilisateurs
 - Authentification sécurisée
-- Gestion des rôles et accès
+- Gestion des rôles et des accès
 - Tableau de bord administrateur
 - Recherche, tri et filtrage dynamiques
 - Statistiques interactives
 - Validation et sécurisation des données
 
-### 📝 Gestion Articles & Avis
+### Articles & Avis
 - CRUD complet des articles et avis
-- Modération des avis
+- Système de modération
 - Recherche intelligente et pagination
-- Newsletter et notifications email (Brevo SMTP)
+- Newsletter et notifications email
 - Chatbot IA avec API Mistral
 - Statistiques dynamiques avec Chart.js
-- Support multilingue (FR/EN)
+- Support multilingue
 
-### 💬 Forum Communautaire
+### Forum communautaire
 - Gestion des publications et commentaires
-- CRUD complet des posts
+- Publications vocales
+- Intégration YouTube et GIFs
 - Recherche dynamique et tri par catégories
 - Pagination des publications
-- Traduction multilingue
-- Publications vocales 🎤
-- Intégration vidéos YouTube ▶️
-- Ajout de GIFs animés
-- Statistiques des likes
-- Calendrier des publications
+- Calendrier des posts
+- Statistiques des interactions
 
-### ♻️ Gestion des Déchets
+### Gestion des déchets
 - Gestion intelligente des déchets
 - Recherche et tri dynamiques
 - Export PDF et CSV
-- Chatbot intelligent
 - Statistiques interactives
-- Gestion des feedbacks
-- Intégration calendrier et mailing
+- Mailing et gestion des feedbacks
+- Assistance via chatbot intelligent
 
-### 📅 Gestion des Événements
+### Gestion des événements
 - Création et gestion d’événements
 - Recherche et tri dynamiques
 - Recommandation IA
@@ -73,28 +76,84 @@ La plateforme permet aux utilisateurs de :
 
 ---
 
-## 🛠️ Technologies Utilisées
+## Technologies utilisées
 
-| Technologie | Usage |
-|-------------|-------|
-| PHP (MVC & POO) | Backend et logique métier |
-| MySQL | Gestion de base de données |
-| HTML5 | Structure des pages |
-| CSS3 | Design et responsive UI |
-| JavaScript | Interactivité |
-| AJAX | Communication dynamique |
-| Chart.js | Statistiques et graphiques |
-| API Mistral AI | Chatbot intelligent |
-| API YouTube | Intégration vidéos |
-| GIF API | Gestion des GIFs |
-| Brevo SMTP | Envoi d’emails |
+<table>
+<tr>
+<td><strong>Backend</strong></td>
+<td>PHP (MVC & POO), MySQL</td>
+</tr>
+
+<tr>
+<td><strong>Frontend</strong></td>
+<td>HTML5, CSS3, JavaScript, AJAX</td>
+</tr>
+
+<tr>
+<td><strong>APIs & Services</strong></td>
+<td>Mistral AI API, YouTube API, GIF API, Brevo SMTP</td>
+</tr>
+
+<tr>
+<td><strong>Visualisation</strong></td>
+<td>Chart.js</td>
+</tr>
+</table>
 
 ---
 
-## 👥 Équipe NextWave
+## Structure du projet
 
-| Nom | GitHub |
-|-----|--------|
+```bash
+Esprit-PW-2A19-2526-FoodSave/
+│
+├── config/
+├── controllers/
+├── models/
+├── views/
+├── assets/
+│   ├── css/
+│   ├── js/
+│   ├── images/
+│   └── audio/
+│
+├── api/
+├── database/
+├── uploads/
+└── README.md
+```
+
+---
+
+## Installation
+
+### Cloner le projet
+
+```bash
+git clone https://github.com/2A19/Esprit-PW-2A19-2526-FoodSave.git
+cd Esprit-PW-2A19-2526-FoodSave
+```
+
+### Configuration
+
+1. Importer la base de données via phpMyAdmin
+2. Configurer les accès MySQL dans le fichier `config.php`
+3. Placer le projet dans le dossier `htdocs`
+
+### Exécution
+
+Démarrer Apache et MySQL avec XAMPP puis accéder à :
+
+```bash
+http://localhost/FoodSave
+```
+
+---
+
+## Équipe NextWave
+
+| Membre | GitHub |
+|---|---|
 | Cyrine Mahouachi | [@Cyrinemahouachi](https://github.com/Cyrinemahouachi) |
 | Faten Karoui | [@Faten-karouii](https://github.com/Faten-karouii) |
 | Fares Chihaoui | [@faresss124](https://github.com/faresss124) |
@@ -103,108 +162,24 @@ La plateforme permet aux utilisateurs de :
 
 ---
 
-## 📁 Structure du Projet
+## Objectifs du projet
 
-```bash
-Esprit-PW-2A19-2526-FoodSave/
-│
-├── config/                # Configuration du projet
-├── controllers/           # Contrôleurs MVC
-├── models/                # Modèles et accès BD
-├── views/                 # Interfaces utilisateur
-├── assets/
-│   ├── css/               # Feuilles de style
-│   ├── js/                # Scripts JavaScript
-│   ├── images/            # Images et ressources
-│   └── audio/             # Publications vocales
-│
-├── api/                   # APIs externes
-├── database/              # Scripts SQL
-├── uploads/               # Fichiers uploadés
-└── README.md
-```
+- Sensibiliser contre le gaspillage alimentaire
+- Encourager l’engagement communautaire
+- Intégrer des solutions intelligentes basées sur l’IA
+- Offrir une expérience utilisateur moderne et interactive
+- Promouvoir des habitudes durables grâce au digital
 
 ---
 
-## 🚀 Installation
+## Licence
 
-### 1️⃣ Cloner le projet
-
-```bash
-git clone https://github.com/2A19/Esprit-PW-2A19-2526-FoodSave.git
-cd Esprit-PW-2A19-2526-FoodSave
-```
-
-### 2️⃣ Configurer la base de données
-
-- Importer le fichier SQL dans **phpMyAdmin**
-- Modifier les paramètres de connexion dans le fichier `config.php`
-
-### 3️⃣ Lancer le projet
-
-- Placer le dossier dans `htdocs` (XAMPP)
-- Démarrer **Apache** et **MySQL**
-- Accéder au projet via :
-
-```bash
-http://localhost/FoodSave
-```
+Projet académique réalisé dans le cadre du module Technologies Web à ESPRIT School of Engineering.
 
 ---
 
-## 📈 Points Forts du Projet
+<div align="center">
 
-✅ Développement Full-Stack  
-✅ Architecture MVC propre et scalable  
-✅ Intégration de services IA modernes  
-✅ Interface responsive et moderne  
-✅ Gestion sécurisée des données  
-✅ Expérience utilisateur interactive  
-✅ Collaboration et travail d’équipe
+FoodSave — Parce que chaque bouchée compte
 
----
-
-## 🤝 Contributions
-
-Les contributions sont les bienvenues !
-
-1. Forkez le projet
-2. Créez une branche :
-
-```bash
-git checkout -b feature/ma-fonctionnalite
-```
-
-3. Committez vos modifications :
-
-```bash
-git commit -m "Ajout de ma fonctionnalité"
-```
-
-4. Poussez votre branche :
-
-```bash
-git push origin feature/ma-fonctionnalite
-```
-
-5. Ouvrez une Pull Request
-
----
-
-## 📄 Licence
-
-Ce projet est sous licence **MIT**.  
-Voir le fichier `LICENSE` pour plus de détails.
-
----
-
-## 🎯 Vision
-
-FoodSave vise à créer une communauté digitale engagée où technologie, intelligence artificielle et collaboration permettent de réduire le gaspillage alimentaire et promouvoir un mode de vie plus durable.
-
----
-
-<p align="center">
-✨ FoodSave — Parce que chaque bouchée compte ✨
-</p>
-````
+</div>
