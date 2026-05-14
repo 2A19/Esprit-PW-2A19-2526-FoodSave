@@ -1,13 +1,13 @@
 <div align="center">
 
-<img src="https://img.shields.io/badge/FoodSave-Plateforme%20Intelligente%20Anti--Gaspillage-4CAF50?style=for-the-badge&logo=leaflet&logoColor=white" />
+<img src="https://img.shields.io/badge/FoodSave-Smart%20Food%20Waste%20Management-6DBE45?style=for-the-badge" />
 
-<br>
+<br><br>
 
-<h1 style="color:#4CAF50;">FoodSave</h1>
+<h1>FoodSave</h1>
 
 <p>
-<b>Plateforme communautaire intelligente dédiée à la lutte contre le gaspillage alimentaire</b>
+Plateforme intelligente de sensibilisation et de gestion du gaspillage alimentaire
 </p>
 
 <p>
@@ -22,95 +22,83 @@ Année universitaire 2025–2026 • Classe 2A19 • Équipe NextWave
 
 ---
 
-<table>
-<tr>
-<td width="50%">
+## Présentation
 
-<h3 style="color:#4CAF50;">🌿 Vision</h3>
+FoodSave est une plateforme web communautaire conçue pour sensibiliser contre le gaspillage alimentaire tout en proposant des solutions digitales modernes basées sur l’intelligence artificielle, l’analyse de données et l’interaction communautaire.
 
-FoodSave a été conçu pour sensibiliser les utilisateurs au gaspillage alimentaire à travers une plateforme moderne, interactive et intelligente.
-
-Notre objectif est de combiner technologie, intelligence artificielle et engagement communautaire afin de promouvoir des habitudes plus durables et responsables.
-
-</td>
-
-<td width="50%">
-
-<h3 style="color:#FFA726;">⚡ Valeurs</h3>
-
-- Écologie & Développement durable  
-- Innovation & Intelligence artificielle  
-- Simplicité & Accessibilité  
-- Collaboration communautaire  
-- Expérience utilisateur moderne  
-
-</td>
-</tr>
-</table>
+L’objectif du projet est de créer un environnement interactif permettant aux utilisateurs de partager des contenus, gérer des événements, suivre des statistiques et accéder à des outils intelligents favorisant des habitudes plus durables.
 
 ---
 
-## Fonctionnalités principales
+## Fonctionnalités
 
-<table>
-<tr>
-<td width="50%">
-
-### 👤 Gestion des utilisateurs
+### Gestion des utilisateurs
 - Authentification sécurisée
-- Gestion des rôles et accès
+- Gestion des rôles et des accès
 - Tableau de bord administrateur
-- Recherche et filtrage dynamiques
+- Recherche, tri et filtrage dynamiques
 - Statistiques interactives
 - Validation et sécurisation des données
 
-### 📝 Articles & Avis
+### Articles & Avis
 - CRUD complet des articles et avis
-- Modération des avis
+- Système de modération
+- Recherche intelligente et pagination
 - Newsletter et notifications email
 - Chatbot IA avec API Mistral
-- Graphiques dynamiques avec Chart.js
+- Statistiques dynamiques avec Chart.js
 - Support multilingue
 
-</td>
-
-<td width="50%">
-
-### 💬 Forum communautaire
-- Publications et commentaires
-- Recherche dynamique et pagination
-- Publications vocales 🎤
-- Intégration YouTube ▶️
-- GIFs animés
-- Traduction multilingue
+### Forum communautaire
+- Gestion des publications et commentaires
+- Publications vocales
+- Intégration YouTube et GIFs
+- Recherche dynamique et tri par catégories
+- Pagination des publications
+- Calendrier des posts
 - Statistiques des interactions
 
-### ♻️ Gestion des déchets & événements
+### Gestion des déchets
+- Gestion intelligente des déchets
 - Recherche et tri dynamiques
 - Export PDF et CSV
-- Calendrier interactif
+- Statistiques interactives
+- Mailing et gestion des feedbacks
+- Assistance via chatbot intelligent
+
+### Gestion des événements
+- Création et gestion d’événements
+- Recherche et tri dynamiques
 - Recommandation IA
 - Analyse de sentiments
-- Notifications SMS et mailing
-
-</td>
-</tr>
-</table>
+- Notifications SMS
+- Statistiques des événements
 
 ---
 
 ## Technologies utilisées
 
-<div align="center">
+<table>
+<tr>
+<td><strong>Backend</strong></td>
+<td>PHP (MVC & POO), MySQL</td>
+</tr>
 
-| Backend | Frontend | APIs & Services |
-|---|---|---|
-| PHP (MVC & POO) | HTML5 / CSS3 | Mistral AI API |
-| MySQL | JavaScript / AJAX | YouTube API |
-|  | Responsive Design | GIF API |
-|  | Chart.js | Brevo SMTP |
+<tr>
+<td><strong>Frontend</strong></td>
+<td>HTML5, CSS3, JavaScript, AJAX</td>
+</tr>
 
-</div>
+<tr>
+<td><strong>APIs & Services</strong></td>
+<td>Mistral AI API, YouTube API, GIF API, Brevo SMTP</td>
+</tr>
+
+<tr>
+<td><strong>Visualisation</strong></td>
+<td>Chart.js</td>
+</tr>
+</table>
 
 ---
 
@@ -149,11 +137,12 @@ cd Esprit-PW-2A19-2526-FoodSave
 ### Configuration
 
 1. Importer la base de données via phpMyAdmin
-2. Configurer les accès MySQL dans `config.php`
-3. Placer le projet dans `htdocs`
-4. Démarrer Apache et MySQL avec XAMPP
+2. Configurer les accès MySQL dans le fichier `config.php`
+3. Placer le projet dans le dossier `htdocs`
 
 ### Exécution
+
+Démarrer Apache et MySQL avec XAMPP puis accéder à :
 
 ```bash
 http://localhost/FoodSave
@@ -163,8 +152,6 @@ http://localhost/FoodSave
 
 ## Équipe NextWave
 
-<div align="center">
-
 | Membre | GitHub |
 |---|---|
 | Cyrine Mahouachi | [@Cyrinemahouachi](https://github.com/Cyrinemahouachi) |
@@ -173,16 +160,26 @@ http://localhost/FoodSave
 | Wadhah Laaribi | [@lupo-95](https://github.com/lupo-95) |
 | Nermine Achour | [@nermine1708](https://github.com/nermine1708) |
 
-</div>
+---
+
+## Objectifs du projet
+
+- Sensibiliser contre le gaspillage alimentaire
+- Encourager l’engagement communautaire
+- Intégrer des solutions intelligentes basées sur l’IA
+- Offrir une expérience utilisateur moderne et interactive
+- Promouvoir des habitudes durables grâce au digital
+
+---
+
+## Licence
+
+Projet académique réalisé dans le cadre du module Technologies Web à ESPRIT School of Engineering.
 
 ---
 
 <div align="center">
 
-<h3 style="color:#4CAF50;">🌱 FoodSave</h3>
-
-<p>
-Parce que chaque bouchée compte
-</p>
+FoodSave — Parce que chaque bouchée compte
 
 </div>
