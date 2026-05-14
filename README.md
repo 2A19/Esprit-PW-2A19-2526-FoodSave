@@ -86,7 +86,7 @@ L’objectif du projet est de créer un environnement interactif permettant aux 
 
 <tr>
 <td><strong>Frontend</strong></td>
-<td>HTML5, CSS3, JavaScript, AJAX</td>
+<td>HTML4, CSS3, JavaScript, AJAX</td>
 </tr>
 
 <tr>
@@ -121,65 +121,3 @@ Esprit-PW-2A19-2526-FoodSave/
 ├── database/
 ├── uploads/
 └── README.md
-```
-
----
-
-## Installation
-
-### Cloner le projet
-
-```bash
-git clone https://github.com/2A19/Esprit-PW-2A19-2526-FoodSave.git
-cd Esprit-PW-2A19-2526-FoodSave
-```
-
-### Configuration
-
-1. Importer la base de données via phpMyAdmin
-2. Configurer les accès MySQL dans le fichier `config.php`
-3. Placer le projet dans le dossier `htdocs`
-
-### Exécution
-
-Démarrer Apache et MySQL avec XAMPP puis accéder à :
-
-```bash
-http://localhost/FoodSave
-```
-
----
-
-## Équipe NextWave
-
-| Membre | GitHub |
-|---|---|
-| Cyrine Mahouachi | [@Cyrinemahouachi](https://github.com/Cyrinemahouachi) |
-| Faten Karoui | [@Faten-karouii](https://github.com/Faten-karouii) |
-| Fares Chihaoui | [@faresss124](https://github.com/faresss124) |
-| Wadhah Laaribi | [@lupo-95](https://github.com/lupo-95) |
-| Nermine Achour | [@nermine1708](https://github.com/nermine1708) |
-
----
-
-## Objectifs du projet
-
-- Sensibiliser contre le gaspillage alimentaire
-- Encourager l’engagement communautaire
-- Intégrer des solutions intelligentes basées sur l’IA
-- Offrir une expérience utilisateur moderne et interactive
-- Promouvoir des habitudes durables grâce au digital
-
----
-
-## Licence
-
-Projet académique réalisé dans le cadre du module Technologies Web à ESPRIT School of Engineering.
-
----
-
-<div align="center">
-
-FoodSave — Parce que chaque bouchée compte
-
-</div>
